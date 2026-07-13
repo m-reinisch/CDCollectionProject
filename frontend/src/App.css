@@ -2,3 +2,45 @@ header {
   background-color: cadetblue;
 }
 
+.app-header {
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 24px;
+  align-items: center;
+  padding: 16px 32px;
+  border-bottom: 3px solid;
+}
+
+.title {
+  color: white;
+  font-size: 24px;
+}
+
+footer {
+  background-color: burlywood;
+}
+
+.app-footer {
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  padding: 14px 24px;
+  border-top: 3px solid;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.app-user {
+  color: blue;
+}
+
+.error-message {
+  color: red;
+}
+
+.impressum {
+  color: green;
+}
