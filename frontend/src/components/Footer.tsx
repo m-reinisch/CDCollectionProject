@@ -1,5 +1,5 @@
 type FooterProps = {
-    userName: string | null | undefined,
+    userName: string,
     errorMessage: string
 }
 

@@ -10,7 +10,7 @@ export default function LandingPage(props: Readonly<LandingPageProps>) {
                 CDs hinzufügen und in der Sammlung suchen.
             </p>
             <button id="gitbutton" onClick={props.onGitHubLogin}>
-                <span className="github" ></span>
+                <span className="github" >G</span>
                 <span>Mit GitHub einloggen</span>
             </button>
         </div>
