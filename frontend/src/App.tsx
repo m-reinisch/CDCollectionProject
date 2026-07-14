@@ -1,11 +1,62 @@
 import './App.css'
+import Header from "./components/Header.tsx";
+import LandingPage from "./components/LandingPage.tsx";
+import Footer from "./components/Footer.tsx";
+import ProtectedRoutes from "./ProtectedRoutes.tsx";
+import CollectionPage from "./components/CollectionPage.tsx";
+import {Route, Routes, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import axios from 'axios';
 
 function App() {
+    const [page, setPage] = useState<string>("landing");
+    const [appUser, setAppUser] = useState<string | null | undefined>(undefined)
+    const [userName, setUserName] = useState<string>("")
+    const nav= useNavigate();
 
-  return (
-    <>
-    </>
-  )
+    function login() {
+        const host = window.location.host === 'localhost:5173' ?
+            'http://localhost:8080': window.location.origin
+
+        window.open(host + '/oauth2/authorization/github', '_self')
+        setPage("overview")
+        nav("/collections")
+    }
+
+    const loadUser = () => {
+        axios.get('/api/auth/user')
+            .then(response => {
+                setAppUser(response.data)
+                setUserName(response.data.name)
+            })
+            .catch( () => {
+                setAppUser(null)
+            })
+    }
+
+    useEffect(() => {
+        loadUser()
+    }, []);
+
+    return (
+        <>
+            <Header pageType={page} key={"head"} />
+            <Routes>
+                <Route path="/"
+                       element={<LandingPage onGitHubLogin={login} />}
+                       key={"land"} />
+                <Route element={<ProtectedRoutes user={appUser}
+                                                 key={"secure"} />}
+                       key={"protect"}>
+                    <Route path={"/collections"}
+                           element={<CollectionPage />}
+                           key={"overview"} />
+                </Route>
+            </Routes>
+            <Footer userName={userName}
+                    errorMessage={""} key={"baseline"} />
+        </>
+    )
 }
 
 export default App
