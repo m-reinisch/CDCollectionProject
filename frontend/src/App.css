@@ -45,7 +45,7 @@ footer {
   color: green;
 }
 
-.landing-page {
+.page {
   min-height: 70svh;
   display: flex;
   flex-direction: column;

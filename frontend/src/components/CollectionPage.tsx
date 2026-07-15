@@ -1,5 +1,5 @@
 export default function CollectionPage() {
     return(
-        <div>Test</div>
+        <div className="page">Test</div>
     )
 }

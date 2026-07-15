@@ -9,16 +9,23 @@ import {useEffect, useState} from "react";
 import axios from 'axios';
 
 function login() {
-    const host = window.location.host === 'localhost:5173' ?
-        'http://localhost:8080': window.location.origin
+    const host = globalThis.location.host === 'localhost:5173' ?
+        'http://localhost:8080': globalThis.location.origin
 
     window.open(host + '/oauth2/authorization/github', '_self')
+}
+function logout() {
+    const host = globalThis.location.host === 'localhost:5173' ?
+        'http://localhost:8080' : globalThis.location.origin
+
+    window.open(host + '/logout', '_self')
 }
 
 function App() {
     const [page, setPage] = useState<string>("landing");
     const [appUser, setAppUser] = useState<string | null | undefined>(undefined)
     const [userName, setUserName] = useState<string>("")
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const nav= useNavigate();
 
     const loadUser = () => {
@@ -26,6 +33,7 @@ function App() {
              .then(response => {
                 setAppUser(response.data)
                 setUserName(response.data.username)
+                 setIsLoggedIn(true)
              })
              .catch( () => {
                 setAppUser(null)
@@ -43,7 +51,8 @@ function App() {
 
     return (
         <>
-            <Header pageType={page} key={"head"} />
+            <Header pageType={page} isLoggedIn={isLoggedIn}
+                    onLogout={logout} key={"head"} />
             <Routes>
                 <Route path="/"
                        element={<LandingPage onGitHubLogin={login} />}
