@@ -1,8 +1,15 @@
+import {useEffect} from "react";
+
 type LandingPageProps = {
+    onChangePage: (page: string) => void,
     onGitHubLogin: () => void
 }
 
 export default function LandingPage(props: Readonly<LandingPageProps>) {
+    useEffect(() => {
+        props.onChangePage("landing")
+    }, []);
+
     return(
         <div className="page">
             <h2>Dies ist eine einfache Anwendung zum Verwalten Ihrer CD-Sammlung</h2>
