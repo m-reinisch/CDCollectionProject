@@ -8,29 +8,32 @@ import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
 
+function login() {
+    const host = window.location.host === 'localhost:5173' ?
+        'http://localhost:8080': window.location.origin
+
+    window.open(host + '/oauth2/authorization/github', '_self')
+}
+
 function App() {
     const [page, setPage] = useState<string>("landing");
     const [appUser, setAppUser] = useState<string | null | undefined>(undefined)
     const [userName, setUserName] = useState<string>("")
     const nav= useNavigate();
 
-    function login() {
-        const host = window.location.host === 'localhost:5173' ?
-            'http://localhost:8080': window.location.origin
-
-        window.open(host + '/oauth2/authorization/github', '_self')
-        setPage("overview")
-        nav("/collections")
-    }
-
     const loadUser = () => {
         axios.get('/api/auth/user')
-            .then(response => {
+             .then(response => {
                 setAppUser(response.data)
-                setUserName(response.data.name)
-            })
-            .catch( () => {
+                setUserName(response.data.username)
+             })
+             .catch( () => {
                 setAppUser(null)
+             })
+            .finally( () => {
+                setPage("overview")
+                console.log(page)
+                nav("/collections")
             })
     }
 
