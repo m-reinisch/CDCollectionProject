@@ -9,32 +9,44 @@ import {useEffect, useState} from "react";
 import axios from 'axios';
 
 function login() {
-    const host = window.location.host === 'localhost:5173' ?
-        'http://localhost:8080': window.location.origin
+    const host = globalThis.location.host === 'localhost:5173' ?
+        'http://localhost:8080': globalThis.location.origin
 
     window.open(host + '/oauth2/authorization/github', '_self')
 }
+function logout() {
+    const host = globalThis.location.host === 'localhost:5173' ?
+        'http://localhost:8080' : globalThis.location.origin
+
+    window.open(host + '/logout', '_self')
+}
 
 function App() {
-    const [page, setPage] = useState<string>("landing");
     const [appUser, setAppUser] = useState<string | null | undefined>(undefined)
     const [userName, setUserName] = useState<string>("")
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+    const [title, setTitle] = useState<string>("")
     const nav= useNavigate();
+
+    function changePage(accessedPage: string){
+        if (accessedPage === "landing"){
+            setTitle("Willkommen zur CD-Sammlung App")
+        } else if (accessedPage === "overview"){
+            setTitle("Übersicht Sammlungen")
+        }
+    }
 
     const loadUser = () => {
         axios.get('/api/auth/user')
              .then(response => {
-                setAppUser(response.data)
-                setUserName(response.data.username)
+                 setAppUser(response.data)
+                 setUserName(response.data.username)
+                 setIsLoggedIn(true)
+                 nav("/collections")
              })
              .catch( () => {
                 setAppUser(null)
              })
-            .finally( () => {
-                setPage("overview")
-                console.log(page)
-                nav("/collections")
-            })
     }
 
     useEffect(() => {
@@ -43,16 +55,18 @@ function App() {
 
     return (
         <>
-            <Header pageType={page} key={"head"} />
+            <Header pageTitle={title} isLoggedIn={isLoggedIn}
+                    onLogout={logout} key={"head"} />
             <Routes>
                 <Route path="/"
-                       element={<LandingPage onGitHubLogin={login} />}
+                       element={<LandingPage onChangePage={changePage}
+                                             onGitHubLogin={login} />}
                        key={"land"} />
                 <Route element={<ProtectedRoutes user={appUser}
                                                  key={"secure"} />}
                        key={"protect"}>
                     <Route path={"/collections"}
-                           element={<CollectionPage />}
+                           element={<CollectionPage onChangePage={changePage} />}
                            key={"overview"} />
                 </Route>
             </Routes>
