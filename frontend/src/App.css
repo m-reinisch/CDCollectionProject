@@ -80,3 +80,43 @@ footer {
   background-repeat: no-repeat;
   background-size: contain;
 }
+
+.collection {
+  width: 90%;
+  min-height: 60px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 5px;
+  border: 3px solid;
+  border-radius: 24px;
+  margin: 16px;
+}
+
+.coll-open-button {
+  min-height: 55px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  text-align: left;
+  border: 0;
+  padding: 10px 20px;
+}
+
+.new-coll {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px 110px;
+  gap: 10px 22px;
+  align-items: end;
+}
+
+.new-coll label {
+  margin: 0;
+}
+
+.new-coll button {
+  grid-column: 3;
+  width: fit-content;
+}

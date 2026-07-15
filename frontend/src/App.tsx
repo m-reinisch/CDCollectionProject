@@ -7,6 +7,7 @@ import CollectionPage from "./components/CollectionPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
+import type {AppUser, Collection} from "./types.tsx";
 
 function login() {
     const host = globalThis.location.host === 'localhost:5173' ?
@@ -21,8 +22,16 @@ function logout() {
     window.open(host + '/logout', '_self')
 }
 
+const initalCollections: Collection[] = [
+    {
+        id: "0",
+        name: "Meine CDs",
+        cds: []
+    }
+]
+
 function App() {
-    const [appUser, setAppUser] = useState<string | null | undefined>(undefined)
+    const [appUser, setAppUser] = useState<AppUser | null | undefined>(undefined)
     const [userName, setUserName] = useState<string>("")
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
@@ -34,6 +43,15 @@ function App() {
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
         }
+    }
+    function addCollection(name: string){
+        //todo POST Collection
+    }
+    function openCollection(id: string){
+        //todo GET Collection by ID
+    }
+    function deleteCollection(id: string){
+        //todo DELETE Collection
     }
 
     const loadUser = () => {
@@ -66,7 +84,12 @@ function App() {
                                                  key={"secure"} />}
                        key={"protect"}>
                     <Route path={"/collections"}
-                           element={<CollectionPage onChangePage={changePage} />}
+                           element={<CollectionPage collections={initalCollections}
+                                                    onChangePage={changePage}
+                                                    onAddCollection={addCollection}
+                                                    onOpenCollection={openCollection}
+                                                    onDelete={deleteCollection}
+                                                    key={"ov"}/>}
                            key={"overview"} />
                 </Route>
             </Routes>
