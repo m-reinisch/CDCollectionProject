@@ -81,6 +81,14 @@ footer {
   background-size: contain;
 }
 
+.collections-list {
+  display: grid;
+  grid-template-rows: repeat(5, fit-content(100%));
+  min-height: 55svh;
+  width: 98%;
+  padding: 10px;
+}
+
 .collection {
   width: 90%;
   min-height: 60px;
@@ -91,7 +99,7 @@ footer {
   padding: 5px;
   border: 3px solid;
   border-radius: 24px;
-  margin: 16px;
+  margin: 10px;
 }
 
 .coll-open-button {
@@ -107,16 +115,21 @@ footer {
 
 .new-coll {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 110px 110px;
-  gap: 10px 22px;
+  grid-template-columns: 300px 50px;
   align-items: end;
+  margin: 15px;
 }
 
 .new-coll label {
   margin: 0;
+  font-size: small;
 }
 
 .new-coll button {
   grid-column: 3;
   width: fit-content;
+}
+
+#new-coll-name {
+  min-width: 300px;
 }

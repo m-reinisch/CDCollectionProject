@@ -22,7 +22,7 @@ function logout() {
     window.open(host + '/logout', '_self')
 }
 
-const initalCollections: Collection[] = [
+const initialCollections: Collection[] = [
     {
         id: "0",
         name: "Meine CDs",
@@ -35,6 +35,7 @@ function App() {
     const [userName, setUserName] = useState<string>("")
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
+    const [errorLog, setErrorLog] = useState<string>("")
     const nav= useNavigate();
 
     function changePage(accessedPage: string){
@@ -66,6 +67,9 @@ function App() {
                 setAppUser(null)
              })
     }
+    const handleError = (errorMessage: string) => {
+        setErrorLog(errorMessage)
+    }
 
     useEffect(() => {
         loadUser()
@@ -84,17 +88,18 @@ function App() {
                                                  key={"secure"} />}
                        key={"protect"}>
                     <Route path={"/collections"}
-                           element={<CollectionPage collections={initalCollections}
+                           element={<CollectionPage collections={initialCollections}
                                                     onChangePage={changePage}
                                                     onAddCollection={addCollection}
                                                     onOpenCollection={openCollection}
                                                     onDelete={deleteCollection}
+                                                    onError={handleError}
                                                     key={"ov"}/>}
                            key={"overview"} />
                 </Route>
             </Routes>
             <Footer userName={userName}
-                    errorMessage={""} key={"baseline"} />
+                    errorMessage={errorLog} key={"baseline"} />
         </>
     )
 }
