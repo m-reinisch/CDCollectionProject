@@ -1,5 +1,27 @@
 export type AppUser = {
     id: string,
     name: string,
-    collection: string[] | null
+    collection: Collection[]
+}
+
+export type Collection = {
+    id: string,
+    name: string,
+    cds: CD[]
+}
+
+export type CD = {
+    id: string,
+    title: string,
+    performer: string,
+    year: number,
+    tracks: Track[],
+    totalTime: string,
+    coverUrl:string
+}
+
+export type Track = {
+    id: string,
+    title: string,
+    time: string
 }
