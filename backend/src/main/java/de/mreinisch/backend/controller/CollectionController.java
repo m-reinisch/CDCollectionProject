@@ -1,6 +1,7 @@
 package de.mreinisch.backend.controller;
 
 import de.mreinisch.backend.dto.CdCollectionDTO;
+import de.mreinisch.backend.exception.AppUserNotFound;
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.service.CollectionService;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class CollectionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CdCollection createCollection(@RequestBody CdCollectionDTO cdCollection){
+    public CdCollection createCollection(@RequestBody CdCollectionDTO cdCollection) throws AppUserNotFound {
         return service.generateCollection(cdCollection);
     }
 }

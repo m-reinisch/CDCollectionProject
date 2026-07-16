@@ -1,6 +1,7 @@
 package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.CdCollectionDTO;
+import de.mreinisch.backend.exception.AppUserNotFound;
 import de.mreinisch.backend.model.AppUser;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.model.CdCollection;
@@ -23,12 +24,13 @@ public class CollectionService {
         this.userRepo = userRepo;
     }
 
-    /**
+    /** Crearte a new CD Collection and saves it
      *
-     * @param collectionDTO
-     * @return
+     * @param collectionDTO name and user for new collection
+     * @return saved CD Collection
+     * @throws  AppUserNotFound when User not in database
      */
-    public CdCollection generateCollection(CdCollectionDTO collectionDTO){
+    public CdCollection generateCollection(CdCollectionDTO collectionDTO) throws AppUserNotFound {
         CdCollection newCdCollection;
         String id= idService.generateId();
         AppUser collOwner= collectionDTO.appUser();
@@ -41,7 +43,10 @@ public class CollectionService {
                                               cdList);
             repo.save(newCdCollection);
             return newCdCollection;
+        } else {
+            throw new AppUserNotFound("Benutzer mit id: " +
+                                      collOwner.getId() +
+                                      " wurde nicht gefunden!");
         }
-        return new CdCollection();
     }
 }
