@@ -7,7 +7,7 @@ import CollectionPage from "./components/CollectionPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
-import type {AppUser, Collection} from "./types.tsx";
+import type {AppUser, Collection, CollectionDTO} from "./types.tsx";
 
 function login() {
     const host = globalThis.location.host === 'localhost:5173' ?
@@ -31,7 +31,7 @@ const initialCollections: Collection[] = [
 ]
 
 function App() {
-    const [appUser, setAppUser] = useState<AppUser | null | undefined>(undefined)
+    const [user, setUser] = useState<AppUser | null | undefined>(undefined)
     const [userName, setUserName] = useState<string>("")
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
@@ -45,8 +45,15 @@ function App() {
             setTitle("Übersicht Sammlungen")
         }
     }
-    function addCollection(name: string){
-        //todo POST Collection
+    function addCollection(collName: string){
+        const newCollection: CollectionDTO = {
+            name: collName,
+            appUser: user!
+        }
+
+        axios.post("/api/collections", newCollection)
+             .then( (response) => {console.log(response.data)})
+             .catch( (error_) => console.log(error_) )
     }
     function openCollection(id: string){
         //todo GET Collection by ID
@@ -58,13 +65,13 @@ function App() {
     const loadUser = () => {
         axios.get('/api/auth/user')
              .then(response => {
-                 setAppUser(response.data)
+                 setUser(response.data)
                  setUserName(response.data.username)
                  setIsLoggedIn(true)
                  nav("/collections")
              })
              .catch( () => {
-                setAppUser(null)
+                setUser(null)
              })
     }
     const handleError = (errorMessage: string) => {
@@ -84,7 +91,7 @@ function App() {
                        element={<LandingPage onChangePage={changePage}
                                              onGitHubLogin={login} />}
                        key={"land"} />
-                <Route element={<ProtectedRoutes user={appUser}
+                <Route element={<ProtectedRoutes user={user}
                                                  key={"secure"} />}
                        key={"protect"}>
                     <Route path={"/collections"}
