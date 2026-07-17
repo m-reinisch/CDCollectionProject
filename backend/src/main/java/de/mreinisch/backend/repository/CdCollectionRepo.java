@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CdCollectionRepo extends JpaRepository<CdCollection, String> {
     List<CdCollection> findAllByAppUser_Id(String appUserId);
+    Boolean deleteCdCollectionsById(String id);
 }

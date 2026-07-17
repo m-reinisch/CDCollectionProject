@@ -9,6 +9,7 @@ import de.mreinisch.backend.repository.CdCollectionRepo;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
@@ -118,4 +119,60 @@ class CollectionServiceTest {
                 .withMessage("Benutzer mit id: " + uid +
                              " wurde nicht gefunden!");
     }
+
+    @Test
+    void removeCdCollection_shouldReturnCdCollection_whenRemoved() throws AppUserNotFound {
+        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+        CollectionService service= new CollectionService(mockRepo,
+                                                         mockingIdService,
+                                                         mockUserRepo);
+        String id= "0";
+        String uid= "6";
+        AppUser appUser= new AppUser(uid, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        Boolean expected= true;
+        Boolean actual;
+
+        when(mockRepo.findById(id))
+                .thenReturn(Optional.of(cdCollection));
+        when(mockRepo.deleteCdCollectionsById(id)).thenReturn(expected);
+        actual= service.removeCdCollection(id);
+        assertEquals(expected, actual);
+    }
+
+//    @Test
+//    void removeCdCollection_shouldThrowException_whenCdCollectionNotFound(){
+//        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+//        IdService mockingIdService= mock(IdService.class);
+//        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+//        CollectionService service= new CollectionService(mockRepo,
+//                                                         mockingIdService,
+//                                                         mockUserRepo);
+//        String id= "0";
+//        String uid= "6";
+//        String fid= "1";
+//        AppUser appUser= new AppUser(uid, "TestUser");
+//        CdCollection cdCollection= new CdCollection(id,
+//                                              "Testsammlung",
+//                                                    appUser,
+//                                                    Collections.emptyList());
+//        AppUser failUser= new AppUser(fid, "TestUser");
+//        CdCollection failCdColl= new CdCollection(id,
+//                                            "Testsammlung",
+//                                                    failUser,
+//                                                    Collections.emptyList());
+//
+//        when(mockRepo.findById(id))
+//                .thenReturn(Optional.of(failCdColl));
+//        assertThatExceptionOfType(AppUserNotFound.class)
+//                .isThrownBy( () ->
+//                        service.removeCdCollection(id))
+//                .withMessage("Benutzer mit id: " + uid +
+//                             " wurde nicht gefunden!");
+//    }
 }

@@ -112,4 +112,5 @@ class CollectionControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(errorMessage));
     }
+
 }

@@ -64,4 +64,21 @@ public class CollectionService {
                                       " wurde nicht gefunden!");
         }
     }
+
+    /**
+     *
+     * @param id
+     * @return
+     * @throws  AppUserNotFound when User not in database
+     */
+    public Boolean removeCdCollection(String id) throws AppUserNotFound {
+        CdCollection delColl= repo.findById(id).orElse(null);
+
+        if (delColl != null) {
+            return repo.deleteCdCollectionsById(id);
+        } else {
+            throw new AppUserNotFound("Benutzer mit id: " + id +
+                                      " wurde nicht gefunden!");
+        }
+    }
 }
