@@ -33,8 +33,10 @@ const initialCollections: Collection[] = [
 function App() {
     const [user, setUser] = useState<AppUser | null | undefined>(undefined)
     const [userName, setUserName] = useState<string>("")
+    const [userId, setUserId] = useState<string>("")
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
+    const [cdCollections, setcdCollections] = useState<Collection[]>(initialCollections)
     const [errorLog, setErrorLog] = useState<string>("")
     const nav= useNavigate();
 
@@ -67,6 +69,7 @@ function App() {
              .then(response => {
                  setUser(response.data)
                  setUserName(response.data.username)
+                 setUserId(response.data.id)
                  setIsLoggedIn(true)
                  nav("/collections")
              })
@@ -74,13 +77,25 @@ function App() {
                 setUser(null)
              })
     }
+    const loadCollections = (usrId: string) => {
+        axios.get('/api/collections/all/' + usrId)
+             .then(response => {
+                 setcdCollections(response.data);
+             })
+             .catch( (error_) => console.log(error_) )
+    }
     const handleError = (errorMessage: string) => {
         setErrorLog(errorMessage)
     }
 
     useEffect(() => {
         loadUser()
-    }, []);
+        if (!userId) {
+            return
+        }
+
+        loadCollections(userId)
+    }, [userId]);
 
     return (
         <>
@@ -95,7 +110,7 @@ function App() {
                                                  key={"secure"} />}
                        key={"protect"}>
                     <Route path={"/collections"}
-                           element={<CollectionPage collections={initialCollections}
+                           element={<CollectionPage collections={cdCollections}
                                                     onChangePage={changePage}
                                                     onAddCollection={addCollection}
                                                     onOpenCollection={openCollection}

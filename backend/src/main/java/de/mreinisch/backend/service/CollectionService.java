@@ -49,4 +49,19 @@ public class CollectionService {
                                       " wurde nicht gefunden!");
         }
     }
+
+    /** Returns all CD collections of an app user.
+     *
+     * @param userId userId to search for
+     * @return List of collections
+     * @throws  AppUserNotFound when User not in database
+     */
+    public List<CdCollection> getAllCdCollectionsByAppUserId(String userId) throws AppUserNotFound {
+        if (userRepo.findAppUserById(userId) != null) {
+            return repo.findAllByAppUser_Id(userId);
+        } else {
+            throw new AppUserNotFound("Benutzer mit id: " + userId +
+                                      " wurde nicht gefunden!");
+        }
+    }
 }
