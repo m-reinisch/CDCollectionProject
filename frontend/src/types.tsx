@@ -10,6 +10,11 @@ export type Collection = {
     cds: CD[]
 }
 
+export type CollectionDTO = {
+    name: string,
+    appUser: AppUser
+}
+
 export type CD = {
     id: string,
     title: string,
