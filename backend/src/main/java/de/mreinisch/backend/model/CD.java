@@ -18,7 +18,7 @@ public class CD {
     private String id;
     private String titel;
     private String performer;
-    private int year;
+    private int publicationYear;
     private String totalTime;
     private String coverUrl;
     @ManyToOne
