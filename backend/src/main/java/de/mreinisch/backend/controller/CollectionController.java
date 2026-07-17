@@ -7,6 +7,8 @@ import de.mreinisch.backend.service.CollectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/collections")
 public class CollectionController {
@@ -20,5 +22,10 @@ public class CollectionController {
     @ResponseStatus(HttpStatus.CREATED)
     public CdCollection createCollection(@RequestBody CdCollectionDTO cdCollection) throws AppUserNotFound {
         return service.generateCollection(cdCollection);
+    }
+
+    @GetMapping("/all/{userId}")
+    public List<CdCollection> readCollections(@PathVariable String userId) throws AppUserNotFound {
+        return service.getAllCdCollectionsByAppUserId(userId);
     }
 }

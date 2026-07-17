@@ -8,6 +8,7 @@ import de.mreinisch.backend.repository.AppUserRepo;
 import de.mreinisch.backend.repository.CdCollectionRepo;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,6 +58,64 @@ class CollectionServiceTest {
                 .isThrownBy( () ->
                         service.generateCollection(cdCollection))
                 .withMessage("Benutzer mit id: " + id +
+                             " wurde nicht gefunden!");
+    }
+
+    @Test
+    void getAllCdCollectionsByAppUserId_shouldReturnEmptyList_whenDatabaseIsEmpty() throws AppUserNotFound {
+        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+        CollectionService service= new CollectionService(mockRepo,
+                                                         mockingIdService,
+                                                         mockUserRepo);
+        String uid= "0";
+        AppUser appUser= new AppUser(uid, "TestUser");
+        List<CdCollection> expected= Collections.emptyList();
+        List<CdCollection> actual;
+
+        when(mockUserRepo.findAppUserById(uid)).thenReturn(appUser);
+        actual= service.getAllCdCollectionsByAppUserId(uid);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getAllCdCollectionsByAppUserId_shouldReturnCdCollectionList_whenDatabaseNotEmpty() throws AppUserNotFound {
+        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+        CollectionService service= new CollectionService(mockRepo,
+                                                         mockingIdService,
+                                                         mockUserRepo);
+        String uid= "0";
+        AppUser appUser= new AppUser(uid, "TestUser");
+        CdCollection cdCollection= new CdCollection(uid,
+                                             "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        List<CdCollection> expected= List.of(cdCollection);
+        List<CdCollection> actual;
+
+        when(mockUserRepo.findAppUserById(uid)).thenReturn(appUser);
+        when(mockRepo.findAllByAppUser_Id(uid)).thenReturn(expected);
+        actual= service.getAllCdCollectionsByAppUserId(uid);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getAllCdCollectionsByAppUserId_shouldThrowException_whenAppUserNotFound(){
+        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+        CollectionService service= new CollectionService(mockRepo,
+                                                         mockingIdService,
+                                                         mockUserRepo);
+        String uid= "0";
+
+        assertThatExceptionOfType(AppUserNotFound.class)
+                .isThrownBy( () ->
+                        service.getAllCdCollectionsByAppUserId(uid))
+                .withMessage("Benutzer mit id: " + uid +
                              " wurde nicht gefunden!");
     }
 }
