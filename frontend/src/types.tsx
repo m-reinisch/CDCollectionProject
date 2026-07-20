@@ -27,6 +27,7 @@ export type CD = {
 
 export type Track = {
     id: string,
+    position: number,
     title: string,
     time: string
 }

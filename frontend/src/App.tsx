@@ -37,6 +37,7 @@ function App() {
     const [userId, setUserId] = useState<string>("")
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
+    const [pageType, setPageType] = useState<"NO" | "BACK" | "ABORT">("NO")
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(null)
     const [errorLog, setErrorLog] = useState<string>("")
@@ -45,8 +46,13 @@ function App() {
     function changePage(accessedPage: string){
         if (accessedPage === "landing"){
             setTitle("Willkommen zur CD-Sammlung App")
+            setPageType("NO")
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
+            setPageType("NO")
+        } else if (accessedPage === "details"){
+            setTitle(selectedCdCollection.name)
+            setPageType("BACK")
         }
     }
     function addCollection(collName: string){
@@ -69,7 +75,7 @@ function App() {
         //todo GET Collection by ID
         const testCollection: Collection = {
             id: "0",
-            name: "Meine CDs",
+            name: "Meine CDs mit langen Namen zum Testen",
             cds: [
                 {
                     id: "6",
@@ -139,7 +145,7 @@ function App() {
     return (
         <>
             <Header pageTitle={title} isLoggedIn={isLoggedIn}
-                    onLogout={logout} key={"head"} />
+                    pType={pageType} onLogout={logout} key={"head"} />
             <Routes>
                 <Route path="/"
                        element={<LandingPage onChangePage={changePage}
