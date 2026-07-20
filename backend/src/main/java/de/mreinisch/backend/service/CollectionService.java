@@ -76,7 +76,8 @@ public class CollectionService {
         CdCollection delColl= repo.findById(id).orElse(null);
 
         if (delColl != null) {
-            return repo.deleteCdCollectionsById(id);
+            repo.deleteById(id);
+            return true;
         } else {
             throw new CdCollectionNotFound("Sammlung mit id: " + id +
                                            " wurde nicht gefunden!");

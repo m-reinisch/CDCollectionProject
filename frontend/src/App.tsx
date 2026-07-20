@@ -36,7 +36,7 @@ function App() {
     const [userId, setUserId] = useState<string>("")
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
-    const [cdCollections, setcdCollections] = useState<Collection[]>(initialCollections)
+    const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [errorLog, setErrorLog] = useState<string>("")
     const nav= useNavigate();
 
@@ -54,14 +54,27 @@ function App() {
         }
 
         axios.post("/api/collections", newCollection)
-             .then( (response) => {console.log(response.data)})
+             .then( (response) => {
+                 const respColl: Collection= response.data
+
+                 setCdCollections( (cdCollections) =>
+                     [...cdCollections, respColl])
+                 nav("/collections")
+             })
              .catch( (error_) => console.log(error_) )
     }
     function openCollection(id: string){
         //todo GET Collection by ID
     }
     function deleteCollection(id: string){
-        //todo DELETE Collection
+        axios.delete("/api/collections/" + id)
+             .then( (response) => {
+                 if(response.data){
+                     loadCollections(userId)
+                     nav("/collections")
+                 }
+             })
+             .catch( (error_) => console.log(error_) )
     }
 
     const loadUser = () => {
@@ -80,7 +93,7 @@ function App() {
     const loadCollections = (usrId: string) => {
         axios.get('/api/collections/all/' + usrId)
              .then(response => {
-                 setcdCollections(response.data);
+                 setCdCollections(response.data);
              })
              .catch( (error_) => console.log(error_) )
     }

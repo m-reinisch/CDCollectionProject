@@ -141,7 +141,6 @@ class CollectionServiceTest {
 
         when(mockRepo.findById(id))
                 .thenReturn(Optional.of(cdCollection));
-        when(mockRepo.deleteCdCollectionsById(id)).thenReturn(expected);
         actual= service.removeCdCollection(id);
         assertEquals(expected, actual);
     }
