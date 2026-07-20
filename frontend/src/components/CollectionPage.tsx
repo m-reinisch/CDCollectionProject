@@ -46,11 +46,11 @@ export default function CollectionPage(props: Readonly<CollectionPageProps>) {
                                         onClick={ () =>
                                             props.onOpenCollection(coll.id)}>
                                     <strong>{coll.name}</strong>
-                                    <button type="button"
-                                            onClick={ () =>
-                                                props.onDelete(coll.id)}>
-                                        Löschen
-                                    </button>
+                                </button>
+                                <button type="button"
+                                        onClick={ () =>
+                                            props.onDelete(coll.id)}>
+                                    Löschen
                                 </button>
                             </div>
 
