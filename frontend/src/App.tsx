@@ -41,7 +41,7 @@ function App() {
     const [backPage, setBackPage] = useState<string>("")
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(null)
-    const [errorLog, setErrorLog] = useState<string>("overview")
+    const [errorLog, setErrorLog] = useState<string>("")
     const nav= useNavigate();
 
     function changePage(accessedPage: string){
@@ -55,13 +55,6 @@ function App() {
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
             setBackPage("overview")
-        }
-    }
-    function handleBack() {
-        if (backPage === "overview"){
-            setTitle("Übersicht Sammlungen")
-            setPageType("NO")
-            nav("/collections")
         }
     }
     function addCollection(collName: string){
@@ -149,6 +142,13 @@ function App() {
     }
     const handleError = (errorMessage: string) => {
         setErrorLog(errorMessage)
+    }
+    const handleBack = () => {
+        if (backPage === "overview"){
+            setTitle("Übersicht Sammlungen")
+            setPageType("NO")
+            nav("/collections")
+        }
     }
 
     useEffect(() => {

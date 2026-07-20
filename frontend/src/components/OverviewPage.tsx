@@ -64,7 +64,11 @@ export default function OverviewPage(props: Readonly<OverviewPageProps>) {
                     Name der neuen Sammlung:
                     <input id="new-coll-name" type="text"
                            {...register("collName", {
-                               required: "Name ist für neue Sammlung erforderlich!"
+                               required: "Name ist für neue Sammlung erforderlich!",
+                               minLength: {
+                                   value: 3,
+                                   message: "Name der Sammlung muss mind. 3 Zeichen lang sein!"
+                               }
                            })}
                     />
                 </label>
