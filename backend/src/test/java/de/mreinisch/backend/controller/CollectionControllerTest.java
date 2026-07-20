@@ -62,7 +62,7 @@ class CollectionControllerTest {
 
     @Test
     @WithMockUser
-    void createCollection_shouldThrowException_whenAppUserNorFound() throws Exception {
+    void createCollection_shouldThrowException_whenAppUserNotFound() throws Exception {
         String uid= "0";
         AppUser failUser= new AppUser(uid, "TestUser");
         CdCollectionDTO cdCollectionDTO=
@@ -102,7 +102,7 @@ class CollectionControllerTest {
 
     @Test
     @WithMockUser
-    void readCollections_shouldThrowException_whenAppUserNorFound() throws Exception {
+    void readCollections_shouldThrowException_whenAppUserNotFound() throws Exception {
         String uid= "0";
         String errorMessage= "Unerwarteter Fehler: ";
 
@@ -113,4 +113,33 @@ class CollectionControllerTest {
                 .andExpect(content().string(errorMessage));
     }
 
+    @Test
+    @WithMockUser
+    void deleteCollection_shouldReturnTrue_whenCdCollectionDeleted() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+
+        userRepo.save(appUser);
+        repo.save(cdCollection);
+        mvc.perform(delete("/api/collections/" + id))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    @WithMockUser
+    void deleteCollection_shouldThrowException_whenCdCollectioNotFound() throws Exception {
+        String id= "0";
+        String errorMessage= "Unerwarteter Fehler: ";
+
+        errorMessage+= "Sammlung mit id: " + id +
+                       " wurde nicht gefunden!";
+        mvc.perform(delete("/api/collections/" + id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
+    }
 }

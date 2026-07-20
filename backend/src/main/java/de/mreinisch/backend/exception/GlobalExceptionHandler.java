@@ -13,4 +13,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public String handleAppUserNotFound(AppUserNotFound exception){
         return "Unerwarteter Fehler: " + exception.getMessage();
     }
+
+    @ExceptionHandler(CdCollectionNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleAppUserNotFound(CdCollectionNotFound exception){
+        return "Unerwarteter Fehler: " + exception.getMessage();
+    }
 }
