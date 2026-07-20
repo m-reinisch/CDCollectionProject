@@ -83,4 +83,21 @@ public class CollectionService {
                                            " wurde nicht gefunden!");
         }
     }
+
+    /** Searches for a CD collection by ID.
+     *
+     * @param id to search for
+     * @return found collection
+     * @throws CdCollectionNotFound when Collection not in database
+     */
+    public CdCollection getCdCollectionById(String id) throws CdCollectionNotFound {
+        CdCollection cdCollection= repo.findById(id).orElse(null);
+
+        if (cdCollection != null) {
+            return cdCollection;
+        } else {
+            throw new CdCollectionNotFound("Sammlung mit id: " + id +
+                                           " wurde nicht gefunden!");
+        }
+    }
 }

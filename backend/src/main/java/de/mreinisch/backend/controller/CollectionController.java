@@ -30,6 +30,11 @@ public class CollectionController {
         return service.getAllCdCollectionsByAppUserId(userId);
     }
 
+    @GetMapping("/{id}")
+    public CdCollection readCdCollection(@PathVariable String id) throws CdCollectionNotFound {
+        return service.getCdCollectionById(id);
+    }
+
     @DeleteMapping("/{id}")
     public Boolean deleteCollection(@PathVariable String id) throws CdCollectionNotFound {
         return service.removeCdCollection(id);

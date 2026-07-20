@@ -161,4 +161,44 @@ class CollectionServiceTest {
                 .withMessage("Sammlung mit id: " + id +
                              " wurde nicht gefunden!");
     }
+
+    @Test
+    void getCdCollectionById_shouldReturnCdCollection_whenFoundInDatabase() throws CdCollectionNotFound {
+        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+        CollectionService service= new CollectionService(mockRepo,
+                                                         mockingIdService,
+                                                         mockUserRepo);
+        String id= "0";
+        String uid= "6";
+        AppUser appUser= new AppUser(uid, "TestUser");
+        CdCollection expected= new CdCollection(id,
+                                          "Testsammlung",
+                                                appUser,
+                                                Collections.emptyList());
+        CdCollection actual;
+
+        when(mockRepo.findById(id))
+                .thenReturn(Optional.of(expected));
+        actual= service.getCdCollectionById(id);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getCdCollectionById_shouldThrowException_whenNotFoundInDatabase(){
+        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+        CollectionService service= new CollectionService(mockRepo,
+                                                         mockingIdService,
+                                                         mockUserRepo);
+        String id= "0";
+
+        assertThatExceptionOfType(CdCollectionNotFound.class)
+                .isThrownBy( () ->
+                        service.getCdCollectionById(id))
+                .withMessage("Sammlung mit id: " + id +
+                             " wurde nicht gefunden!");
+    }
 }
