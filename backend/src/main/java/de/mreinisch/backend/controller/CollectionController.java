@@ -2,6 +2,7 @@ package de.mreinisch.backend.controller;
 
 import de.mreinisch.backend.dto.CdCollectionDTO;
 import de.mreinisch.backend.exception.AppUserNotFound;
+import de.mreinisch.backend.exception.CdCollectionNotFound;
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.service.CollectionService;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class CollectionController {
     }
 
     @DeleteMapping("/{id}")
-    public Boolean deleteCollection(@PathVariable String id) throws AppUserNotFound {
+    public Boolean deleteCollection(@PathVariable String id) throws CdCollectionNotFound {
         return service.removeCdCollection(id);
     }
 }

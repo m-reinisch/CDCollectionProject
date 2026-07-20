@@ -2,6 +2,7 @@ package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.CdCollectionDTO;
 import de.mreinisch.backend.exception.AppUserNotFound;
+import de.mreinisch.backend.exception.CdCollectionNotFound;
 import de.mreinisch.backend.model.AppUser;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.model.CdCollection;
@@ -52,7 +53,7 @@ public class CollectionService {
 
     /** Returns all CD collections of an app user.
      *
-     * @param userId userId to search for
+     * @param userId to search for
      * @return List of collections
      * @throws  AppUserNotFound when User not in database
      */
@@ -65,20 +66,20 @@ public class CollectionService {
         }
     }
 
-    /**
+    /** Deletes the CD collection from the database.
      *
-     * @param id
-     * @return
-     * @throws  AppUserNotFound when User not in database
+     * @param id to search for
+     * @return true, if deleted
+     * @throws  CdCollectionNotFound when Collection not in database
      */
-    public Boolean removeCdCollection(String id) throws AppUserNotFound {
+    public Boolean removeCdCollection(String id) throws CdCollectionNotFound {
         CdCollection delColl= repo.findById(id).orElse(null);
 
         if (delColl != null) {
             return repo.deleteCdCollectionsById(id);
         } else {
-            throw new AppUserNotFound("Benutzer mit id: " + id +
-                                      " wurde nicht gefunden!");
+            throw new CdCollectionNotFound("Sammlung mit id: " + id +
+                                           " wurde nicht gefunden!");
         }
     }
 }

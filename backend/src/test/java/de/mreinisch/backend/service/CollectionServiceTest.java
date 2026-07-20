@@ -2,6 +2,7 @@ package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.CdCollectionDTO;
 import de.mreinisch.backend.exception.AppUserNotFound;
+import de.mreinisch.backend.exception.CdCollectionNotFound;
 import de.mreinisch.backend.model.AppUser;
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.repository.AppUserRepo;
@@ -121,7 +122,7 @@ class CollectionServiceTest {
     }
 
     @Test
-    void removeCdCollection_shouldReturnCdCollection_whenRemoved() throws AppUserNotFound {
+    void removeCdCollection_shouldReturnCdCollection_whenRemoved() throws CdCollectionNotFound {
         CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
         IdService mockingIdService= mock(IdService.class);
         AppUserRepo mockUserRepo= mock(AppUserRepo.class);
@@ -145,34 +146,20 @@ class CollectionServiceTest {
         assertEquals(expected, actual);
     }
 
-//    @Test
-//    void removeCdCollection_shouldThrowException_whenCdCollectionNotFound(){
-//        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
-//        IdService mockingIdService= mock(IdService.class);
-//        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
-//        CollectionService service= new CollectionService(mockRepo,
-//                                                         mockingIdService,
-//                                                         mockUserRepo);
-//        String id= "0";
-//        String uid= "6";
-//        String fid= "1";
-//        AppUser appUser= new AppUser(uid, "TestUser");
-//        CdCollection cdCollection= new CdCollection(id,
-//                                              "Testsammlung",
-//                                                    appUser,
-//                                                    Collections.emptyList());
-//        AppUser failUser= new AppUser(fid, "TestUser");
-//        CdCollection failCdColl= new CdCollection(id,
-//                                            "Testsammlung",
-//                                                    failUser,
-//                                                    Collections.emptyList());
-//
-//        when(mockRepo.findById(id))
-//                .thenReturn(Optional.of(failCdColl));
-//        assertThatExceptionOfType(AppUserNotFound.class)
-//                .isThrownBy( () ->
-//                        service.removeCdCollection(id))
-//                .withMessage("Benutzer mit id: " + uid +
-//                             " wurde nicht gefunden!");
-//    }
+    @Test
+    void removeCdCollection_shouldThrowException_whenCdCollectionNotFound(){
+        CdCollectionRepo mockRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        AppUserRepo mockUserRepo= mock(AppUserRepo.class);
+        CollectionService service= new CollectionService(mockRepo,
+                                                         mockingIdService,
+                                                         mockUserRepo);
+        String id= "0";
+
+        assertThatExceptionOfType(CdCollectionNotFound.class)
+                .isThrownBy( () ->
+                        service.removeCdCollection(id))
+                .withMessage("Sammlung mit id: " + id +
+                             " wurde nicht gefunden!");
+    }
 }
