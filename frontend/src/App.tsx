@@ -38,9 +38,10 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
     const [pageType, setPageType] = useState<"NO" | "BACK" | "ABORT">("NO")
+    const [backPage, setBackPage] = useState<string>("")
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(null)
-    const [errorLog, setErrorLog] = useState<string>("")
+    const [errorLog, setErrorLog] = useState<string>("overview")
     const nav= useNavigate();
 
     function changePage(accessedPage: string){
@@ -53,6 +54,14 @@ function App() {
         } else if (accessedPage === "details"){
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
+            setBackPage("overview")
+        }
+    }
+    function handleBack() {
+        if (backPage === "overview"){
+            setTitle("Übersicht Sammlungen")
+            setPageType("NO")
+            nav("/collections")
         }
     }
     function addCollection(collName: string){
@@ -82,6 +91,15 @@ function App() {
                     title: "Saxuality",
                     performer: "Candy Dulfer",
                     publicationYear: 1990,
+                    tracks: [],
+                    totalTime: "0",
+                    coverUrl: ""
+                },
+                {
+                    id: "11",
+                    title: "Breathless",
+                    performer: "Kenny G",
+                    publicationYear: 1992,
                     tracks: [],
                     totalTime: "0",
                     coverUrl: ""
@@ -145,7 +163,8 @@ function App() {
     return (
         <>
             <Header pageTitle={title} isLoggedIn={isLoggedIn}
-                    pType={pageType} onLogout={logout} key={"head"} />
+                    pType={pageType} onLogout={logout}
+                    onBack={handleBack} key={"head"} />
             <Routes>
                 <Route path="/"
                        element={<LandingPage onChangePage={changePage}
