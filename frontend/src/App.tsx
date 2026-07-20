@@ -3,6 +3,7 @@ import Header from "./components/Header.tsx";
 import LandingPage from "./components/LandingPage.tsx";
 import Footer from "./components/Footer.tsx";
 import ProtectedRoutes from "./ProtectedRoutes.tsx";
+import OverviewPage from "./components/OverviewPage.tsx";
 import CollectionPage from "./components/CollectionPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
@@ -37,6 +38,7 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
+    const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(null)
     const [errorLog, setErrorLog] = useState<string>("")
     const nav= useNavigate();
 
@@ -65,6 +67,24 @@ function App() {
     }
     function openCollection(id: string){
         //todo GET Collection by ID
+        const testCollection: Collection = {
+            id: "0",
+            name: "Meine CDs",
+            cds: [
+                {
+                    id: "6",
+                    title: "Saxuality",
+                    performer: "Candy Dulfer",
+                    publicationYear: 1990,
+                    tracks: [],
+                    totalTime: "0",
+                    coverUrl: ""
+                }
+            ]
+        }
+
+        setSelectedCdCollection(testCollection)
+        nav("/collections/" + id)
     }
     function deleteCollection(id: string){
         axios.delete("/api/collections/" + id)
@@ -75,6 +95,12 @@ function App() {
                  }
              })
              .catch( (error_) => console.log(error_) )
+    }
+    function openCD(id: string){
+        //todo
+    }
+    function deleteCD(id: string){
+        //todo
     }
 
     const loadUser = () => {
@@ -123,14 +149,21 @@ function App() {
                                                  key={"secure"} />}
                        key={"protect"}>
                     <Route path={"/collections"}
-                           element={<CollectionPage collections={cdCollections}
-                                                    onChangePage={changePage}
-                                                    onAddCollection={addCollection}
-                                                    onOpenCollection={openCollection}
-                                                    onDelete={deleteCollection}
-                                                    onError={handleError}
-                                                    key={"ov"}/>}
+                           element={<OverviewPage collections={cdCollections}
+                                                  onChangePage={changePage}
+                                                  onAddCollection={addCollection}
+                                                  onOpenCollection={openCollection}
+                                                  onDelete={deleteCollection}
+                                                  onError={handleError}
+                                                  key={"ov"} />}
                            key={"overview"} />
+                    <Route path={"/collections/:id"}
+                           element={<CollectionPage cdCollection={selectedCdCollection}
+                                                    onChangePage={changePage}
+                                                    onOpenCd={openCD}
+                                                    onDelete={deleteCD}
+                                                    key={"cd-coll"} />}
+                           key={"details"} />
                 </Route>
             </Routes>
             <Footer userName={userName}

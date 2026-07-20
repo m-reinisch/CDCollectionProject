@@ -19,7 +19,7 @@ export type CD = {
     id: string,
     title: string,
     performer: string,
-    year: number,
+    publicationYear: number,
     tracks: Track[],
     totalTime: string,
     coverUrl:string
