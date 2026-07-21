@@ -1,6 +1,7 @@
 import type {CD, Collection} from "../types.tsx";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
+import {useNavigate} from "react-router-dom";
 
 type FormValues = {
     searchString: string
@@ -17,6 +18,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     const { register, handleSubmit, reset,
         formState: { errors, isValid },
     } = useForm<FormValues>({ mode: 'onChange' });
+    const nav= useNavigate();
 
     function search(data: FormValues) {
         reset({searchString: ""})
@@ -36,7 +38,9 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     return (
         <section className="page">
             <div className="coll-header">
-                <button type={"button"}>
+                <button type={"button"}
+                        onClick={ () =>
+                            nav("/cd/" + props.cdCollection.id) }>
                     CD hinzufügen
                 </button>
                 <form className="search-form"

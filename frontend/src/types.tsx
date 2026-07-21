@@ -25,6 +25,14 @@ export type CD = {
     coverUrl:string
 }
 
+export type CdDTO = {
+    title: string,
+    performer: string,
+    publicationYear: number,
+    tracks: Track[],
+    coverUrl:string
+}
+
 export type Track = {
     id: string,
     position: number,

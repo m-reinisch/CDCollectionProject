@@ -8,7 +8,8 @@ import CollectionPage from "./components/CollectionPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
-import type {AppUser, Collection, CollectionDTO} from "./types.tsx";
+import type {AppUser, CdDTO, Collection, CollectionDTO} from "./types.tsx";
+import AddCdPage from "./components/AddCdPage.tsx";
 
 function login() {
     const host = globalThis.location.host === 'localhost:5173' ?
@@ -79,6 +80,10 @@ function App() {
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
             setBackPage("overview")
+        } else if (accessedPage === "add-cd"){
+            setTitle("Neue CD")
+            setPageType("ABORT")
+            setBackPage("details")
         }
     }
     function addCollection(collName: string){
@@ -115,6 +120,9 @@ function App() {
                  }
              })
              .catch( (error_) => console.log(error_) )
+    }
+    function addCd(cd: CdDTO){
+        //todo POST cd
     }
     function openCD(id: string){
         //todo
@@ -194,6 +202,12 @@ function App() {
                                                     onError={handleError}
                                                     key={"cd-coll"} />}
                            key={"details"} />
+                    <Route path={"/cd/:collId"}
+                           element={<AddCdPage onChangePage={changePage}
+                                               onAddCd={addCd}
+                                               onError={handleError}
+                                               key="new-cd" />}
+                           key={"add-cd"} />
                 </Route>
             </Routes>
             <Footer userName={userName}
