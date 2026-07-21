@@ -115,6 +115,38 @@ class CollectionControllerTest {
 
     @Test
     @WithMockUser
+    void readCdCollection_shouldReturnTCdCollection_whenCFoundInDatabase() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        ObjectMapper mapper= new ObjectMapper();
+        String cdColl= mapper.writeValueAsString(cdCollection);
+
+        userRepo.save(appUser);
+        repo.save(cdCollection);
+        mvc.perform(get("/api/collections/" + id))
+                .andExpect(status().isOk())
+                .andExpect(content().json(cdColl));
+    }
+
+    @Test
+    @WithMockUser
+    void readCdCollection_shouldThrowException_whenCdCollectionNotFound() throws Exception {
+        String id= "0";
+        String errorMessage= "Unerwarteter Fehler: ";
+
+        errorMessage+= "Sammlung mit id: " + id +
+                       " wurde nicht gefunden!";
+        mvc.perform(get("/api/collections/" + id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
+    }
+
+    @Test
+    @WithMockUser
     void deleteCollection_shouldReturnTrue_whenCdCollectionDeleted() throws Exception {
         String id= "0";
         AppUser appUser= new AppUser(id, "TestUser");
@@ -132,7 +164,7 @@ class CollectionControllerTest {
 
     @Test
     @WithMockUser
-    void deleteCollection_shouldThrowException_whenCdCollectioNotFound() throws Exception {
+    void deleteCollection_shouldThrowException_whenCdCollectionNotFound() throws Exception {
         String id= "0";
         String errorMessage= "Unerwarteter Fehler: ";
 
