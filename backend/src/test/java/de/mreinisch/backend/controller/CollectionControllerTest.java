@@ -115,7 +115,7 @@ class CollectionControllerTest {
 
     @Test
     @WithMockUser
-    void readCdCollection_shouldReturnTCdCollection_whenCFoundInDatabase() throws Exception {
+    void readCdCollection_shouldReturnCdCollection_whenFoundInDatabase() throws Exception {
         String id= "0";
         AppUser appUser= new AppUser(id, "TestUser");
         CdCollection cdCollection= new CdCollection(id,
