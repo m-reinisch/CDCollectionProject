@@ -30,6 +30,30 @@ const initialCollections: Collection[] = [
         cds: []
     }
 ]
+const testCollection: Collection = {
+    id: "0",
+    name: "Meine CDs mit langen Namen zum Testen",
+    cds: [
+        {
+            id: "6",
+            title: "Saxuality",
+            performer: "Candy Dulfer",
+            publicationYear: 1990,
+            tracks: [],
+            totalTime: "0",
+            coverUrl: ""
+        },
+        {
+            id: "11",
+            title: "Breathless",
+            performer: "Kenny G",
+            publicationYear: 1992,
+            tracks: [],
+            totalTime: "0",
+            coverUrl: ""
+        }
+    ]
+}
 
 function App() {
     const [user, setUser] = useState<AppUser | null | undefined>(undefined)
@@ -40,7 +64,7 @@ function App() {
     const [pageType, setPageType] = useState<"NO" | "BACK" | "ABORT">("NO")
     const [backPage, setBackPage] = useState<string>("")
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
-    const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(null)
+    const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(testCollection)
     const [errorLog, setErrorLog] = useState<string>("")
     const nav= useNavigate();
 
@@ -74,34 +98,13 @@ function App() {
              .catch( (error_) => console.log(error_) )
     }
     function openCollection(id: string){
-        //todo GET Collection by ID
-        const testCollection: Collection = {
-            id: "0",
-            name: "Meine CDs mit langen Namen zum Testen",
-            cds: [
-                {
-                    id: "6",
-                    title: "Saxuality",
-                    performer: "Candy Dulfer",
-                    publicationYear: 1990,
-                    tracks: [],
-                    totalTime: "0",
-                    coverUrl: ""
-                },
-                {
-                    id: "11",
-                    title: "Breathless",
-                    performer: "Kenny G",
-                    publicationYear: 1992,
-                    tracks: [],
-                    totalTime: "0",
-                    coverUrl: ""
-                }
-            ]
-        }
+        axios.get("/api/collections/" + id)
+             .then( (response) => {
+                 setSelectedCdCollection(response.data)
+                 nav("/collections/" + id)
+             })
+             .catch( (error_) => console.log(error_) )
 
-        setSelectedCdCollection(testCollection)
-        nav("/collections/" + id)
     }
     function deleteCollection(id: string){
         axios.delete("/api/collections/" + id)
@@ -153,10 +156,11 @@ function App() {
 
     useEffect(() => {
         loadUser()
+    }, []);
+    useEffect(() => {
         if (!userId) {
             return
         }
-
         loadCollections(userId)
     }, [userId]);
 
@@ -187,6 +191,7 @@ function App() {
                                                     onChangePage={changePage}
                                                     onOpenCd={openCD}
                                                     onDelete={deleteCD}
+                                                    onError={handleError}
                                                     key={"cd-coll"} />}
                            key={"details"} />
                 </Route>

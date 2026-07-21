@@ -10,6 +10,7 @@ type CollectionPageProps = {
     onChangePage: (page: string) => void,
     onOpenCd: (id: string) => void,
     onDelete: (id: string) => void,
+    onError: (errorMessage: string) => void
 }
 
 export default function CollectionPage (props: Readonly<CollectionPageProps>) {
@@ -24,6 +25,13 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     useEffect(() => {
         props.onChangePage("details")
     }, []);
+    useEffect(() => {
+        if (errors.searchString){
+            props.onError(errors.searchString.message!)
+        } else {
+            props.onError("")
+        }
+    }, [errors.searchString, props]);
 
     return (
         <section className="page">
