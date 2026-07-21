@@ -5,16 +5,37 @@ header {
 .app-header {
   min-height: 76px;
   display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 24px;
+  grid-template-columns: fit-content(10%) fit-content(80%) fit-content(10%);
+  gap: 100px;
   align-items: center;
+  justify-content: center;
   padding: 16px 32px;
   border-bottom: 3px solid;
+}
+
+#logout-btn {
+  width: fit-content;
+  min-height: 25px;
+  border: 1px solid black;
+  border-radius: 4px;
+  justify-self: flex-end;
+}
+
+#back-btn {
+  width: fit-content;
+  min-height: 25px;
+  border: 1px solid black;
+  border-radius: 4px;
+  justify-self: flex-start;
 }
 
 .title {
   color: white;
   font-size: 24px;
+  width: fit-content;
+  min-width: 700px;
+  margin: 10px;
+  justify-self: center;
 }
 
 footer {
@@ -89,6 +110,14 @@ footer {
   padding: 10px;
 }
 
+.cd-list {
+  display: grid;
+  grid-template-rows: repeat(5, fit-content(100%));
+  min-height: 55svh;
+  width: 98%;
+  padding: 10px;
+}
+
 .collection {
   width: 90%;
   min-height: 60px;
@@ -102,7 +131,31 @@ footer {
   margin: 10px;
 }
 
+.cd {
+  width: 90%;
+  min-height: 60px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 5px;
+  border: 3px solid;
+  border-radius: 24px;
+  margin: 10px;
+}
+
 .coll-open-button {
+  min-height: 55px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  text-align: left;
+  border: 0;
+  padding: 10px 20px;
+}
+
+.cd-open-button {
   min-height: 55px;
   display: flex;
   justify-content: space-between;
@@ -132,4 +185,43 @@ footer {
 
 #new-coll-name {
   min-width: 300px;
+}
+
+.coll-header {
+  min-width: 700px;
+  width: 90%;
+  display: grid;
+  grid-template-columns: 100px 850px;
+  align-items: baseline;
+  gap: 50px;
+  margin: 5px 10px;
+  padding: 5px 20px;
+}
+
+.search-form {
+  width: 70%;
+  display: grid;
+  grid-template-columns: 500px 150px;
+  align-items: end;
+  justify-content: flex-end;
+  margin: 15px;
+  padding: 5px 25px;
+  justify-self: flex-end;
+}
+
+#search-label {
+  font-size: small;
+  margin: 0;
+}
+
+#search-text {
+  min-width: 300px;
+  min-height: 20px;
+}
+
+#search-button {
+  grid-column: 2;
+  width: fit-content;
+  margin-left: 10px;
+  justify-self: flex-end;
 }

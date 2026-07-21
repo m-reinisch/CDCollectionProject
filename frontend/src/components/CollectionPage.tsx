@@ -1,77 +1,73 @@
+import type {CD, Collection} from "../types.tsx";
 import {useEffect} from "react";
-import type {Collection} from "../types.tsx";
 import {useForm} from "react-hook-form";
 
 type FormValues = {
-    collName: string
+    searchString: string
 }
 type CollectionPageProps = {
-    collections: Collection[],
+    cdCollection: Collection,
     onChangePage: (page: string) => void,
-    onAddCollection: (name: string) => void,
-    onOpenCollection: (id: string) => void,
+    onOpenCd: (id: string) => void,
     onDelete: (id: string) => void,
-    onError: (message: string) => void
 }
 
-export default function CollectionPage(props: Readonly<CollectionPageProps>) {
+export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     const { register, handleSubmit, reset,
-            formState: { errors, isValid },
+        formState: { errors, isValid },
     } = useForm<FormValues>({ mode: 'onChange' });
 
-    function submit(data: FormValues) {
-        reset({collName: ""})
-        props.onAddCollection(data.collName)
+    function search(data: FormValues) {
+        reset({searchString: ""})
     }
 
     useEffect(() => {
-        props.onChangePage("overview")
-        if (errors.collName){
-            props.onError(errors.collName.message!)
-        } else {
-            props.onError("")
-        }
-    }, [errors.collName, props]);
+        props.onChangePage("details")
+    }, []);
 
-    return(
+    return (
         <section className="page">
-            <div className="collections-list">
+            <div className="coll-header">
+                <button type={"button"}>
+                    CD hinzufügen
+                </button>
+                <form className="search-form"
+                      onSubmit={handleSubmit(search)}>
+                    <label id="search-label">
+                        Suchbegriff:
+                        <input id="search-text" type="text"
+                               {...register("searchString", {
+                                   required: "Suchbegriff ist erforderlich!"
+                               })}
+                        />
+                    </label>
+                    <button id="search-btn" type="submit"
+                            disabled={!isValid}>
+                        In Sammlung suchen
+                    </button>
+                </form>
+            </div>
+            <div className="cd-list">
                 {
-                    props.collections.map( (coll: Collection) => {
-                        return(
-                            <div className="collection"
-                                 key={coll.id}>
-                                <button className="coll-open-button"
+                    props.cdCollection.cds.map( (cd: CD) => {
+                        return (
+                            <div className="cd" key={cd.id}>
+                                <button className="cd-open-button"
                                         type="button"
-                                        onClick={ () =>
-                                            props.onOpenCollection(coll.id)}>
-                                    <strong>{coll.name}</strong>
+                                        onClick={ () => {
+                                            props.onOpenCd(cd.id);}}>
+                                    <strong>{cd.title}</strong>
                                 </button>
                                 <button type="button"
                                         onClick={ () =>
-                                            props.onDelete(coll.id)}>
+                                            props.onDelete(cd.id)}>
                                     Löschen
                                 </button>
                             </div>
-
                         )
                     })
                 }
             </div>
-            <form className="new-coll"
-                  onSubmit={handleSubmit(submit)}>
-                <label>
-                    Name der neuen Sammlung:
-                    <input id="new-coll-name" type="text"
-                           {...register("collName", {
-                               required: "Name ist für neue Sammlung erforderlich!"
-                           })}
-                    />
-                </label>
-                <button type="submit" disabled={!isValid}>
-                    Sammlung hinzufügen
-                </button>
-            </form>
         </section>
     )
 }
