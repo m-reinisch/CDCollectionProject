@@ -6,7 +6,6 @@ type HeaderProps = {
     onBack: () => void
 }
 
-// Wird noch für die anderen Seiten erweitert
 export default function Header(props: Readonly<HeaderProps>) {
 
     return(
@@ -14,6 +13,10 @@ export default function Header(props: Readonly<HeaderProps>) {
             {props.pType === "BACK" ?
                 <button id="back-btn" onClick={props.onBack}>
                     Zurück
+                </button> : null}
+            {props.pType === "ABORT" ?
+                <button id="cancel-btn" onClick={props.onBack}>
+                    Abbrechen
                 </button> : null}
             <div className="title">{props.pageTitle}</div>
             {props.isLoggedIn ?

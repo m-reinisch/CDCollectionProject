@@ -122,6 +122,7 @@ function App() {
              .catch( (error_) => console.log(error_) )
     }
     function addCd(cd: CdDTO){
+        console.log(cd)
         //todo POST cd
     }
     function openCD(id: string){
@@ -159,6 +160,10 @@ function App() {
             setTitle("Übersicht Sammlungen")
             setPageType("NO")
             nav("/collections")
+        } else if (backPage === "details"){
+            setTitle(selectedCdCollection.name)
+            setPageType("BACK")
+            nav("/collections/" + selectedCdCollection.id)
         }
     }
 

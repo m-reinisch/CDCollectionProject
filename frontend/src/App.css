@@ -191,7 +191,7 @@ footer {
   min-width: 700px;
   width: 90%;
   display: grid;
-  grid-template-columns: 100px 850px;
+  grid-template-columns: 150px 850px;
   align-items: baseline;
   gap: 50px;
   margin: 5px 10px;
@@ -224,4 +224,166 @@ footer {
   width: fit-content;
   margin-left: 10px;
   justify-self: flex-end;
+}
+
+.new-cd {
+  width: 100%;
+  display: grid;
+  grid-template-rows: repeat(5, 1fr) 360px 40px;
+  align-items: flex-start;
+  margin: 10px;
+}
+
+#lbl-cd-titel {
+  font-size: small;
+  color: red;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 65px 270px;
+  align-items: baseline;
+  justify-content: center;
+  height: 30px;
+}
+
+#txt-cd-titel {
+  min-width: 250px;
+  justify-self: flex-end;
+  height: 15px;
+}
+
+#lbl-cd-perform {
+  font-size: small;
+  color: blue;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 65px 270px;
+  align-items: baseline;
+  justify-content: center;
+  height: 30px;
+}
+
+#txt-cd-perform {
+  min-width: 250px;
+  justify-self: flex-end;
+  height: 15px;
+}
+
+#lbl-cd-year {
+  font-size: small;
+  color: green;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 200px 55px;
+  align-items: baseline;
+  justify-content: flex-start;
+  height: 30px;
+  width: 580px;
+}
+
+#txt-cd-year {
+  width: 50px;
+  justify-self: flex-end;
+  height: 15px;
+}
+
+#lbl-cd-style {
+  font-size: small;
+  color: blue;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 65px 270px;
+  align-items: baseline;
+  justify-content: center;
+  height: 30px;
+}
+
+#lbl-cd-storage {
+  font-size: small;
+  color: blue;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 65px 270px;
+  align-items: baseline;
+  justify-content: center;
+  height: 30px;
+}
+
+.tracks {
+  width: 100%;
+  justify-self: center;
+  display: grid;
+  grid-template-rows: 30px repeat(10, 1fr) auto;
+  align-items: flex-start;
+  margin: 10px;
+  color: darkred;
+}
+
+.track {
+  width: 50%;
+  justify-self: center;
+  font-size: small;
+  display: grid;
+  grid-template-columns: 30px 350px 150px;
+  align-items: baseline;
+  justify-content: center;
+  color: black;
+}
+
+.lbl-track-titel {
+  justify-self: flex-start;
+  display: grid;
+  grid-template-columns: 40px 270px;
+  align-items: baseline;
+  justify-content: center;
+  height: 30px;
+  width: 320px;
+  color: red;
+}
+
+.txt-track-titel {
+  width: 250px;
+  justify-self: flex-end;
+  height: 15px;
+}
+
+.lbl-track-time {
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 55px 65px;
+  align-items: baseline;
+  justify-content: flex-start;
+  height: 30px;
+  width: 125px;
+  color: orange;
+}
+
+.txt-track-time{
+  width: 60px;
+  justify-self: flex-end;
+  height: 15px;
+}
+
+.new-cd-footer {
+  width: 90%;
+  justify-self: center;
+  align-self: baseline;
+  display: grid;
+  grid-template-columns: 150px 800px;
+  align-items: baseline;
+  gap: 50px;
+  margin: 5px 10px;
+  padding: 5px 20px;
+}
+
+#add-cd-btn {
+  grid-column: 2;
+  width: fit-content;
+  margin-left: 10px;
+  justify-self: flex-end;
+}
+
+#more-tracks-btn {
+  width: fit-content;
+  margin-left: 10px;
+  justify-self: flex-start;
 }

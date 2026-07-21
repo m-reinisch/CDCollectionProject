@@ -30,7 +30,7 @@ export type CdDTO = {
     performer: string,
     publicationYear: number,
     tracks: Track[],
-    coverUrl:string
+    coverUrl:string | null
 }
 
 export type Track = {
