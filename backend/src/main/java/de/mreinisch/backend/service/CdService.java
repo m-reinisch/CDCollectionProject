@@ -1,6 +1,7 @@
 package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.CdDTO;
+import de.mreinisch.backend.exception.CdCollectionNotFound;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.model.Track;
@@ -22,22 +23,28 @@ public class CdService {
         this.collectionRepo = collectionRepo;
     }
 
-    public CD generateCD(CdDTO cd) {
+    public CD generateCD(CdDTO cd) throws CdCollectionNotFound {
         CD newCD;
         String id= idService.generateId();
         CdCollection cdOwner= cd.cdCollection();
         List<Track> trackList= cd.tracks();
 
-        newCD= new CD(id,
-                      cd.titel(),
-                      cd.performer(),
-                      cd.publicationYear(),
-                      calcTotalTime(trackList),
-                      cd.coverUrl(),
-                      cdOwner,
-                      trackList);
-        repo.save(newCD);
-        return newCD;
+        if (collectionRepo.findById(cdOwner.getId()).isPresent()) {
+            newCD = new CD(id,
+                    cd.titel(),
+                    cd.performer(),
+                    cd.publicationYear(),
+                    calcTotalTime(trackList),
+                    cd.coverUrl(),
+                    cdOwner,
+                    trackList);
+            repo.save(newCD);
+            return newCD;
+        } else {
+            throw new CdCollectionNotFound("CD Sammlung mit id " +
+                                            cdOwner.getId() +
+                                            " wurde nicht gefunden!");
+        }
     }
 
     /** Calculates the total duration of the CD from the durations of the individual tracks.
