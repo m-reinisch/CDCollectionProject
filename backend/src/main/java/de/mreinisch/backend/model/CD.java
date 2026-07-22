@@ -1,11 +1,14 @@
 package de.mreinisch.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "CDs")
@@ -25,4 +28,18 @@ public class CD {
     @JoinColumn(name = "collection_id")
     @JsonBackReference
     private CdCollection cdCollection;
+    @OneToMany(mappedBy = "cd", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Track> tracks;
+
+    public CD(CD cd) {
+        id = cd.getId();
+        titel = cd.getTitel();
+        performer = cd.getPerformer();
+        publicationYear = cd.getPublicationYear();
+        totalTime = cd.getTotalTime();
+        coverUrl = cd.getCoverUrl();
+        cdCollection = cd.getCdCollection();
+        tracks = cd.getTracks();
+    }
 }
