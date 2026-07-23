@@ -18,16 +18,16 @@ public class Track {
     @GeneratedValue
     private Integer id;
     private int position;
-    private String titel;
+    private String trackTitle;
     private String time;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cd_id")
     @JsonBackReference
     private CD cd;
 
-    public Track(int position, String titel, String time, CD cd) {
+    public Track(int position, String trackTitle, String time, CD cd) {
         this.position = position;
-        this.titel = titel;
+        this.trackTitle = trackTitle;
         this.time = time;
         this.cd = cd;
     }

@@ -1,12 +1,17 @@
 import {useForm} from "react-hook-form";
-import type {CdDTO} from "../types.tsx";
+import type {CdDTO, Track} from "../types.tsx";
 import {useEffect} from "react";
+import {useParams} from "react-router-dom";
 
 type FormValues = {
     title: string,
     performer: string,
     publicationYear: string,
-    coverUrl: string | null
+    coverUrl: string | null,
+    track1title: string,
+    track1time: string,
+    track2title: string,
+    track2time: string
 }
 type CdPageProps = {
     onChangePage: (page: string) => void,
@@ -15,22 +20,33 @@ type CdPageProps = {
 }
 
 export default function AddCdPage(props: Readonly<CdPageProps>) {
+    const param= useParams();
     const { register, handleSubmit, reset,
         formState: { errors, isValid },
     } = useForm<FormValues>({ mode: 'onChange' });
 
     function submit(data: FormValues) {
         const year: number = Number.parseInt(data.publicationYear, 10)
+        const t1: Track= {position: 1, trackTitle: data.track1title,
+                          time: data.track1time}
+        const t2: Track = {position: 2, trackTitle: data.track2title,
+                           time: data.track2time}
+        const trackList: Track[] = [t1, t2]
         const cd : CdDTO = {
             cdTitle: data.title,
             performer: data.performer,
             publicationYear: year,
-            tracks: [],
-            coverUrl: null
+            tracks: trackList,
+            coverUrl: null,
+            cdCollection: {
+                id: param.collId!
+            }
         }
 
         props.onAddCd(cd)
-        reset({title: '', performer: '', publicationYear: ''})
+        reset({title: '', performer: '', publicationYear: '',
+               track1title: '', track1time: '', track2title: '',
+               track2time: ''})
     }
 
     useEffect(() => {
@@ -81,12 +97,16 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
                         <label className="lbl-track-titel">
                             Titel:
                             <input className="txt-track-titel"
-                                   type="text" />
+                                   type="text"
+                                   {...register("track1title")}
+                            />
                         </label>
                         <label className="lbl-track-time">
                             Zeit:
                             <input className="txt-track-time"
-                                   type="text" />
+                                   type="text"
+                                   {...register("track1time")}
+                            />
                         </label>
                     </label>
                     <label className="track">
@@ -94,12 +114,16 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
                         <label className="lbl-track-titel">
                             Titel:
                             <input className="txt-track-titel"
-                                   type="text" />
+                                   type="text"
+                                   {...register("track2title")}
+                            />
                         </label>
                         <label className="lbl-track-time">
                             Zeit:
                             <input className="txt-track-time"
-                                   type="text" />
+                                   type="text"
+                                   {...register("track2time")}
+                            />
                         </label>
                     </label>
                     <label className="track">

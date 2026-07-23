@@ -30,12 +30,16 @@ export type CdDTO = {
     performer: string,
     publicationYear: number,
     tracks: Track[],
-    coverUrl: string | null
+    coverUrl: string | null,
+    cdCollection: Coll
 }
 
 export type Track = {
-    id: string,
     position: number,
-    title: string,
+    trackTitle: string,
     time: string
+}
+
+export type Coll = {
+    id: string
 }

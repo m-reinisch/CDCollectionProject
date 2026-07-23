@@ -74,7 +74,6 @@ function App() {
         if (accessedPage === "landing"){
             setTitle("Willkommen zur CD-Sammlung App")
             setPageType("NO")
-
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
             setPageType("NO")
@@ -102,7 +101,13 @@ function App() {
                      [...cdCollections, respColl])
                  nav("/collections")
              })
-             .catch( (error_) => console.log(error_) )
+             .catch( (error_) => {
+                if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                    setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                } else {
+                    console.log(error_)
+                }
+             })
     }
     function openCollection(id: string){
         axios.get("/api/collections/" + id)
@@ -127,11 +132,20 @@ function App() {
                      nav("/collections")
                  }
              })
-             .catch( (error_) => console.log(error_) )
+             .catch( (error_) => {
+                if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                    setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                } else {
+                    console.log(error_)
+                }
+             })
     }
     function addCd(cd: CdDTO){
-        console.log(cd)
-        //todo POST cd
+        axios.post("/api/cd", cd)
+             .then( () => {
+                 openCollection(cd.cdCollection.id)
+             })
+             .catch( (error_) => console.log(error_) )
     }
     function openCD(id: string){
         //todo
