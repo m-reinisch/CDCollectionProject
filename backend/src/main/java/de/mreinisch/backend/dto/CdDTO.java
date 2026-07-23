@@ -6,7 +6,7 @@ import java.util.List;
 
 /** Data transfer object for CD
  *
- * @param titel of CD
+ * @param cdTitle of CD
  * @param performer of CD
  * @param publicationYear of CD
  * @param tracks list of included tracks
@@ -14,7 +14,7 @@ import java.util.List;
  * @param cdCollection who owns the CD
  */
 public record CdDTO(
-        String titel,
+        String cdTitle,
         String performer,
         int publicationYear,
         List<Track> tracks,

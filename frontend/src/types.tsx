@@ -17,7 +17,7 @@ export type CollectionDTO = {
 
 export type CD = {
     id: string,
-    title: string,
+    cdTitle: string,
     performer: string,
     publicationYear: number,
     tracks: Track[],
@@ -26,7 +26,7 @@ export type CD = {
 }
 
 export type CdDTO = {
-    title: string,
+    cdTitle: string,
     performer: string,
     publicationYear: number,
     tracks: Track[],

@@ -68,7 +68,8 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                                         type="button"
                                         onClick={ () => {
                                             props.onOpenCd(cd.id);}}>
-                                    <strong>{cd.title}</strong>
+                                    <strong>{cd.cdTitle}</strong>
+                                    <small>{cd.performer}</small>
                                 </button>
                                 <button type="button"
                                         onClick={ () =>

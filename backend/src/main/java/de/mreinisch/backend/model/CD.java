@@ -19,7 +19,7 @@ import java.util.List;
 public class CD {
     @Id
     private String id;
-    private String titel;
+    private String cdTitle;
     private String performer;
     private int publicationYear;
     private String totalTime;
@@ -34,7 +34,7 @@ public class CD {
 
     public CD(CD cd) {
         id = cd.getId();
-        titel = cd.getTitel();
+        cdTitle = cd.getCdTitle();
         performer = cd.getPerformer();
         publicationYear = cd.getPublicationYear();
         totalTime = cd.getTotalTime();

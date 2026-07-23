@@ -37,7 +37,7 @@ const testCollection: Collection = {
     cds: [
         {
             id: "6",
-            title: "Saxuality",
+            cdTitle: "Saxuality",
             performer: "Candy Dulfer",
             publicationYear: 1990,
             tracks: [],
@@ -46,7 +46,7 @@ const testCollection: Collection = {
         },
         {
             id: "11",
-            title: "Breathless",
+            cdTitle: "Breathless",
             performer: "Kenny G",
             publicationYear: 1992,
             tracks: [],
@@ -67,12 +67,14 @@ function App() {
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(testCollection)
     const [errorLog, setErrorLog] = useState<string>("")
+    const [priorityError, setPriorityError] = useState<string>("")
     const nav= useNavigate();
 
     function changePage(accessedPage: string){
         if (accessedPage === "landing"){
             setTitle("Willkommen zur CD-Sammlung App")
             setPageType("NO")
+
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
             setPageType("NO")
@@ -108,7 +110,13 @@ function App() {
                  setSelectedCdCollection(response.data)
                  nav("/collections/" + id)
              })
-             .catch( (error_) => console.log(error_) )
+             .catch( (error_) => {
+                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                 } else {
+                     console.log(error_)
+                 }
+             })
 
     }
     function deleteCollection(id: string){
@@ -153,7 +161,7 @@ function App() {
              .catch( (error_) => console.log(error_) )
     }
     const handleError = (errorMessage: string) => {
-        setErrorLog(errorMessage)
+            setErrorLog(errorMessage)
     }
     const handleBack = () => {
         if (backPage === "overview"){
@@ -216,7 +224,8 @@ function App() {
                 </Route>
             </Routes>
             <Footer userName={userName}
-                    errorMessage={errorLog} key={"baseline"} />
+                    errorMessage={errorLog} key={"baseline"}
+                    urgentError={priorityError} />
         </>
     )
 }

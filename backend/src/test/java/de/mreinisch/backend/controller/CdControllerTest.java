@@ -62,7 +62,7 @@ class CdControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""
                                 {
-                                    "titel": "TestCD",
+                                    "cdTitle": "TestCD",
                                     "performer": "Tester",
                                     "publicationYear": "1971",
                                     "tracks": [
@@ -81,7 +81,7 @@ class CdControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().json("""
                               {
-                                "titel": "TestCD",
+                                "cdTitle": "TestCD",
                                 "performer": "Tester",
                                 "publicationYear": 1971,
                                 "totalTime": "06:54"

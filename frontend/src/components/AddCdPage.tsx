@@ -22,7 +22,7 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
     function submit(data: FormValues) {
         const year: number = Number.parseInt(data.publicationYear, 10)
         const cd : CdDTO = {
-            title: data.title,
+            cdTitle: data.title,
             performer: data.performer,
             publicationYear: year,
             tracks: [],

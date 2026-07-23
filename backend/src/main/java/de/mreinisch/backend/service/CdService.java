@@ -35,7 +35,7 @@ public class CdService {
         if (collectionRepo.findById(cdOwner.getId()).isPresent()) {
             newCD = CD.builder()
                       .id(id)
-                      .titel(cd.titel())
+                      .cdTitle(cd.cdTitle())
                       .performer(cd.performer())
                       .publicationYear(cd.publicationYear())
                       .totalTime(calcTotalTime(trackList))
