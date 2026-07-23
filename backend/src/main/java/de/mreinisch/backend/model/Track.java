@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class Track {
     @Id
-    private String id;
+    @GeneratedValue
+    private Integer id;
     private int position;
     private String titel;
     private String time;

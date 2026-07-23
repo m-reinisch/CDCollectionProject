@@ -8,6 +8,7 @@ import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.model.Track;
 import de.mreinisch.backend.repository.CdCollectionRepo;
 import de.mreinisch.backend.repository.CdRepo;
+import de.mreinisch.backend.repository.TrackRepo;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +26,11 @@ class CdServiceTest {
         CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
         IdService mockingIdService= mock(IdService.class);
         CdRepo mockRepo = mock(CdRepo.class);
-        CdService service= new CdService(mockRepo, mockingIdService,
-                                         mockCollectionRepo);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                                         mockingIdService,
+                                         mockCollectionRepo,
+                                         mockTrackRepo);
         String id= "0";
         AppUser appUser= new AppUser(id, "TestUser");
         CdCollection cdCollection= new CdCollection(id,
@@ -36,7 +40,7 @@ class CdServiceTest {
         CD cd= new CD(id,"TestCD","Tester",
                 1971, "06:54", null,
                       cdCollection, Collections.emptyList());
-        Track track= new Track(id, 1, "TestSong",
+        Track track= new Track(1, 1, "TestSong",
                          "6:54", cd);
         List<Track> trackList= List.of(track);
         CdDTO cdDTO = new CdDTO("TestCD","Tester",
@@ -48,6 +52,7 @@ class CdServiceTest {
         expected.setTracks(trackList);
         when(mockingIdService.generateId()).thenReturn(id);
         when(mockCollectionRepo.findById(id)).thenReturn(Optional.of(cdCollection));
+        when(mockTrackRepo.save(track)).thenReturn(track);
         when(mockRepo.save(expected)).thenReturn(expected);
         actual= service.generateCD(cdDTO);
         assertEquals(expected, actual);
@@ -58,8 +63,11 @@ class CdServiceTest {
         CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
         IdService mockingIdService= mock(IdService.class);
         CdRepo mockRepo = mock(CdRepo.class);
-        CdService service= new CdService(mockRepo, mockingIdService,
-                                         mockCollectionRepo);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                                         mockingIdService,
+                                         mockCollectionRepo,
+                                         mockTrackRepo);
         String id= "0";
         AppUser appUser= new AppUser(id, "TestUser");
         CdCollection cdCollection= new CdCollection(id,
@@ -69,7 +77,7 @@ class CdServiceTest {
         CD cd= new CD(id,"TestCD","Tester",
                 1971, "06:54", null,
                       cdCollection, Collections.emptyList());
-        Track track= new Track(id, 1, "TestSong",
+        Track track= new Track(1, 1, "TestSong",
                           "6:54", cd);
         List<Track> trackList= List.of(track);
         CdDTO cdDTO = new CdDTO("TestCD","Tester",

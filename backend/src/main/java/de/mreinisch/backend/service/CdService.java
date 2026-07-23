@@ -7,6 +7,7 @@ import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.model.Track;
 import de.mreinisch.backend.repository.CdCollectionRepo;
 import de.mreinisch.backend.repository.CdRepo;
+import de.mreinisch.backend.repository.TrackRepo;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.List;
@@ -16,11 +17,13 @@ public class CdService {
     private final CdRepo repo;
     private final IdService idService;
     private final CdCollectionRepo collectionRepo;
+    private final TrackRepo trackRepo;
 
-    public CdService(CdRepo repo, IdService idService, CdCollectionRepo collectionRepo) {
+    public CdService(CdRepo repo, IdService idService, CdCollectionRepo collectionRepo, TrackRepo trackRepo) {
         this.repo = repo;
         this.idService = idService;
         this.collectionRepo = collectionRepo;
+        this.trackRepo = trackRepo;
     }
 
     public CD generateCD(CdDTO cd) throws CdCollectionNotFound {
@@ -30,14 +33,21 @@ public class CdService {
         List<Track> trackList= cd.tracks();
 
         if (collectionRepo.findById(cdOwner.getId()).isPresent()) {
-            newCD = new CD(id,
-                    cd.titel(),
-                    cd.performer(),
-                    cd.publicationYear(),
-                    calcTotalTime(trackList),
-                    cd.coverUrl(),
-                    cdOwner,
-                    trackList);
+            newCD = CD.builder()
+                      .id(id)
+                      .titel(cd.titel())
+                      .performer(cd.performer())
+                      .publicationYear(cd.publicationYear())
+                      .totalTime(calcTotalTime(trackList))
+                      .coverUrl(cd.coverUrl())
+                      .cdCollection(cdOwner)
+                      .build();
+            repo.save(newCD);
+            for (Track track : trackList) {
+                track.setCd(newCD);
+                trackRepo.save(track);
+            }
+            newCD.setTracks(trackList);
             repo.save(newCD);
             return newCD;
         } else {
