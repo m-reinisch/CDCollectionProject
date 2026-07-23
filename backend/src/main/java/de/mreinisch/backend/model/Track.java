@@ -20,8 +20,15 @@ public class Track {
     private int position;
     private String titel;
     private String time;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cd_id")
     @JsonBackReference
     private CD cd;
+
+    public Track(int position, String titel, String time, CD cd) {
+        this.position = position;
+        this.titel = titel;
+        this.time = time;
+        this.cd = cd;
+    }
 }

@@ -42,7 +42,6 @@ public class CdService {
                       .coverUrl(cd.coverUrl())
                       .cdCollection(cdOwner)
                       .build();
-            repo.save(newCD);
             for (Track track : trackList) {
                 track.setCd(newCD);
                 trackRepo.save(track);

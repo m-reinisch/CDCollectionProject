@@ -28,7 +28,7 @@ public class CD {
     @JoinColumn(name = "collection_id")
     @JsonBackReference
     private CdCollection cdCollection;
-    @OneToMany(mappedBy = "cd", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cd", cascade = CascadeType.REFRESH, orphanRemoval = true)
     @JsonManagedReference
     private List<Track> tracks;
 
