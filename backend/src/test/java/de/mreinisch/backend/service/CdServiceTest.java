@@ -16,8 +16,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CdServiceTest {
 
@@ -56,6 +55,7 @@ class CdServiceTest {
         when(mockRepo.save(expected)).thenReturn(expected);
         actual= service.generateCD(cdDTO);
         assertEquals(expected, actual);
+        verify(mockRepo, times(1)).save(expected);
     }
 
     @Test

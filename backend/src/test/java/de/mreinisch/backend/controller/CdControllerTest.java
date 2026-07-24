@@ -1,5 +1,6 @@
 package de.mreinisch.backend.controller;
 
+import de.mreinisch.backend.dto.CdDTO;
 import de.mreinisch.backend.model.AppUser;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.model.CdCollection;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -52,6 +55,11 @@ class CdControllerTest {
         Track track= new Track( 1, "TestSong",
                             "6:54", cd);
         List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO("TestCD", "Tester",
+                        1971, trackList, null,
+                                cdCollection);
+        ObjectMapper mapper= new ObjectMapper();
+        String jsonCd = mapper.writeValueAsString(cdDTO);
 
         userRepo.save(appUser);
         collectionRepo.save(cdCollection);
@@ -60,24 +68,7 @@ class CdControllerTest {
         repo.save(cd);
         mvc.perform(post("/api/cd")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("""
-                                {
-                                    "cdTitle": "TestCD",
-                                    "performer": "Tester",
-                                    "publicationYear": "1971",
-                                    "tracks": [
-                                        {
-                                            "position": "1",
-                                            "titel": "TestSong",
-                                            "time": "6:54"
-                                        }
-                                    ],
-                                    "cdCollection": {
-                                        "id": "0",
-                                        "name": "Testsammlung"
-                                    }
-                                }
-                            """))
+                    .content(jsonCd))
                 .andExpect(status().isCreated())
                 .andExpect(content().json("""
                               {
@@ -99,5 +90,34 @@ class CdControllerTest {
                                 }
                             """))
                 .andExpect(jsonPath("$.id").isNotEmpty());
+    }
+
+    @Test
+    @WithMockUser
+    void createCd_shouldThrowException_whenCdCollectionNotFound() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        Track track= new Track( 1, "TestSong",
+                                "6:54", null);
+        List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO("TestCD", "Tester",
+                        1971, trackList, null,
+                                cdCollection);
+        ObjectMapper mapper= new ObjectMapper();
+        String jsonCd = mapper.writeValueAsString(cdDTO);
+        String errorMessage= "Unerwarteter Fehler: ";
+
+        userRepo.save(appUser);
+        errorMessage+= "CD Sammlung mit id " + id +
+                       " wurde nicht gefunden!";
+        mvc.perform(post("/api/cd")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonCd))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
     }
 }

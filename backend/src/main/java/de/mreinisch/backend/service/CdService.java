@@ -26,6 +26,12 @@ public class CdService {
         this.trackRepo = trackRepo;
     }
 
+    /** Creates a CD and saves it.
+     *
+     * @param cd to save
+     * @return saved cd
+     * @throws CdCollectionNotFound when id of collection not found
+     */
     public CD generateCD(CdDTO cd) throws CdCollectionNotFound {
         CD newCD;
         String id= idService.generateId();
