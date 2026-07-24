@@ -1,4 +1,4 @@
-import {useForm} from "react-hook-form";
+import {useForm, useFieldArray} from "react-hook-form";
 import type {CdDTO, Track} from "../types.tsx";
 import {useEffect} from "react";
 import {useParams} from "react-router-dom";
@@ -8,10 +8,7 @@ type FormValues = {
     performer: string,
     publicationYear: string,
     coverUrl: string | null,
-    track1title: string,
-    track1time: string,
-    track2title: string,
-    track2time: string
+    trackTT: {title: string, time: string}[]
 }
 type CdPageProps = {
     onChangePage: (page: string) => void,
@@ -21,17 +18,48 @@ type CdPageProps = {
 
 export default function AddCdPage(props: Readonly<CdPageProps>) {
     const param= useParams();
-    const { register, handleSubmit, reset,
-        formState: { errors, isValid },
-    } = useForm<FormValues>({ mode: 'onChange' });
+    const { control, register, handleSubmit, reset,
+            formState: { errors, isValid }
+          } = useForm<FormValues>(
+              {
+                  defaultValues: {
+                      title: "",
+                      performer: "",
+                      publicationYear: "",
+                      coverUrl: "",
+                      trackTT: [{title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""},
+                                {title: "", time: ""}]
+                  },
+                  mode: 'onChange'
+              }
+    );
+    const { fields, append } = useFieldArray({
+        control,
+        name: "trackTT"
+    });
 
     function submit(data: FormValues) {
         const year: number = Number.parseInt(data.publicationYear, 10)
-        const t1: Track= {position: 1, trackTitle: data.track1title,
-                          time: data.track1time}
-        const t2: Track = {position: 2, trackTitle: data.track2title,
-                           time: data.track2time}
-        const trackList: Track[] = [t1, t2]
+        const trackList: Track[]= []
+        let ix: number = 1;
+
+        data.trackTT.forEach(tt => {
+            const track: Track = {
+                position: ix,
+                trackTitle: tt.title,
+                time: tt.time
+            }
+            trackList.push(track)
+            ix = ix + 1;
+        })
         const cd : CdDTO = {
             cdTitle: data.title,
             performer: data.performer,
@@ -45,8 +73,7 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
 
         props.onAddCd(cd)
         reset({title: '', performer: '', publicationYear: '',
-               track1title: '', track1time: '', track2title: '',
-               track2time: ''})
+               })
     }
 
     useEffect(() => {
@@ -92,147 +119,30 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
                 <label id="lbl-cd-storage"></label>
                 <label className="tracks">
                     Stücke:
-                    <label className="track">
-                        1.
+                    {fields.map( (field, index) => (
+                    <label className="track" key={field.id}>
+                        {index + 1}.
                         <label className="lbl-track-titel">
                             Titel:
                             <input className="txt-track-titel"
                                    type="text"
-                                   {...register("track1title")}
+                                   {...register(`trackTT.${index}.title`)}
                             />
                         </label>
                         <label className="lbl-track-time">
                             Zeit:
                             <input className="txt-track-time"
                                    type="text"
-                                   {...register("track1time")}
+                                   {...register(`trackTT.${index}.time`)}
                             />
                         </label>
                     </label>
-                    <label className="track">
-                        2.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text"
-                                   {...register("track2title")}
-                            />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text"
-                                   {...register("track2time")}
-                            />
-                        </label>
-                    </label>
-                    <label className="track">
-                        3.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
-                    <label className="track">
-                        4.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
-                    <label className="track">
-                        5.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
-                    <label className="track">
-                        6.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
-                    <label className="track">
-                        7.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
-                    <label className="track">
-                        8.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
-                    <label className="track">
-                        9.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
-                    <label className="track">
-                        10.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text" />
-                        </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text" />
-                        </label>
-                    </label>
+                    ))}
                 </label>
                 <div className="new-cd-footer">
-                    <button id="more-tracks-btn" type={"button"}>
+                    <button id="more-tracks-btn" type={"button"}
+                            onClick={ () =>
+                                append({title: "", time: ""})}>
                         Mehr Stücke
                     </button>
                     <button id="add-cd-btn" type="submit"
