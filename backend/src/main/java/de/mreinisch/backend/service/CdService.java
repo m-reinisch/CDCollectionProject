@@ -84,7 +84,7 @@ public class CdService {
     }
 
     /** Calculates the total duration of the CD from the durations of the individual tracks.
-     *
+     * <br />
      * Helper function is used only internally.
      * @param tracks of CD
      * @return total time of tracks
@@ -99,7 +99,7 @@ public class CdService {
     }
 
     /** Adds two times
-     *
+     * <br />
      * Helper function is used only internally.
      * @param t1 first time
      * @param t2 second time
