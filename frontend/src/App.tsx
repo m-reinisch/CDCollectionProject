@@ -151,7 +151,8 @@ function App() {
         //todo
     }
     function deleteCD(id: string){
-        //todo
+        console.log(id)
+        //todo axios
     }
 
     const loadUser = () => {

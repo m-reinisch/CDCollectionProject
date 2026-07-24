@@ -2,6 +2,7 @@ package de.mreinisch.backend.controller;
 
 import de.mreinisch.backend.dto.CdDTO;
 import de.mreinisch.backend.exception.CdCollectionNotFound;
+import de.mreinisch.backend.exception.CdNotFound;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.service.CdService;
 import org.springframework.http.HttpStatus;
@@ -20,5 +21,10 @@ public class CdController {
     @ResponseStatus(HttpStatus.CREATED)
     public CD createCd(@RequestBody CdDTO cd) throws CdCollectionNotFound {
         return service.generateCD(cd);
+    }
+
+    @DeleteMapping("/{id}")
+    public Boolean deleteCd(@PathVariable String id) throws CdNotFound {
+        return service.removeCd(id);
     }
 }

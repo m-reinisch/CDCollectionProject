@@ -2,6 +2,7 @@ package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.CdDTO;
 import de.mreinisch.backend.exception.CdCollectionNotFound;
+import de.mreinisch.backend.exception.CdNotFound;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.model.Track;
@@ -59,6 +60,26 @@ public class CdService {
             throw new CdCollectionNotFound("CD Sammlung mit id " +
                                             cdOwner.getId() +
                                             " wurde nicht gefunden!");
+        }
+    }
+
+    /** Deletes a CD from the database.
+     *
+     * @param id of the CD to be deleted
+     * @return true, if deleted
+     * @throws CdNotFound when CD not found
+     */
+    public Boolean removeCd(String id) throws CdNotFound {
+        CD delCd= repo.findById(id).orElse(null);
+
+        if (delCd != null) {
+            delCd.getTracks().forEach(track ->
+                                        trackRepo.delete(track));
+            repo.deleteById(id);
+            return true;
+        } else {
+            throw new CdNotFound("CD mit id " + id +
+                                 " wurde nicht gefunden!");
         }
     }
 
