@@ -145,14 +145,29 @@ function App() {
              .then( () => {
                  openCollection(cd.cdCollection.id)
              })
-             .catch( (error_) => console.log(error_) )
+             .catch( (error_) => {
+                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                 } else {
+                     console.log(error_)
+                 }
+             })
     }
     function openCD(id: string){
         //todo
     }
     function deleteCD(id: string){
-        console.log(id)
-        //todo axios
+        axios.delete("/api/cd/" + id)
+             .then( () => {
+                 openCollection(selectedCdCollection.id)
+             })
+             .catch( (error_) => {
+                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                 } else {
+                     console.log(error_)
+                 }
+             })
     }
 
     const loadUser = () => {
@@ -173,7 +188,13 @@ function App() {
              .then(response => {
                  setCdCollections(response.data);
              })
-             .catch( (error_) => console.log(error_) )
+             .catch( (error_) => {
+                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                 } else {
+                     console.log(error_)
+                 }
+             })
     }
     const handleError = (errorMessage: string) => {
             setErrorLog(errorMessage)
