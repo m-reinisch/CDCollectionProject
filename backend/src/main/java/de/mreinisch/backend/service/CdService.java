@@ -70,17 +70,15 @@ public class CdService {
      * @throws CdNotFound when CD not found
      */
     public Boolean removeCd(String id) throws CdNotFound {
-        CD delCd= repo.findById(id).orElse(null);
+        CD delCd= repo.findById(id)
+                      .orElseThrow( () ->
+                              new CdNotFound("CD mit id " + id +
+                                             " wurde nicht gefunden!"));
 
-        if (delCd != null) {
-            delCd.getTracks().forEach(track ->
-                                        trackRepo.delete(track));
-            repo.deleteById(id);
-            return true;
-        } else {
-            throw new CdNotFound("CD mit id " + id +
-                                 " wurde nicht gefunden!");
-        }
+        delCd.getTracks().forEach(track ->
+                                    trackRepo.delete(track));
+        repo.deleteById(id);
+        return true;
     }
 
     /** Calculates the total duration of the CD from the durations of the individual tracks.
