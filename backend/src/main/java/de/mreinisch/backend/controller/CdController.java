@@ -23,6 +23,11 @@ public class CdController {
         return service.generateCD(cd);
     }
 
+    @GetMapping("/{id}")
+    public CD readCdById(@PathVariable String id) throws CdNotFound {
+        return service.getCdById(id);
+    }
+
     @DeleteMapping("/{id}")
     public Boolean deleteCd(@PathVariable String id) throws CdNotFound {
         return service.removeCd(id);

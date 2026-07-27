@@ -81,6 +81,19 @@ public class CdService {
         return true;
     }
 
+    /** Searches for a CD in the database.
+     *
+     * @param id of the CD to be searched for
+     * @return found CD
+     * @throws CdNotFound when CD not found
+     */
+    public CD getCdById(String id) throws CdNotFound {
+        return repo.findById(id)
+                   .orElseThrow( () ->
+                           new CdNotFound("CD mit id " + id +
+                                          " wurde nicht gefunden!"));
+    }
+
     /** Calculates the total duration of the CD from the durations of the individual tracks.
      * <br />
      * Helper function is used only internally.
