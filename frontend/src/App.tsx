@@ -8,8 +8,9 @@ import CollectionPage from "./components/CollectionPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
-import type {AppUser, CdDTO, Collection, CollectionDTO} from "./types.tsx";
+import type {AppUser, CD, CdDTO, Collection, CollectionDTO} from "./types.tsx";
 import AddCdPage from "./components/AddCdPage.tsx";
+import CdPage from "./components/CdPage.tsx";
 
 function login() {
     const host = globalThis.location.host === 'localhost:5173' ?
@@ -55,6 +56,15 @@ const testCollection: Collection = {
         }
     ]
 }
+const initCd: CD ={
+    id: "6",
+    cdTitle: "Saxuality",
+    performer: "Candy Dulfer",
+    publicationYear: 1990,
+    tracks: [],
+    totalTime: "0",
+    coverUrl: ""
+}
 
 function App() {
     const [user, setUser] = useState<AppUser | null | undefined>(undefined)
@@ -66,6 +76,7 @@ function App() {
     const [backPage, setBackPage] = useState<string>("")
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(testCollection)
+    const [selectedCd, setSelectedCd] = useState<CD>(initCd)
     const [errorLog, setErrorLog] = useState<string>("")
     const [priorityError, setPriorityError] = useState<string>("")
     const nav= useNavigate();
@@ -84,6 +95,10 @@ function App() {
         } else if (accessedPage === "add-cd"){
             setTitle("Neue CD")
             setPageType("ABORT")
+            setBackPage("details")
+        } else if (accessedPage === "show-cd"){
+            setTitle(selectedCd.cdTitle)
+            setPageType("BACK")
             setBackPage("details")
         }
     }
@@ -109,11 +124,11 @@ function App() {
                 }
              })
     }
-    function openCollection(id: string){
-        axios.get("/api/collections/" + id)
+    function openCollection(collId: string){
+        axios.get("/api/collections/" + collId)
              .then( (response) => {
                  setSelectedCdCollection(response.data)
-                 nav("/collections/" + id)
+                 nav("/collections/" + collId)
              })
              .catch( (error_) => {
                  if (axios.isAxiosError(error_) && error_.response?.status === 401) {
@@ -124,8 +139,8 @@ function App() {
              })
 
     }
-    function deleteCollection(id: string){
-        axios.delete("/api/collections/" + id)
+    function deleteCollection(collId: string){
+        axios.delete("/api/collections/" + collId)
              .then( (response) => {
                  if(response.data){
                      loadCollections(userId)
@@ -153,11 +168,22 @@ function App() {
                  }
              })
     }
-    function openCD(id: string){
-        //todo
+    function openCD(cdId: string){
+        axios.get("/api/cd/" + cdId)
+             .then( (response) => {
+                 setSelectedCd(response.data)
+                 nav("/cd/show/" + cdId)
+             })
+             .catch( (error_) => {
+                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                 } else {
+                     console.log(error_)
+                 }
+             })
     }
-    function deleteCD(id: string){
-        axios.delete("/api/cd/" + id)
+    function deleteCD(cdId: string){
+        axios.delete("/api/cd/" + cdId)
              .then( () => {
                  openCollection(selectedCdCollection.id)
              })
@@ -257,6 +283,11 @@ function App() {
                                                onError={handleError}
                                                key="new-cd" />}
                            key={"add-cd"} />
+                    <Route path={"/cd/show/:cdId"}
+                           element={<CdPage cd={selectedCd}
+                                            onChangePage={changePage}
+                                            key={"cd"} />}
+                           key={"cdId"} />
                 </Route>
             </Routes>
             <Footer userName={userName}
