@@ -136,44 +136,26 @@ class CdControllerTest {
         Track track= new Track( 1, "TestSong",
                                 "6:54", cd);
         List<Track> trackList= List.of(track);
-        CD cd1= new CD(cd);
 
         userRepo.save(appUser);
         collectionRepo.save(cdCollection);
         trackRepo.save(track);
-        cd1.setTracks(trackList);
-        repo.save(cd1);
+        cd.setTracks(trackList);
+        repo.save(cd);
         mvc.perform(delete("/api/cd/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
 
-//    @Test
-//    @WithMockUser
-//    void deleteCd_shouldThrowException_whenCdNotFound() throws Exception {
-//        String id= "0";
-//        AppUser appUser= new AppUser(id, "TestUser");
-//        CdCollection cdCollection= new CdCollection(id,
-//                "Testsammlung",
-//                appUser,
-//                Collections.emptyList());
-//        Track track= new Track( 1, "TestSong",
-//                "6:54", null);
-//        List<Track> trackList= List.of(track);
-//        CdDTO cdDTO= new CdDTO("TestCD", "Tester",
-//                1971, trackList, null,
-//                cdCollection);
-//        ObjectMapper mapper= new ObjectMapper();
-//        String jsonCd = mapper.writeValueAsString(cdDTO);
-//        String errorMessage= "Unerwarteter Fehler: ";
-//
-//        userRepo.save(appUser);
-//        errorMessage+= "CD Sammlung mit id " + id +
-//                " wurde nicht gefunden!";
-//        mvc.perform(post("/api/cd")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonCd))
-//                .andExpect(status().isNotFound())
-//                .andExpect(content().string(errorMessage));
-//    }
+    @Test
+    @WithMockUser
+    void deleteCd_shouldThrowException_whenCdNotFound() throws Exception {
+        String id= "0";
+        String errorMessage= "Unerwarteter Fehler: ";
+
+        errorMessage+= "CD mit id " + id + " wurde nicht gefunden!";
+        mvc.perform(delete("/api/cd/" + id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
+    }
 }
