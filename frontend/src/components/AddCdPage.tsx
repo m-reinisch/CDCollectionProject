@@ -52,12 +52,14 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
         let ix: number = 1;
 
         data.trackTT.forEach(tt => {
-            const track: Track = {
-                position: ix,
-                trackTitle: tt.title,
-                time: tt.time
+            if (tt.title) {
+                const track: Track = {
+                    position: ix,
+                    trackTitle: tt.title,
+                    time: tt.time
+                }
+                trackList.push(track)
             }
-            trackList.push(track)
             ix = ix + 1;
         })
         const cd : CdDTO = {

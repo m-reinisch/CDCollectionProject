@@ -2,6 +2,7 @@ package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.CdDTO;
 import de.mreinisch.backend.exception.CdCollectionNotFound;
+import de.mreinisch.backend.exception.CdNotFound;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.model.Track;
@@ -62,8 +63,28 @@ public class CdService {
         }
     }
 
-    /** Calculates the total duration of the CD from the durations of the individual tracks.
+    /** Deletes a CD from the database.
      *
+     * @param id of the CD to be deleted
+     * @return true, if deleted
+     * @throws CdNotFound when CD not found
+     */
+    public Boolean removeCd(String id) throws CdNotFound {
+        CD delCd= repo.findById(id).orElse(null);
+
+        if (delCd != null) {
+            delCd.getTracks().forEach(track ->
+                                        trackRepo.delete(track));
+            repo.deleteById(id);
+            return true;
+        } else {
+            throw new CdNotFound("CD mit id " + id +
+                                 " wurde nicht gefunden!");
+        }
+    }
+
+    /** Calculates the total duration of the CD from the durations of the individual tracks.
+     * <br />
      * Helper function is used only internally.
      * @param tracks of CD
      * @return total time of tracks
@@ -78,7 +99,7 @@ public class CdService {
     }
 
     /** Adds two times
-     *
+     * <br />
      * Helper function is used only internally.
      * @param t1 first time
      * @param t2 second time

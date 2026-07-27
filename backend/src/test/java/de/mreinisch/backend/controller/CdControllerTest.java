@@ -120,4 +120,42 @@ class CdControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(errorMessage));
     }
+
+    @Test
+    @WithMockUser
+    void deleteCd_shouldReturnTrue_whenCdDeleted() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track( 1, "TestSong",
+                                "6:54", cd);
+        List<Track> trackList= List.of(track);
+
+        userRepo.save(appUser);
+        collectionRepo.save(cdCollection);
+        trackRepo.save(track);
+        cd.setTracks(trackList);
+        repo.save(cd);
+        mvc.perform(delete("/api/cd/" + id))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    @WithMockUser
+    void deleteCd_shouldThrowException_whenCdNotFound() throws Exception {
+        String id= "0";
+        String errorMessage= "Unerwarteter Fehler: ";
+
+        errorMessage+= "CD mit id " + id + " wurde nicht gefunden!";
+        mvc.perform(delete("/api/cd/" + id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
+    }
 }

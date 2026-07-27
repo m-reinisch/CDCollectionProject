@@ -8,15 +8,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final String UN_ERR= "Unerwarteter Fehler: ";
+
     @ExceptionHandler(AppUserNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleAppUserNotFound(AppUserNotFound exception){
-        return "Unerwarteter Fehler: " + exception.getMessage();
+        return UN_ERR + exception.getMessage();
     }
 
     @ExceptionHandler(CdCollectionNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleAppUserNotFound(CdCollectionNotFound exception){
-        return "Unerwarteter Fehler: " + exception.getMessage();
+    public String handleCdCollectionNotFound(CdCollectionNotFound exception){
+        return UN_ERR + exception.getMessage();
+    }
+
+    @ExceptionHandler(CdNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleCdNotFound(CdNotFound exception){
+        return UN_ERR + exception.getMessage();
     }
 }

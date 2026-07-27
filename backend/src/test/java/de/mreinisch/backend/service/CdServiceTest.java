@@ -2,6 +2,7 @@ package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.CdDTO;
 import de.mreinisch.backend.exception.CdCollectionNotFound;
+import de.mreinisch.backend.exception.CdNotFound;
 import de.mreinisch.backend.model.AppUser;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.model.CdCollection;
@@ -86,8 +87,64 @@ class CdServiceTest {
         String errorMessage= "CD Sammlung mit id " + id +
                              " wurde nicht gefunden!";
 
+        cd.setTracks(trackList);
         assertThatExceptionOfType(CdCollectionNotFound.class)
                 .isThrownBy( () -> service.generateCD(cdDTO))
                 .withMessage(errorMessage);
+        verify(mockRepo, times(0)).save(cd);
+    }
+
+    @Test
+    void deleteCd_shouldReturnTrue_whenCdDeleted() throws CdNotFound {
+        CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        CdRepo mockRepo = mock(CdRepo.class);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                                         mockingIdService,
+                                         mockCollectionRepo,
+                                         mockTrackRepo);
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track(1, 1, "TestSong",
+                            "6:54", cd);
+        List<Track> trackList= List.of(track);
+        Boolean expected= true;
+        Boolean actual;
+
+        cd.setTracks(trackList);
+        when(mockRepo.findById(id)).thenReturn(Optional.of(cd));
+        actual= service.removeCd(id);
+        assertEquals(expected, actual);
+        verify(mockRepo, times(1)).findById(id);
+        verify(mockRepo, times(1)).deleteById(id);
+    }
+
+    @Test
+    void deleteCd_shouldThrowException_whenCdNotFound(){
+        CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        CdRepo mockRepo = mock(CdRepo.class);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                mockingIdService,
+                mockCollectionRepo,
+                mockTrackRepo);
+        String id= "0";
+        String errotMessage= "CD mit id " + id +
+                             " wurde nicht gefunden!";
+
+        assertThatExceptionOfType(CdNotFound.class)
+                .isThrownBy( () -> service.removeCd(id) )
+                .withMessage(errotMessage);
+        verify(mockRepo, times(1)).findById(id);
+        verify(mockRepo, times(0)).deleteById(id);
     }
 }
