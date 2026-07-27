@@ -8,7 +8,8 @@ import CollectionPage from "./components/CollectionPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
-import type {AppUser, Collection, CollectionDTO} from "./types.tsx";
+import type {AppUser, CdDTO, Collection, CollectionDTO} from "./types.tsx";
+import AddCdPage from "./components/AddCdPage.tsx";
 
 function login() {
     const host = globalThis.location.host === 'localhost:5173' ?
@@ -36,7 +37,7 @@ const testCollection: Collection = {
     cds: [
         {
             id: "6",
-            title: "Saxuality",
+            cdTitle: "Saxuality",
             performer: "Candy Dulfer",
             publicationYear: 1990,
             tracks: [],
@@ -45,7 +46,7 @@ const testCollection: Collection = {
         },
         {
             id: "11",
-            title: "Breathless",
+            cdTitle: "Breathless",
             performer: "Kenny G",
             publicationYear: 1992,
             tracks: [],
@@ -66,6 +67,7 @@ function App() {
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(testCollection)
     const [errorLog, setErrorLog] = useState<string>("")
+    const [priorityError, setPriorityError] = useState<string>("")
     const nav= useNavigate();
 
     function changePage(accessedPage: string){
@@ -79,6 +81,10 @@ function App() {
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
             setBackPage("overview")
+        } else if (accessedPage === "add-cd"){
+            setTitle("Neue CD")
+            setPageType("ABORT")
+            setBackPage("details")
         }
     }
     function addCollection(collName: string){
@@ -95,7 +101,13 @@ function App() {
                      [...cdCollections, respColl])
                  nav("/collections")
              })
-             .catch( (error_) => console.log(error_) )
+             .catch( (error_) => {
+                if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                    setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                } else {
+                    console.log(error_)
+                }
+             })
     }
     function openCollection(id: string){
         axios.get("/api/collections/" + id)
@@ -103,7 +115,13 @@ function App() {
                  setSelectedCdCollection(response.data)
                  nav("/collections/" + id)
              })
-             .catch( (error_) => console.log(error_) )
+             .catch( (error_) => {
+                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                 } else {
+                     console.log(error_)
+                 }
+             })
 
     }
     function deleteCollection(id: string){
@@ -113,6 +131,19 @@ function App() {
                      loadCollections(userId)
                      nav("/collections")
                  }
+             })
+             .catch( (error_) => {
+                if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                    setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                } else {
+                    console.log(error_)
+                }
+             })
+    }
+    function addCd(cd: CdDTO){
+        axios.post("/api/cd", cd)
+             .then( () => {
+                 openCollection(cd.cdCollection.id)
              })
              .catch( (error_) => console.log(error_) )
     }
@@ -144,13 +175,17 @@ function App() {
              .catch( (error_) => console.log(error_) )
     }
     const handleError = (errorMessage: string) => {
-        setErrorLog(errorMessage)
+            setErrorLog(errorMessage)
     }
     const handleBack = () => {
         if (backPage === "overview"){
             setTitle("Übersicht Sammlungen")
             setPageType("NO")
             nav("/collections")
+        } else if (backPage === "details"){
+            setTitle(selectedCdCollection.name)
+            setPageType("BACK")
+            nav("/collections/" + selectedCdCollection.id)
         }
     }
 
@@ -194,10 +229,17 @@ function App() {
                                                     onError={handleError}
                                                     key={"cd-coll"} />}
                            key={"details"} />
+                    <Route path={"/cd/:collId"}
+                           element={<AddCdPage onChangePage={changePage}
+                                               onAddCd={addCd}
+                                               onError={handleError}
+                                               key="new-cd" />}
+                           key={"add-cd"} />
                 </Route>
             </Routes>
             <Footer userName={userName}
-                    errorMessage={errorLog} key={"baseline"} />
+                    errorMessage={errorLog} key={"baseline"}
+                    urgentError={priorityError} />
         </>
     )
 }
