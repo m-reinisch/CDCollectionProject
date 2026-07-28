@@ -1,3 +1,4 @@
+import "./CollectionPage.css"
 import type {CD, Collection} from "../types.tsx";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
@@ -67,7 +68,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                                 <button className="cd-open-button"
                                         type="button"
                                         onClick={ () => {
-                                            props.onOpenCd(cd.id);}}>
+                                            props.onOpenCd(cd.id)}}>
                                     <strong>{cd.cdTitle}</strong>
                                     <small>{cd.performer}</small>
                                 </button>
