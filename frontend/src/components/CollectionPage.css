@@ -30,11 +30,9 @@
     min-height: 20px;
 }
 
-#search-button {
-    grid-column: 2;
-    width: fit-content;
-    margin-left: 10px;
-    justify-self: flex-end;
+.search-field {
+    font-size: small;
+    background-color: pink;
 }
 
 .cd-list {

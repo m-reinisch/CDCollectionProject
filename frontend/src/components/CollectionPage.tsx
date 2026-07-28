@@ -12,14 +12,18 @@ type CollectionPageProps = {
 }
 
 export default function CollectionPage (props: Readonly<CollectionPageProps>) {
-    const nav= useNavigate();
-    const [search, setSearch] = useState<string>("");
+    const nav= useNavigate()
     const [cds, setCds] = useState<CD[]>(props.cdCollection.cds)
+    const [criterion, setCriterion] = useState<string>("")
 
     function onSearch(searchString: string) {
-        setSearch(searchString);
-        setCds(props.cdCollection.cds.filter( cd =>
-            cd.cdTitle.toLowerCase().includes(search.toLowerCase())))
+        if (criterion === "title"){
+            setCds(props.cdCollection.cds.filter( cd =>
+                cd.cdTitle.toLowerCase().includes(searchString.toLowerCase())))
+        } else if (criterion === "performer"){
+            setCds(props.cdCollection.cds.filter( cd =>
+                cd.performer.toLowerCase().includes(searchString.toLowerCase())))
+        }
     }
 
     useEffect(() => {
@@ -39,15 +43,32 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                         Suchbegriff:
                         <input id="search-text" type="text"
                                name="searchString"
-                               placeholder={search}
                                onChange={
                                     event =>
                                     onSearch(event.target.value)
                         }/>
                     </label>
-                    <button id="search-btn" type="submit">
-                        In Sammlung suchen
-                    </button>
+                    <fieldset className="search-field">
+                        Suchkriterium:
+                        <label htmlFor="tit" className="tit">
+                            Titel:
+                        </label>
+                        <input id="tit" type="radio"
+                               name="searchCriterion"
+                               value="title"
+                               onChange={
+                                    event =>
+                                    setCriterion(event.target.value)} />
+                        <label htmlFor="per" className="per">
+                            Interpret:
+                        </label>
+                        <input id="per" type="radio"
+                               name="searchCriterion"
+                               value="performer"
+                               onChange={
+                                   event =>
+                                   setCriterion(event.target.value)} />
+                    </fieldset>
                 </form>
             </div>
             <div className="cd-list">
