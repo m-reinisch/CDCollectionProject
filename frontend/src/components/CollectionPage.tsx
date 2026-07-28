@@ -1,12 +1,8 @@
 import "./CollectionPage.css"
 import type {CD, Collection} from "../types.tsx";
-import {useEffect} from "react";
-import {useForm} from "react-hook-form";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-type FormValues = {
-    searchString: string
-}
 type CollectionPageProps = {
     cdCollection: Collection,
     onChangePage: (page: string) => void,
@@ -16,25 +12,19 @@ type CollectionPageProps = {
 }
 
 export default function CollectionPage (props: Readonly<CollectionPageProps>) {
-    const { register, handleSubmit, reset,
-        formState: { errors, isValid },
-    } = useForm<FormValues>({ mode: 'onChange' });
     const nav= useNavigate();
+    const [search, setSearch] = useState<string>("");
+    const [cds, setCds] = useState<CD[]>(props.cdCollection.cds)
 
-    function search(data: FormValues) {
-        reset({searchString: ""})
+    function onSearch(searchString: string) {
+        setSearch(searchString);
+        setCds(props.cdCollection.cds.filter( cd =>
+            cd.cdTitle.toLowerCase().includes(search.toLowerCase())))
     }
 
     useEffect(() => {
         props.onChangePage("details")
     }, []);
-    useEffect(() => {
-        if (errors.searchString){
-            props.onError(errors.searchString.message!)
-        } else {
-            props.onError("")
-        }
-    }, [errors.searchString, props]);
 
     return (
         <section className="page">
@@ -44,25 +34,25 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                             nav("/cd/" + props.cdCollection.id) }>
                     CD hinzufügen
                 </button>
-                <form className="search-form"
-                      onSubmit={handleSubmit(search)}>
+                <form className="search-form">
                     <label id="search-label">
                         Suchbegriff:
                         <input id="search-text" type="text"
-                               {...register("searchString", {
-                                   required: "Suchbegriff ist erforderlich!"
-                               })}
-                        />
+                               name="searchString"
+                               placeholder={search}
+                               onChange={
+                                    event =>
+                                    onSearch(event.target.value)
+                        }/>
                     </label>
-                    <button id="search-btn" type="submit"
-                            disabled={!isValid}>
+                    <button id="search-btn" type="submit">
                         In Sammlung suchen
                     </button>
                 </form>
             </div>
             <div className="cd-list">
                 {
-                    props.cdCollection.cds.map( (cd: CD) => {
+                    cds.map( (cd: CD) => {
                         return (
                             <div className="cd" key={cd.id}>
                                 <button className="cd-open-button"
