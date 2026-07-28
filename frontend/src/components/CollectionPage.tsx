@@ -14,7 +14,7 @@ type CollectionPageProps = {
 export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     const nav= useNavigate()
     const [cds, setCds] = useState<CD[]>(props.cdCollection.cds)
-    const [criterion, setCriterion] = useState<string>("")
+    const [criterion, setCriterion] = useState<string>("title")
 
     function onSearch(searchString: string) {
         if (criterion === "title"){
@@ -49,8 +49,8 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                         }/>
                     </label>
                     <fieldset className="search-field">
-                        Suchkriterium:
-                        <label htmlFor="tit" className="tit">
+                        Suchkriterium:<br />
+                        <label htmlFor="tit" className="crit">
                             Titel:
                         </label>
                         <input id="tit" type="radio"
@@ -58,8 +58,9 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                                value="title"
                                onChange={
                                     event =>
-                                    setCriterion(event.target.value)} />
-                        <label htmlFor="per" className="per">
+                                    setCriterion(event.target.value)}
+                               defaultChecked={criterion === "title"} />
+                        <label htmlFor="per" className="crit">
                             Interpret:
                         </label>
                         <input id="per" type="radio"
