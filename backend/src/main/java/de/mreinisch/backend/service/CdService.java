@@ -94,6 +94,23 @@ public class CdService {
                                           " wurde nicht gefunden!"));
     }
 
+    public CD updateCd(String id, CdDTO cd) throws CdNotFound {
+        CD updatedCd= repo.findById(id)
+                           .orElseThrow( () ->
+                                   new CdNotFound("CD mit id " + id +
+                                                  " wurde nicht gefunden!"));
+        String totalTime= calcTotalTime(cd.tracks());
+
+        updatedCd.setCdTitle(cd.cdTitle());
+        updatedCd.setPerformer(cd.performer());
+        updatedCd.setPublicationYear(cd.publicationYear());
+        updatedCd.setTracks(cd.tracks());
+        updatedCd.setCoverUrl(cd.coverUrl());
+        updatedCd.setTotalTime(totalTime);
+        repo.save(updatedCd);
+        return updatedCd;
+    }
+
     /** Calculates the total duration of the CD from the durations of the individual tracks.
      * <br />
      * Helper function is used only internally.

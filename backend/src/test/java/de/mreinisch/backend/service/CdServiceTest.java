@@ -199,4 +199,61 @@ class CdServiceTest {
                 .withMessage(errorMessage);
         verify(mockRepo, times(1)).findById(id);
     }
+
+    @Test
+    void updateCd_shouldReturnCD_whenCdInDatabase() throws CdNotFound {
+        CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        CdRepo mockRepo = mock(CdRepo.class);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                                         mockingIdService,
+                                         mockCollectionRepo,
+                                         mockTrackRepo);
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track(1, 1, "TestSong",
+                            "6:54", cd);
+        List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO("TestCD","Max",
+                        1971, trackList, null,
+                                cdCollection);
+        CD expected= new CD(cd);
+        CD actual;
+
+        expected.setTracks(trackList);
+        when(mockRepo.findById(id)).thenReturn(Optional.of(expected));
+        expected.setPerformer("Max");
+        actual= service.updateCd(id, cdDTO);
+        assertEquals(expected, actual);
+        verify(mockRepo, times(1)).findById(id);
+        verify(mockRepo, times(1)).save(expected);
+    }
+
+//    @Test
+//    void updateCd_shouldThrowException_whenCdNotFound(){
+//        CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
+//        IdService mockingIdService= mock(IdService.class);
+//        CdRepo mockRepo = mock(CdRepo.class);
+//        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+//        CdService service= new CdService(mockRepo,
+//                mockingIdService,
+//                mockCollectionRepo,
+//                mockTrackRepo);
+//        String id= "0";
+//        String errorMessage= "CD mit id " + id +
+//                " wurde nicht gefunden!";
+//
+//        assertThatExceptionOfType(CdNotFound.class)
+//                .isThrownBy( () -> service.getCdById(id) )
+//                .withMessage(errorMessage);
+//        verify(mockRepo, times(1)).findById(id);
+//    }
 }
