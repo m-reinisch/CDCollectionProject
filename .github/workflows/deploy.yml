@@ -1,0 +1,93 @@
+name: CD-Sammlung App Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload Frontend-Build
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-build
+          path: frontend/dist/*
+
+  backend-build:
+    needs: frontend-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Download Frontend-Build
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-build
+          path: backend/src/main/resources/static
+
+      - name: Build Backend mit Maven
+        run: mvn -B package --file backend/pom.xml
+
+      - name: Upload App.jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-artifact
+          path: backend/target/cdcollpp.jar
+
+  push-to-docker-hub:
+    needs: backend-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download Backend Artefakt
+        uses: actions/download-artifact@v8
+        with:
+          name: backend-artifact
+          path: backend/target
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_IMAGE_TAG }}
+
+  deploy-to-render:
+    needs: push-to-docker-hub
+    runs-on: ubuntu-latest
+    environment:
+      name: Live Server
+      url: https://cd-sammlung.onrender.com
+    steps:
+      - name: Trigger server deployment
+        run: |
+          curl -X POST  ${{ secrets.DEPLOYMENT_WEBHOOK_URL }}
