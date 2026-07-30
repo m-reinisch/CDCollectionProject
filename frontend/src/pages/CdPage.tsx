@@ -1,6 +1,7 @@
 import "./CdPage.css"
-import type {CD} from "../types.tsx";
+import type {CD} from "../types/types.tsx";
 import {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 
 type CdPageProps = {
     cd: CD,
@@ -8,6 +9,8 @@ type CdPageProps = {
 }
 
 export default function CdPage(props: Readonly<CdPageProps>) {
+    const nav= useNavigate()
+
     useEffect(() => {
         props.onChangePage("show-cd")
     }, []);
@@ -34,7 +37,17 @@ export default function CdPage(props: Readonly<CdPageProps>) {
                         </li>
                     ))}
                 </ol>
-                <div className="cd-total-time">Gesamtzeit: {props.cd.totalTime}</div>
+                <div className="cd-footer">
+                    <div className="cd-total-time">
+                        Gesamtzeit: {props.cd.totalTime}
+                    </div>
+                    <button className="edit-btn" type="button"
+                            onClick={ ()=>
+                                nav("/cd/edit/" + props.cd.id)} >
+                        Bearbeiten
+                    </button>
+                </div>
+
             </div>
         </div>
     )

@@ -1,8 +1,8 @@
 import "./AddCdPage.css";
-import type {CdDTO, Track} from "../types.tsx";
-import {useEffect} from "react";
+import type {CD, CdDTO, Track} from "../types/types.tsx";
 import {useParams} from "react-router-dom";
-import {useForm, useFieldArray} from "react-hook-form";
+import {useFieldArray, useForm} from "react-hook-form";
+import {useEffect} from "react";
 
 type FormValues = {
     title: string,
@@ -11,36 +11,30 @@ type FormValues = {
     coverUrl: string | null,
     trackTT: {title: string, time: string}[]
 }
-type CdPageProps = {
+type EditCdPageProps = {
+    cd: CD,
     onChangePage: (page: string) => void,
-    onAddCd: (newCd: CdDTO) => void,
+    onEditCd: (id: string, updatedCd: CdDTO) => void,
     onError: (message: string) => void
 }
 
-export default function AddCdPage(props: Readonly<CdPageProps>) {
+export default function EditCd(props: Readonly<EditCdPageProps>){
     const param= useParams();
     const { control, register, handleSubmit, reset,
-            formState: { errors, isValid }
-          } = useForm<FormValues>(
-              {
-                  defaultValues: {
-                      title: "",
-                      performer: "",
-                      publicationYear: "",
-                      coverUrl: "",
-                      trackTT: [{title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""},
-                                {title: "", time: ""}]
-                  },
-                  mode: 'onChange'
-              }
+        formState: { errors, isValid }
+    } = useForm<FormValues>(
+        {
+            defaultValues: {
+                title: props.cd.cdTitle,
+                performer: props.cd.performer,
+                publicationYear: props.cd.publicationYear.toString(),
+                coverUrl: props.cd.coverUrl,
+//                trackTT: [props.cd.tracks.forEach( track => {
+//                    {title: track.trackTitle, time: track.time}
+//                })]
+            },
+            mode: 'onChange'
+        }
     );
     const { fields, append } = useFieldArray({
         control,
@@ -74,13 +68,11 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
             }
         }
 
-        props.onAddCd(cd)
-        reset({title: '', performer: '', publicationYear: '',
-               })
+        props.onEditCd('0', cd)
     }
 
     useEffect(() => {
-        props.onChangePage("add-cd")
+        props.onChangePage("edit-cd")
     }, []);
     useEffect(() => {
         if (errors.title) {
@@ -92,7 +84,7 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
         }
     }, [errors, props]);
 
-    return (
+    return(
         <div className="page">
             <form className="new-cd"
                   onSubmit={handleSubmit(submit)}>
@@ -123,27 +115,27 @@ export default function AddCdPage(props: Readonly<CdPageProps>) {
                 <label className="tracks">
                     Stücke:
                     {fields.map( (field, index) => (
-                    <label className="track" key={field.id}>
-                        {index + 1}.
-                        <label className="lbl-track-titel">
-                            Titel:
-                            <input className="txt-track-titel"
-                                   type="text"
-                                   {...register(`trackTT.${index}.title`)}
-                            />
+                        <label className="track" key={field.id}>
+                            {index + 1}.
+                            <label className="lbl-track-titel">
+                                Titel:
+                                <input className="txt-track-titel"
+                                       type="text"
+                                       {...register(`trackTT.${index}.title`)}
+                                />
+                            </label>
+                            <label className="lbl-track-time">
+                                Zeit:
+                                <input className="txt-track-time"
+                                       type="text"
+                                       {...register(`trackTT.${index}.time`)}
+                                />
+                            </label>
                         </label>
-                        <label className="lbl-track-time">
-                            Zeit:
-                            <input className="txt-track-time"
-                                   type="text"
-                                   {...register(`trackTT.${index}.time`)}
-                            />
-                        </label>
-                    </label>
                     ))}
                 </label>
                 <div className="new-cd-footer">
-                    <button id="more-tracks-btn" type={"button"}
+                    <button id="more-tracks-btn" type="button"
                             onClick={ () =>
                                 append({title: "", time: ""})}>
                         Mehr Stücke

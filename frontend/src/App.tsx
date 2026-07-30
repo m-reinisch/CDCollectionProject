@@ -1,29 +1,18 @@
 import './App.css'
-import Header from "./components/Header.tsx";
-import LandingPage from "./components/LandingPage.tsx";
-import Footer from "./components/Footer.tsx";
-import ProtectedRoutes from "./ProtectedRoutes.tsx";
-import OverviewPage from "./components/OverviewPage.tsx";
-import CollectionPage from "./components/CollectionPage.tsx";
+import Header from "./layouts/Header.tsx";
+import Footer from "./layouts/Footer.tsx";
+import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
+import {login, logout} from "./features/auth/LoginLogout.tsx";
+import LandingPage from "./pages/LandingPage.tsx";
+import OverviewPage from "./pages/OverviewPage.tsx";
+import CollectionPage from "./pages/CollectionPage.tsx";
+import AddCdPage from "./pages/AddCdPage.tsx";
+import CdPage from "./pages/CdPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
-import type {AppUser, CD, CdDTO, Collection, CollectionDTO} from "./types.tsx";
-import AddCdPage from "./components/AddCdPage.tsx";
-import CdPage from "./components/CdPage.tsx";
-
-function login() {
-    const host = globalThis.location.host === 'localhost:5173' ?
-        'http://localhost:8080': globalThis.location.origin
-
-    window.open(host + '/oauth2/authorization/github', '_self')
-}
-function logout() {
-    const host = globalThis.location.host === 'localhost:5173' ?
-        'http://localhost:8080' : globalThis.location.origin
-
-    window.open(host + '/logout', '_self')
-}
+import type {AppUser, CD, CdDTO, Collection, CollectionDTO} from "./types/types.tsx";
+import EditCd from "./pages/EditCdPage.tsx";
 
 const initialCollections: Collection[] = [
     {
@@ -100,6 +89,10 @@ function App() {
             setTitle(selectedCd.cdTitle)
             setPageType("BACK")
             setBackPage("details")
+        } else if (accessedPage === "edit-cd"){
+            setTitle(selectedCd.cdTitle)
+            setPageType("ABORT")
+            setBackPage("show-cd")
         }
     }
     function addCollection(collName: string){
@@ -195,6 +188,9 @@ function App() {
                  }
              })
     }
+    function editCd(cdId: string, upCd: CdDTO) {
+        //todo
+    }
 
     const loadUser = () => {
         axios.get('/api/auth/user')
@@ -234,6 +230,10 @@ function App() {
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
             nav("/collections/" + selectedCdCollection.id)
+        } else if (backPage === "show-cd"){
+            setTitle(selectedCd.cdTitle)
+            setPageType("BACK")
+            nav("/cd/show/" + selectedCd.id)
         }
     }
 
@@ -288,6 +288,13 @@ function App() {
                                             onChangePage={changePage}
                                             key={"cd"} />}
                            key={"cdId"} />
+                    <Route path={"/cd/edit/:cdId"}
+                           element={<EditCd cd={selectedCd}
+                                            onChangePage={changePage}
+                                            onEditCd={editCd}
+                                            onError={handleError}
+                                            key={"edit"} />}
+                           key={"editCd"} />
                 </Route>
             </Routes>
             <Footer userName={userName}
