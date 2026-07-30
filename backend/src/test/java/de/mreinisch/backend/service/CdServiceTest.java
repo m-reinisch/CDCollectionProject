@@ -201,7 +201,7 @@ class CdServiceTest {
     }
 
     @Test
-    void updateCd_shouldReturnCD_whenCdInDatabase() throws CdNotFound {
+    void updateCd_shouldReturnUpdatedCD_whenCdInDatabase() throws CdNotFound {
         CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
         IdService mockingIdService= mock(IdService.class);
         CdRepo mockRepo = mock(CdRepo.class);

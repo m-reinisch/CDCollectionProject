@@ -105,18 +105,29 @@ public class CdService {
                            .orElseThrow( () ->
                                    new CdNotFound(CD_TXT + id + NF_TXT));
         String totalTime= calcTotalTime(cd.tracks());
+        List<Track> trackList= updatedCd.getTracks();
 
         updatedCd.setCdTitle(cd.cdTitle());
         updatedCd.setPerformer(cd.performer());
         updatedCd.setPublicationYear(cd.publicationYear());
-        updatedCd.setTracks(cd.tracks());
         updatedCd.setCoverUrl(cd.coverUrl());
         updatedCd.setTotalTime(totalTime);
+        for( Track track : trackList ) {
+            Track updatedTrack=
+                    findTrackByPosition(track.getPosition(),
+                                        cd.tracks());
+
+            if( updatedTrack != null ){
+                track.setTrackTitle(updatedTrack.getTrackTitle());
+                track.setTime(updatedTrack.getTime());
+            }
+        }
+        updatedCd.setTracks(trackList);
         repo.save(updatedCd);
         return updatedCd;
     }
 
-    /** Calculates the total duration of the CD from the durations of the individual tracks.
+    /** Calculates the total duration of the CD from the durations of the individual tracks
      * <br />
      * Helper function is used only internally.
      * @param tracks of CD
@@ -150,5 +161,24 @@ public class CdService {
         Duration sum= duration1.plus(duration2);
 
         return String.format("%02d:%02d", sum.toMinutes(), (sum.toSeconds() % 60));
+    }
+
+    /** Searches for the specified position in the tracklist
+     * <br />
+     * Helper function is used only internally.
+     * @param pos position to be searched for
+     * @param tracks list of tracks to be searched
+     * @return found track or null, if not found
+     */
+    private Track findTrackByPosition(int pos, List<Track> tracks) {
+        Track foundTrack = null;
+
+        for (Track track : tracks) {
+            if (track.getPosition() == pos) {
+                foundTrack = track;
+                break;
+            }
+        }
+        return foundTrack;
     }
 }

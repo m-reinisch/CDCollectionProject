@@ -52,7 +52,7 @@
     justify-self: center;
     font-size: small;
     display: grid;
-    grid-template-columns: 350px 150px;
+    grid-template-columns: 50px 350px 150px;
     align-items: baseline;
     justify-content: center;
     color: black;

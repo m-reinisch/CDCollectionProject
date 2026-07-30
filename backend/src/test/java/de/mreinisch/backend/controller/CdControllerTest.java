@@ -161,45 +161,71 @@ class CdControllerTest {
                 .andExpect(content().string(errorMessage));
     }
 
-//    @Test
-//    @WithMockUser
-//    void updateCDById_shouldReturnCD_whenCdFoundInDatabase() throws Exception {
-//        String id= "0";
-//        AppUser appUser= new AppUser(id, "TestUser");
-//        CdCollection cdCollection= new CdCollection(id,
-//                "Testsammlung",
-//                appUser,
-//                Collections.emptyList());
-//        CD cd= new CD(id,"TestCD","Tester",
-//                1971, "06:54", null,
-//                cdCollection, Collections.emptyList());
-//        Track track= new Track( 1, "TestSong",
-//                "6:54", cd);
-//        List<Track> trackList= List.of(track);
-//        ObjectMapper mapper= new ObjectMapper();
-//
-//        userRepo.save(appUser);
-//        collectionRepo.save(cdCollection);
-//        trackRepo.save(track);
-//        cd.setTracks(trackList);
-//        repo.save(cd);
-//        String jsonCd = mapper.writeValueAsString(cd);
-//        mvc.perform(get("/api/cd/" + id))
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(jsonCd));
-//    }
+    @Test
+    @WithMockUser
+    void updateCDById_shouldReturnCD_whenCdUpdated() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track( 1, "TestSong",
+                                "6:54", cd);
+        List<Track> trackList= List.of(track);
+        ObjectMapper mapper= new ObjectMapper();
 
-//    @Test
-//    @WithMockUser
-//    void updateCDById_shouldThrowException_whenCdNotFound() throws Exception {
-//        String id= "0";
-//        String errorMessage= "Unerwarteter Fehler: ";
-//
-//        errorMessage+= "CD mit id " + id + " wurde nicht gefunden!";
-//        mvc.perform(get("/api/cd/" + id))
-//                .andExpect(status().isNotFound())
-//                .andExpect(content().string(errorMessage));
-//    }
+        userRepo.save(appUser);
+        collectionRepo.save(cdCollection);
+        trackRepo.save(track);
+        CdDTO cdDTO= new CdDTO("TestCD","Max",
+                        1971, trackList, null,
+                                cdCollection);
+        String jsonCdDTO = mapper.writeValueAsString(cdDTO);
+        cd.setTracks(trackList);
+        cd.setPerformer("Max");
+        repo.save(cd);
+        String jsonCd = mapper.writeValueAsString(cd);
+        mvc.perform(put("/api/cd/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCdDTO))
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonCd));
+    }
+
+    @Test
+    @WithMockUser
+    void updateCDById_shouldThrowException_whenCdNotFound() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track( 1, "TestSong",
+                "6:54", cd);
+        List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO("TestCD","Max",
+                        1971, trackList, null,
+                                cdCollection);
+        ObjectMapper mapper= new ObjectMapper();
+        String jsonCdDTO = mapper.writeValueAsString(cdDTO);
+        String fid= "6";
+        String errorMessage= "Unerwarteter Fehler: ";
+
+        errorMessage+= "CD mit id " + fid + " wurde nicht gefunden!";
+        mvc.perform(put("/api/cd/" + fid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCdDTO))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
+    }
 
     @Test
     @WithMockUser

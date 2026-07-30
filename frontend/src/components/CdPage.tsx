@@ -22,6 +22,9 @@ export default function CdPage(props: Readonly<CdPageProps>) {
                 <ol className="track-list">
                     {props.cd.tracks.map(track => (
                         <li id="track" key={track.position}>
+                            <div className="cd-track-pos">
+                                {track.position}
+                            </div>
                             <div className="cd-track-titel">
                                 {track.trackTitle}
                             </div>
