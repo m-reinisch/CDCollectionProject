@@ -19,6 +19,8 @@ public class CdService {
     private final IdService idService;
     private final CdCollectionRepo collectionRepo;
     private final TrackRepo trackRepo;
+    private static final String CD_TXT= "CD mit id ";
+    private static final String NF_TXT= " wurde nicht gefunden!";
 
     public CdService(CdRepo repo, IdService idService, CdCollectionRepo collectionRepo, TrackRepo trackRepo) {
         this.repo = repo;
@@ -58,8 +60,7 @@ public class CdService {
             return newCD;
         } else {
             throw new CdCollectionNotFound("CD Sammlung mit id " +
-                                            cdOwner.getId() +
-                                            " wurde nicht gefunden!");
+                                            cdOwner.getId() + NF_TXT);
         }
     }
 
@@ -72,8 +73,7 @@ public class CdService {
     public Boolean removeCd(String id) throws CdNotFound {
         CD delCd= repo.findById(id)
                       .orElseThrow( () ->
-                              new CdNotFound("CD mit id " + id +
-                                             " wurde nicht gefunden!"));
+                              new CdNotFound(CD_TXT + id + NF_TXT));
 
         delCd.getTracks().forEach(track ->
                                     trackRepo.delete(track));
@@ -90,15 +90,20 @@ public class CdService {
     public CD getCdById(String id) throws CdNotFound {
         return repo.findById(id)
                    .orElseThrow( () ->
-                           new CdNotFound("CD mit id " + id +
-                                          " wurde nicht gefunden!"));
+                           new CdNotFound(CD_TXT + id + NF_TXT));
     }
 
+    /** Modifies entries for the desired CD.
+     *
+     * @param id of the CD to be searched for
+     * @param cd DTO with data to be changed
+     * @return updated cd
+     * @throws CdNotFound when CD not found
+     */
     public CD updateCd(String id, CdDTO cd) throws CdNotFound {
         CD updatedCd= repo.findById(id)
                            .orElseThrow( () ->
-                                   new CdNotFound("CD mit id " + id +
-                                                  " wurde nicht gefunden!"));
+                                   new CdNotFound(CD_TXT + id + NF_TXT));
         String totalTime= calcTotalTime(cd.tracks());
 
         updatedCd.setCdTitle(cd.cdTitle());

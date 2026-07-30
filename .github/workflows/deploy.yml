@@ -56,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: backend-artifact
-          path: backend/target/cdcollpp.jar
+          path: backend/target/cdcollapp.jar
 
   push-to-docker-hub:
     needs: backend-build
