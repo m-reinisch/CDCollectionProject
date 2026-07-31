@@ -1,6 +1,5 @@
 import "./AddCdPage.css";
-import type {CD, CdDTO, Track} from "../types/types.tsx";
-import {useParams} from "react-router-dom";
+import type {CD, CdCollection, CdDTO, Track} from "../types/types.tsx";
 import {useFieldArray, useForm} from "react-hook-form";
 import {useEffect} from "react";
 
@@ -13,15 +12,15 @@ type FormValues = {
 }
 type EditCdPageProps = {
     cd: CD,
+    coll: CdCollection,
     onChangePage: (page: string) => void,
     onEditCd: (id: string, updatedCd: CdDTO) => void,
     onError: (message: string) => void
 }
 
 export default function EditCd(props: Readonly<EditCdPageProps>){
-    const param= useParams();
-    const { control, register, handleSubmit, reset,
-        formState: { errors, isValid }
+    const { control, register, handleSubmit,
+            formState: { errors, isValid }
     } = useForm<FormValues>(
         {
             defaultValues: {
@@ -29,9 +28,9 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
                 performer: props.cd.performer,
                 publicationYear: props.cd.publicationYear.toString(),
                 coverUrl: props.cd.coverUrl,
-//                trackTT: [props.cd.tracks.forEach( track => {
-//                    {title: track.trackTitle, time: track.time}
-//                })]
+                trackTT: props.cd.tracks.map( track => (
+                    {title: track.trackTitle, time: track.time}
+                ))
             },
             mode: 'onChange'
         }
@@ -64,11 +63,11 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
             tracks: trackList,
             coverUrl: null,
             cdCollection: {
-                id: param.collId!
+                id: props.coll.id
             }
         }
 
-        props.onEditCd('0', cd)
+        props.onEditCd(props.cd.id, cd)
     }
 
     useEffect(() => {

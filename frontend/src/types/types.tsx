@@ -22,7 +22,8 @@ export type CD = {
     publicationYear: number,
     tracks: Track[],
     totalTime: string,
-    coverUrl:string
+    coverUrl:string,
+    cdCollection: CdCollection
 }
 
 export type CdDTO = {
@@ -31,7 +32,7 @@ export type CdDTO = {
     publicationYear: number,
     tracks: Track[],
     coverUrl: string | null,
-    cdCollection: Coll
+    cdCollection: CdCollection
 }
 
 export type Track = {
@@ -40,6 +41,6 @@ export type Track = {
     time: string
 }
 
-export type Coll = {
+export type CdCollection = {
     id: string
 }

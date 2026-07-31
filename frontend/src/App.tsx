@@ -32,16 +32,10 @@ const testCollection: Collection = {
             publicationYear: 1990,
             tracks: [],
             totalTime: "0",
-            coverUrl: ""
-        },
-        {
-            id: "11",
-            cdTitle: "Breathless",
-            performer: "Kenny G",
-            publicationYear: 1992,
-            tracks: [],
-            totalTime: "0",
-            coverUrl: ""
+            coverUrl: "",
+            cdCollection: {
+                id: "0"
+            }
         }
     ]
 }
@@ -52,7 +46,10 @@ const initCd: CD ={
     publicationYear: 1990,
     tracks: [],
     totalTime: "0",
-    coverUrl: ""
+    coverUrl: "",
+    cdCollection: {
+        id: "0"
+    }
 }
 
 function App() {
@@ -189,7 +186,9 @@ function App() {
              })
     }
     function editCd(cdId: string, upCd: CdDTO) {
-        //todo
+        console.log(cdId)
+        console.log(upCd)
+        openCD(cdId)
     }
 
     const loadUser = () => {
@@ -290,6 +289,7 @@ function App() {
                            key={"cdId"} />
                     <Route path={"/cd/edit/:cdId"}
                            element={<EditCd cd={selectedCd}
+                                            coll={selectedCdCollection}
                                             onChangePage={changePage}
                                             onEditCd={editCd}
                                             onError={handleError}
