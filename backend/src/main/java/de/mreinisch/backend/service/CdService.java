@@ -11,6 +11,7 @@ import de.mreinisch.backend.repository.CdRepo;
 import de.mreinisch.backend.repository.TrackRepo;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -122,7 +123,14 @@ public class CdService {
                 track.setTime(updatedTrack.getTime());
             }
         }
-        updatedCd.setTracks(trackList);
+        List<Track> updatedTrackList= new ArrayList<>(trackList);
+        if (trackList.size() < cd.tracks().size()) {
+            for (int i= trackList.size(); i < cd.tracks().size(); i++) {
+                cd.tracks().get(i).setCd(updatedCd);
+                updatedTrackList.add(cd.tracks().get(i));
+            }
+        }
+        updatedCd.setTracks(updatedTrackList);
         repo.save(updatedCd);
         return updatedCd;
     }

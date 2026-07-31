@@ -224,16 +224,18 @@ class CdServiceTest {
         CdDTO cdDTO= new CdDTO("TestCD","Max",
                         1971, trackList, null,
                                 cdCollection);
+        CD existingCD= new CD(cd);
         CD expected= new CD(cd);
         CD actual;
 
+        existingCD.setTracks(trackList);
+        when(mockRepo.findById(id)).thenReturn(Optional.of(existingCD));
         expected.setTracks(trackList);
-        when(mockRepo.findById(id)).thenReturn(Optional.of(expected));
         expected.setPerformer("Max");
         actual= service.updateCd(id, cdDTO);
         assertEquals(expected, actual);
         verify(mockRepo, times(1)).findById(id);
-        verify(mockRepo, times(1)).save(expected);
+        verify(mockRepo, times(1)).save(existingCD);
     }
 
     @Test
@@ -295,18 +297,19 @@ class CdServiceTest {
                             "6:54", cd);
         Track extraTrack= new Track(2, 2,
                             "TSong", "6:11", cd);
-        List<Track> trackList= new ArrayList<>(List.of(track));
+        List<Track> trackList= List.of(track);
+        List<Track> extraTrackList= List.of(track, extraTrack);
+        CD existingCD= new CD(cd);
         CD expected= new CD(cd);
         CD actual;
 
-        expected.setTracks(trackList);
-        when(mockRepo.findById(id)).thenReturn(Optional.of(expected));
-        trackList.add(extraTrack);
-//        expected.setTracks(trackList);
-        when(mockRepo.save(expected)).thenReturn(expected);
+        existingCD.setTracks(trackList);
+        when(mockRepo.findById(id)).thenReturn(Optional.of(existingCD));
         CdDTO cdDTO= new CdDTO("TestCD","Tester",
-                        1971, trackList, null,
-                                cdCollection);
+                        1971, extraTrackList,
+                            null, cdCollection);
+        expected.setTracks(extraTrackList);
+        expected.setTotalTime("13:05");
         actual= service.updateCd(id, cdDTO);
         assertEquals(expected, actual);
         verify(mockRepo, times(1)).findById(id);
