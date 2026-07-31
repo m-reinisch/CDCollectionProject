@@ -172,6 +172,19 @@ function App() {
                  }
              })
     }
+    function editCd(cdId: string, upCd: CdDTO) {
+        axios.put("/api/cd/" + cdId, upCd)
+            .then( () => {
+                openCD(cdId)
+            })
+            .catch( (error_) => {
+                if (axios.isAxiosError(error_) && error_.response?.status === 401) {
+                    setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                } else {
+                    console.log(error_)
+                }
+            })
+    }
     function deleteCD(cdId: string){
         axios.delete("/api/cd/" + cdId)
              .then( () => {
@@ -184,11 +197,6 @@ function App() {
                      console.log(error_)
                  }
              })
-    }
-    function editCd(cdId: string, upCd: CdDTO) {
-        console.log(cdId)
-        console.log(upCd)
-        openCD(cdId)
     }
 
     const loadUser = () => {
@@ -228,7 +236,7 @@ function App() {
         } else if (backPage === "details"){
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
-            nav("/collections/" + selectedCdCollection.id)
+            openCollection(selectedCdCollection.id)
         } else if (backPage === "show-cd"){
             setTitle(selectedCd.cdTitle)
             setPageType("BACK")

@@ -127,6 +127,7 @@ public class CdService {
         if (trackList.size() < cd.tracks().size()) {
             for (int i= trackList.size(); i < cd.tracks().size(); i++) {
                 cd.tracks().get(i).setCd(updatedCd);
+                trackRepo.save(cd.tracks().get(i));
                 updatedTrackList.add(cd.tracks().get(i));
             }
         }
