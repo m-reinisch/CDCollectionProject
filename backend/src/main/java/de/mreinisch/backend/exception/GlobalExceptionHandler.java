@@ -27,4 +27,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public String handleCdNotFound(CdNotFound exception){
         return UN_ERR + exception.getMessage();
     }
+
+    @ExceptionHandler(BarcodeNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleBarcodeNotFound(BarcodeNotFound exception){
+        return "Suche erfolglos: " + exception.getMessage();
+    }
 }

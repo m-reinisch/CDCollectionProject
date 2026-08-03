@@ -18,6 +18,12 @@ public class MusicbrainzService {
                 .build();
     }
 
+    /** Searches the MusicBrainz database for information about the CD using the barcode.
+     *
+     * @param barcode to search for
+     * @return found cd information
+     * @throws BarcodeNotFound if the barcode was not found
+     */
     public FoundCdDTO findCdByBarcode(String barcode) throws BarcodeNotFound {
         ReleaseAnswerDTO answer;
         FoundCdDTO cd;
@@ -29,9 +35,16 @@ public class MusicbrainzService {
                             "&limit=1&fmt=json")
                     .retrieve()
                     .body(ReleaseAnswerDTO.class);
+            System.out.println(answer);
             mbid= answer.releases().getFirst().id();
+            //@todo TrackList
             cd= FoundCdDTO.builder()
                     .cdTitle(answer.releases().getFirst().title())
+                    .performer(
+                            answer.releases().getFirst()
+                                    .artistCredit().getFirst().name())
+                    .publicationYear(Integer.parseInt(
+                            answer.releases().getFirst().date()))
                     .build();
             return  cd;
         } catch (HttpClientErrorException _) {
