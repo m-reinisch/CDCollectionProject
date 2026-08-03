@@ -228,47 +228,6 @@ class CdControllerTest {
                 .andExpect(content().string(errorMessage));
     }
 
-//    @Test
-//    @WithMockUser
-//    void updateCDById_shouldReturnCDWithExtraTrack_whenCdUpdated() throws Exception {
-//        String id= "0";
-//        AppUser appUser= new AppUser(id, "TestUser");
-//        CdCollection cdCollection= new CdCollection(id,
-//                                              "Testsammlung",
-//                                                    appUser,
-//                                                    Collections.emptyList());
-//        CD cd= new CD(id,"TestCD","Tester",
-//                1971, "6:54", null,
-//                        cdCollection, Collections.emptyList());
-//        Track track= new Track( 1, "TestSong",
-//                                "6:54", cd);
-//        Track extraTrack= new Track(2, "TSong",
-//                                    "6:11", cd);
-//        List<Track> trackList= List.of(track);
-//        List<Track> extraTrackList= List.of(track, extraTrack);
-//        CD expCd= new CD(cd);
-//        ObjectMapper mapper= new ObjectMapper();
-//
-//        userRepo.save(appUser);
-//        collectionRepo.save(cdCollection);
-//        trackRepo.save(track);
-//        cd.setTracks(trackList);
-//        trackRepo.save(extraTrack);
-//        repo.save(cd);
-//        CdDTO cdDTO= new CdDTO("TestCD","Tester",
-//                        1971, extraTrackList,
-//                            null, cdCollection);
-//        String jsonCdDTO = mapper.writeValueAsString(cdDTO);
-//        expCd.setTracks(extraTrackList);
-//        expCd.setTotalTime("13:05");
-//        String jsonCd = mapper.writeValueAsString(expCd);
-//        mvc.perform(put("/api/cd/" + id)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonCdDTO))
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(jsonCd));
-//    }
-
     @Test
     @WithMockUser
     void deleteCd_shouldReturnTrue_whenCdDeleted() throws Exception {
