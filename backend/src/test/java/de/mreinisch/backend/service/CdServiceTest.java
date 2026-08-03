@@ -11,9 +11,8 @@ import de.mreinisch.backend.repository.CdCollectionRepo;
 import de.mreinisch.backend.repository.CdRepo;
 import de.mreinisch.backend.repository.TrackRepo;
 import org.junit.jupiter.api.Test;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
@@ -198,5 +197,122 @@ class CdServiceTest {
                 .isThrownBy( () -> service.getCdById(id) )
                 .withMessage(errorMessage);
         verify(mockRepo, times(1)).findById(id);
+    }
+
+    @Test
+    void updateCd_shouldReturnUpdatedCD_whenCdInDatabase() throws CdNotFound {
+        CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        CdRepo mockRepo = mock(CdRepo.class);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                                         mockingIdService,
+                                         mockCollectionRepo,
+                                         mockTrackRepo);
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track(1, 1, "TestSong",
+                            "6:54", cd);
+        List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO("TestCD","Max",
+                        1971, trackList, null,
+                                cdCollection);
+        CD existingCD= new CD(cd);
+        CD expected= new CD(cd);
+        CD actual;
+
+        existingCD.setTracks(trackList);
+        when(mockRepo.findById(id)).thenReturn(Optional.of(existingCD));
+        expected.setTracks(trackList);
+        expected.setPerformer("Max");
+        actual= service.updateCd(id, cdDTO);
+        assertEquals(expected, actual);
+        verify(mockRepo, times(1)).findById(id);
+        verify(mockRepo, times(1)).save(existingCD);
+    }
+
+    @Test
+    void updateCd_shouldThrowException_whenCdNotFound(){
+        CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        CdRepo mockRepo = mock(CdRepo.class);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                                         mockingIdService,
+                                         mockCollectionRepo,
+                                         mockTrackRepo);
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track(1, 1, "TestSong",
+                            "6:54", cd);
+        List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO("TestCD","Max",
+                        1971, trackList, null,
+                                cdCollection);
+        String fid= "6";
+        String errorMessage= "CD mit id " + fid +
+                             " wurde nicht gefunden!";
+
+        assertThatExceptionOfType(CdNotFound.class)
+                .isThrownBy( () -> service.updateCd(fid, cdDTO) )
+                .withMessage(errorMessage);
+        verify(mockRepo, times(1)).findById(fid);
+        verify(mockRepo, times(0)).save(cd);
+    }
+
+    @Test
+    void updateCd_shouldReturnCDWithExtraTrack_whenCdUpdated() throws CdNotFound {
+        CdCollectionRepo mockCollectionRepo= mock(CdCollectionRepo.class);
+        IdService mockingIdService= mock(IdService.class);
+        CdRepo mockRepo = mock(CdRepo.class);
+        TrackRepo mockTrackRepo = mock(TrackRepo.class);
+        CdService service= new CdService(mockRepo,
+                                         mockingIdService,
+                                         mockCollectionRepo,
+                                         mockTrackRepo);
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track(1, 1, "TestSong",
+                            "6:54", cd);
+        Track extraTrack= new Track(2, 2,
+                            "TSong", "6:11", cd);
+        List<Track> trackList= List.of(track);
+        List<Track> extraTrackList= List.of(track, extraTrack);
+        CD existingCD= new CD(cd);
+        CD expected= new CD(cd);
+        CD actual;
+
+        existingCD.setTracks(trackList);
+        when(mockRepo.findById(id)).thenReturn(Optional.of(existingCD));
+        CdDTO cdDTO= new CdDTO("TestCD","Tester",
+                        1971, extraTrackList,
+                            null, cdCollection);
+        expected.setTracks(extraTrackList);
+        expected.setTotalTime("13:05");
+        actual= service.updateCd(id, cdDTO);
+        assertEquals(expected, actual);
+        verify(mockRepo, times(1)).findById(id);
+        verify(mockRepo, times(1)).save(expected);
     }
 }

@@ -28,6 +28,11 @@ public class CdController {
         return service.getCdById(id);
     }
 
+    @PutMapping("{id}")
+    public CD updateCDById(@PathVariable String id, @RequestBody CdDTO cd) throws CdNotFound {
+        return service.updateCd(id, cd);
+    }
+
     @DeleteMapping("/{id}")
     public Boolean deleteCd(@PathVariable String id) throws CdNotFound {
         return service.removeCd(id);

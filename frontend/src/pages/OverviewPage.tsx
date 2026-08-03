@@ -1,6 +1,6 @@
 import "./OverviewPage.css"
 import {useEffect} from "react";
-import type {Collection} from "../types.tsx";
+import type {Collection} from "../types/types.tsx";
 import {useForm} from "react-hook-form";
 
 type FormValues = {

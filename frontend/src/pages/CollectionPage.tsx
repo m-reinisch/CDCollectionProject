@@ -1,5 +1,5 @@
 import "./CollectionPage.css"
-import type {CD, Collection} from "../types.tsx";
+import type {CD, Collection} from "../types/types.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -33,7 +33,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     return (
         <section className="page">
             <div className="coll-header">
-                <button type={"button"}
+                <button type="button"
                         onClick={ () =>
                             nav("/cd/" + props.cdCollection.id) }>
                     CD hinzufügen

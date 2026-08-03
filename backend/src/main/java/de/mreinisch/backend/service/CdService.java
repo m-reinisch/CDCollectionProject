@@ -11,6 +11,7 @@ import de.mreinisch.backend.repository.CdRepo;
 import de.mreinisch.backend.repository.TrackRepo;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,6 +20,8 @@ public class CdService {
     private final IdService idService;
     private final CdCollectionRepo collectionRepo;
     private final TrackRepo trackRepo;
+    private static final String CD_TXT= "CD mit id ";
+    private static final String NF_TXT= " wurde nicht gefunden!";
 
     public CdService(CdRepo repo, IdService idService, CdCollectionRepo collectionRepo, TrackRepo trackRepo) {
         this.repo = repo;
@@ -58,8 +61,7 @@ public class CdService {
             return newCD;
         } else {
             throw new CdCollectionNotFound("CD Sammlung mit id " +
-                                            cdOwner.getId() +
-                                            " wurde nicht gefunden!");
+                                            cdOwner.getId() + NF_TXT);
         }
     }
 
@@ -72,8 +74,7 @@ public class CdService {
     public Boolean removeCd(String id) throws CdNotFound {
         CD delCd= repo.findById(id)
                       .orElseThrow( () ->
-                              new CdNotFound("CD mit id " + id +
-                                             " wurde nicht gefunden!"));
+                              new CdNotFound(CD_TXT + id + NF_TXT));
 
         delCd.getTracks().forEach(track ->
                                     trackRepo.delete(track));
@@ -90,11 +91,52 @@ public class CdService {
     public CD getCdById(String id) throws CdNotFound {
         return repo.findById(id)
                    .orElseThrow( () ->
-                           new CdNotFound("CD mit id " + id +
-                                          " wurde nicht gefunden!"));
+                           new CdNotFound(CD_TXT + id + NF_TXT));
     }
 
-    /** Calculates the total duration of the CD from the durations of the individual tracks.
+    /** Modifies entries for the desired CD.
+     *
+     * @param id of the CD to be searched for
+     * @param cd DTO with data to be changed
+     * @return updated cd
+     * @throws CdNotFound when CD not found
+     */
+    public CD updateCd(String id, CdDTO cd) throws CdNotFound {
+        CD updatedCd= repo.findById(id)
+                           .orElseThrow( () ->
+                                   new CdNotFound(CD_TXT + id + NF_TXT));
+        String totalTime= calcTotalTime(cd.tracks());
+        List<Track> trackList= updatedCd.getTracks();
+
+        updatedCd.setCdTitle(cd.cdTitle());
+        updatedCd.setPerformer(cd.performer());
+        updatedCd.setPublicationYear(cd.publicationYear());
+        updatedCd.setCoverUrl(cd.coverUrl());
+        updatedCd.setTotalTime(totalTime);
+        for( Track track : trackList ) {
+            Track updatedTrack=
+                    findTrackByPosition(track.getPosition(),
+                                        cd.tracks());
+
+            if( updatedTrack != null ){
+                track.setTrackTitle(updatedTrack.getTrackTitle());
+                track.setTime(updatedTrack.getTime());
+            }
+        }
+        List<Track> updatedTrackList= new ArrayList<>(trackList);
+        if (trackList.size() < cd.tracks().size()) {
+            for (int i= trackList.size(); i < cd.tracks().size(); i++) {
+                cd.tracks().get(i).setCd(updatedCd);
+                trackRepo.save(cd.tracks().get(i));
+                updatedTrackList.add(cd.tracks().get(i));
+            }
+        }
+        updatedCd.setTracks(updatedTrackList);
+        repo.save(updatedCd);
+        return updatedCd;
+    }
+
+    /** Calculates the total duration of the CD from the durations of the individual tracks
      * <br />
      * Helper function is used only internally.
      * @param tracks of CD
@@ -128,5 +170,24 @@ public class CdService {
         Duration sum= duration1.plus(duration2);
 
         return String.format("%02d:%02d", sum.toMinutes(), (sum.toSeconds() % 60));
+    }
+
+    /** Searches for the specified position in the tracklist
+     * <br />
+     * Helper function is used only internally.
+     * @param pos position to be searched for
+     * @param tracks list of tracks to be searched
+     * @return found track or null, if not found
+     */
+    private Track findTrackByPosition(int pos, List<Track> tracks) {
+        Track foundTrack = null;
+
+        for (Track track : tracks) {
+            if (track.getPosition() == pos) {
+                foundTrack = track;
+                break;
+            }
+        }
+        return foundTrack;
     }
 }

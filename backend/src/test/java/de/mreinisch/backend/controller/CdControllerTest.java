@@ -19,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -160,6 +161,113 @@ class CdControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(errorMessage));
     }
+
+    @Test
+    @WithMockUser
+    void updateCDById_shouldReturnCD_whenCdUpdated() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track( 1, "TestSong",
+                                "6:54", cd);
+        List<Track> trackList= List.of(track);
+        ObjectMapper mapper= new ObjectMapper();
+
+        userRepo.save(appUser);
+        collectionRepo.save(cdCollection);
+        trackRepo.save(track);
+        CdDTO cdDTO= new CdDTO("TestCD","Max",
+                        1971, trackList, null,
+                                cdCollection);
+        String jsonCdDTO = mapper.writeValueAsString(cdDTO);
+        cd.setTracks(trackList);
+        cd.setPerformer("Max");
+        repo.save(cd);
+        String jsonCd = mapper.writeValueAsString(cd);
+        mvc.perform(put("/api/cd/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCdDTO))
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonCd));
+    }
+
+    @Test
+    @WithMockUser
+    void updateCDById_shouldThrowException_whenCdNotFound() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54", null,
+                        cdCollection, Collections.emptyList());
+        Track track= new Track( 1, "TestSong",
+                "6:54", cd);
+        List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO("TestCD","Max",
+                        1971, trackList, null,
+                                cdCollection);
+        ObjectMapper mapper= new ObjectMapper();
+        String jsonCdDTO = mapper.writeValueAsString(cdDTO);
+        String fid= "6";
+        String errorMessage= "Unerwarteter Fehler: ";
+
+        errorMessage+= "CD mit id " + fid + " wurde nicht gefunden!";
+        mvc.perform(put("/api/cd/" + fid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCdDTO))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
+    }
+
+//    @Test
+//    @WithMockUser
+//    void updateCDById_shouldReturnCDWithExtraTrack_whenCdUpdated() throws Exception {
+//        String id= "0";
+//        AppUser appUser= new AppUser(id, "TestUser");
+//        CdCollection cdCollection= new CdCollection(id,
+//                                              "Testsammlung",
+//                                                    appUser,
+//                                                    Collections.emptyList());
+//        CD cd= new CD(id,"TestCD","Tester",
+//                1971, "6:54", null,
+//                        cdCollection, Collections.emptyList());
+//        Track track= new Track( 1, "TestSong",
+//                                "6:54", cd);
+//        Track extraTrack= new Track(2, "TSong",
+//                                    "6:11", cd);
+//        List<Track> trackList= List.of(track);
+//        List<Track> extraTrackList= List.of(track, extraTrack);
+//        CD expCd= new CD(cd);
+//        ObjectMapper mapper= new ObjectMapper();
+//
+//        userRepo.save(appUser);
+//        collectionRepo.save(cdCollection);
+//        trackRepo.save(track);
+//        cd.setTracks(trackList);
+//        trackRepo.save(extraTrack);
+//        repo.save(cd);
+//        CdDTO cdDTO= new CdDTO("TestCD","Tester",
+//                        1971, extraTrackList,
+//                            null, cdCollection);
+//        String jsonCdDTO = mapper.writeValueAsString(cdDTO);
+//        expCd.setTracks(extraTrackList);
+//        expCd.setTotalTime("13:05");
+//        String jsonCd = mapper.writeValueAsString(expCd);
+//        mvc.perform(put("/api/cd/" + id)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(jsonCdDTO))
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(jsonCd));
+//    }
 
     @Test
     @WithMockUser

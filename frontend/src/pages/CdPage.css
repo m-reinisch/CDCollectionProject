@@ -52,18 +52,37 @@
     justify-self: center;
     font-size: small;
     display: grid;
-    grid-template-columns: 350px 150px;
+    grid-template-columns: 50px 350px 150px;
     align-items: baseline;
     justify-content: center;
     color: black;
 }
 
+.cd-footer {
+    width: 100%;
+    justify-self: center;
+    display: grid;
+    grid-template-columns: 550px 300px;
+    align-items: baseline;
+    justify-content: flex-end;
+    height: 50px;
+}
+
 .cd-total-time {
     justify-self: center;
-    align-items: baseline;
+    align-self: baseline;
     font-size: small;
+    align-items: baseline;
     justify-content: flex-start;
     height: 30px;
     width: 125px;
     color: orange;
+}
+
+.edit-btn {
+    width: fit-content;
+    justify-self: flex-end;
+    align-self: baseline;
+    height: 30px;
+    margin: 10px;
 }
