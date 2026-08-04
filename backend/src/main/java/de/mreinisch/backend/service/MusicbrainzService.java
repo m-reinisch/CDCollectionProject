@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +40,6 @@ public class MusicbrainzService {
                             "&limit=1&fmt=json")
                     .retrieve()
                     .body(ReleaseAnswerDTO.class);
-            System.out.println(answer);
             mbid= answer.releases().getFirst().id();
             tracks= findTracksByBMID(mbid);
             cd= FoundCdDTO.builder()
@@ -58,8 +58,14 @@ public class MusicbrainzService {
         }
     }
 
+    /** Look for the tracks belonging to the CD using the BMID.
+     * <br />
+     * Helper function is used only internally.
+     * @param bmid determined in the first inquiry
+     * @return list of found tracks or empty list
+     */
     private List<ResponseTrack> findTracksByBMID(UUID bmid) {
-        List<ResponseTrack> tracks= Collections.emptyList();
+        List<ResponseTrack> tracks= new java.util.ArrayList<>(Collections.emptyList());
         BMIDAnswerDTO bmid_answer;
 
         try {
@@ -71,12 +77,26 @@ public class MusicbrainzService {
             for(TrackDTO trackDTO: bmid_answer.media().getFirst().tracks()) {
                 ResponseTrack track= ResponseTrack.builder()
                         .position(trackDTO.position())
+                        .trackTitle(trackDTO.title())
+                        .time(convertLengthToTime(trackDTO.length()))
                         .build();
                 tracks.add(track);
             }
         } catch (HttpClientErrorException exception){
-            System.out.println(exception.getMessage());
+            exception.getMessage();
         }
         return tracks;
+    }
+
+    /** Converts a duration in milliseconds into a formatted time string.
+     * <br />
+     * Helper function is used only internally.
+     * @param length of track in ms
+     * @return time string
+     */
+    private String convertLengthToTime(long length) {
+        Duration time = Duration.ofMillis(length);
+
+        return  String.format("%02d:%02d", time.toMinutes(), (time.toSeconds() % 60));
     }
 }
