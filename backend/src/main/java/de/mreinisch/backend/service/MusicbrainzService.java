@@ -1,11 +1,14 @@
 package de.mreinisch.backend.service;
 
-import de.mreinisch.backend.dto.FoundCdDTO;
-import de.mreinisch.backend.dto.ReleaseAnswerDTO;
+import de.mreinisch.backend.dto.*;
 import de.mreinisch.backend.exception.BarcodeNotFound;
+import de.mreinisch.backend.model.ResponseTrack;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +31,7 @@ public class MusicbrainzService {
         ReleaseAnswerDTO answer;
         FoundCdDTO cd;
         UUID mbid;
+        List<ResponseTrack> tracks;
 
         try {
             answer= restClient.get()
@@ -37,7 +41,7 @@ public class MusicbrainzService {
                     .body(ReleaseAnswerDTO.class);
             System.out.println(answer);
             mbid= answer.releases().getFirst().id();
-            //@todo TrackList
+            tracks= findTracksByBMID(mbid);
             cd= FoundCdDTO.builder()
                     .cdTitle(answer.releases().getFirst().title())
                     .performer(
@@ -45,11 +49,34 @@ public class MusicbrainzService {
                                     .artistCredit().getFirst().name())
                     .publicationYear(Integer.parseInt(
                             answer.releases().getFirst().date()))
+                    .tracks(tracks)
                     .build();
             return  cd;
         } catch (HttpClientErrorException _) {
             throw new BarcodeNotFound("Barcode: " + barcode +
                                       " nicht gefunden!");
         }
+    }
+
+    private List<ResponseTrack> findTracksByBMID(UUID bmid) {
+        List<ResponseTrack> tracks= Collections.emptyList();
+        BMIDAnswerDTO bmid_answer;
+
+        try {
+            bmid_answer= restClient.get()
+                    .uri(bmid.toString() +
+                            "?inc=aliases+recordings&fmt=json")
+                    .retrieve()
+                    .body(BMIDAnswerDTO.class);
+            for(TrackDTO trackDTO: bmid_answer.media().getFirst().tracks()) {
+                ResponseTrack track= ResponseTrack.builder()
+                        .position(trackDTO.position())
+                        .build();
+                tracks.add(track);
+            }
+        } catch (HttpClientErrorException exception){
+            System.out.println(exception.getMessage());
+        }
+        return tracks;
     }
 }
