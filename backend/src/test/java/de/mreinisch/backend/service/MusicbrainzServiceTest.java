@@ -2,6 +2,8 @@ package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.FoundCdDTO;
 import de.mreinisch.backend.exception.BarcodeNotFound;
+import de.mreinisch.backend.exception.InquiryNotPossible;
+import de.mreinisch.backend.exception.UnexpectedSeriousError;
 import de.mreinisch.backend.model.ResponseTrack;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 class MusicbrainzServiceTest {
 
     @Test
-    void findCdByBarcode_shouldReturnFoundCdDTO_whenFoundInApi() throws BarcodeNotFound {
+    void findCdByBarcode_shouldReturnFoundCdDTO_whenFoundInApi() throws BarcodeNotFound, InquiryNotPossible, UnexpectedSeriousError {
         RestClient.Builder restClientBuilder= RestClient.builder();
         MockRestServiceServer mockRestServiceServer= MockRestServiceServer
                 .bindTo(restClientBuilder).build();
@@ -100,7 +102,7 @@ class MusicbrainzServiceTest {
     }
 
     @Test
-    void findCdByBarcode_shouldReturnCdWithEmptyList_whenBMIDNotFound() throws BarcodeNotFound {
+    void findCdByBarcode_shouldReturnCdWithEmptyList_whenBMIDNotFound() throws BarcodeNotFound, InquiryNotPossible, UnexpectedSeriousError {
         RestClient.Builder restClientBuilder= RestClient.builder();
         MockRestServiceServer mockRestServiceServer= MockRestServiceServer
                 .bindTo(restClientBuilder).build();

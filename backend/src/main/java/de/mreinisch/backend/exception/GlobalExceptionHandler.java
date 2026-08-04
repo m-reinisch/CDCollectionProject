@@ -33,4 +33,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public String handleBarcodeNotFound(BarcodeNotFound exception){
         return "Suche erfolglos: " + exception.getMessage();
     }
+
+    @ExceptionHandler(InquiryNotPossible.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public String handleInquiryNotPossible(InquiryNotPossible exception) {
+        return exception.getMessage() + " Versuchen Sie es später nochmal!";
+    }
+
+    @ExceptionHandler(UnexpectedSeriousError.class)
+    public String handleUnexpectedSeriousError(UnexpectedSeriousError exception) {
+        return "Unerwarteter Ausnahmefehler: " + exception.getMessage();
+    }
 }

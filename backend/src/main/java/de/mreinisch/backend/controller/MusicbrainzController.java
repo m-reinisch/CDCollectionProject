@@ -2,6 +2,8 @@ package de.mreinisch.backend.controller;
 
 import de.mreinisch.backend.dto.FoundCdDTO;
 import de.mreinisch.backend.exception.BarcodeNotFound;
+import de.mreinisch.backend.exception.InquiryNotPossible;
+import de.mreinisch.backend.exception.UnexpectedSeriousError;
 import de.mreinisch.backend.service.MusicbrainzService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,7 @@ public class MusicbrainzController {
     }
 
     @GetMapping("/{barcode}")
-    public FoundCdDTO getCdByBarcode(@PathVariable String barcode) throws BarcodeNotFound {
+    public FoundCdDTO getCdByBarcode(@PathVariable String barcode) throws BarcodeNotFound, InquiryNotPossible, UnexpectedSeriousError {
         return musicbrainzService.findCdByBarcode(barcode);
     }
 }

@@ -2,9 +2,12 @@ package de.mreinisch.backend.service;
 
 import de.mreinisch.backend.dto.*;
 import de.mreinisch.backend.exception.BarcodeNotFound;
+import de.mreinisch.backend.exception.InquiryNotPossible;
+import de.mreinisch.backend.exception.UnexpectedSeriousError;
 import de.mreinisch.backend.model.ResponseTrack;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.time.Duration;
@@ -27,8 +30,9 @@ public class MusicbrainzService {
      * @param barcode to search for
      * @return found cd information
      * @throws BarcodeNotFound if the barcode was not found
+     * @throws InquiryNotPossible if MusicBrainz doesn't respond
      */
-    public FoundCdDTO findCdByBarcode(String barcode) throws BarcodeNotFound {
+    public FoundCdDTO findCdByBarcode(String barcode) throws BarcodeNotFound, InquiryNotPossible, UnexpectedSeriousError {
         ReleaseAnswerDTO answer;
         FoundCdDTO cd;
         UUID mbid;
@@ -56,11 +60,15 @@ public class MusicbrainzService {
                     .tracks(tracks)
                     .build();
             return  cd;
-        } catch (HttpClientErrorException _) {
-            throw new BarcodeNotFound("Barcode: " + barcode +
-                                      " nicht gefunden!");
+        } catch (HttpServerErrorException exception) {
+            if (exception.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE){
+                throw new InquiryNotPossible("Anfrage zurzeit nicht möglich!");
+            } else {
+                throw new BarcodeNotFound("Barcode: " + barcode +
+                                          " nicht gefunden!");
+            }
         } catch (NullPointerException _){
-            throw new RuntimeException();
+            throw new UnexpectedSeriousError("CD nicht gefunden!");
         }
     }
 
@@ -70,7 +78,7 @@ public class MusicbrainzService {
      * @param bmid determined in the first inquiry
      * @return list of found tracks or empty list
      */
-    private List<ResponseTrack> findTracksByBMID(UUID bmid) {
+    private List<ResponseTrack> findTracksByBMID(UUID bmid) throws UnexpectedSeriousError, InquiryNotPossible {
         List<ResponseTrack> tracks= new java.util.ArrayList<>(Collections.emptyList());
         BMIDAnswerDTO bmid_answer;
 
@@ -88,8 +96,12 @@ public class MusicbrainzService {
                         .build();
                 tracks.add(track);
             }
-        } catch (HttpClientErrorException exception){
-            exception.getMessage();
+        } catch (HttpServerErrorException exception){
+            if (exception.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE){
+                throw new InquiryNotPossible("Anfrage zurzeit nicht möglich!");
+            }
+        } catch (NullPointerException _){
+            throw new UnexpectedSeriousError("Stück nicht gefunden!");
         }
         return tracks;
     }
