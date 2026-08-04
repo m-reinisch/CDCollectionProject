@@ -7,6 +7,7 @@ import de.mreinisch.backend.exception.UnexpectedSeriousError;
 import de.mreinisch.backend.model.ResponseTrack;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -67,6 +68,9 @@ public class MusicbrainzService {
                 throw new BarcodeNotFound("Barcode: " + barcode +
                                           " nicht gefunden!");
             }
+        } catch (HttpClientErrorException _) {
+            throw new BarcodeNotFound("Barcode: " + barcode +
+                                      " nicht gefunden!");
         } catch (NullPointerException _){
             throw new UnexpectedSeriousError("CD nicht gefunden!");
         }
@@ -96,10 +100,12 @@ public class MusicbrainzService {
                         .build();
                 tracks.add(track);
             }
-        } catch (HttpServerErrorException exception){
-            if (exception.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE){
+        } catch (HttpServerErrorException exception) {
+            if (exception.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE) {
                 throw new InquiryNotPossible("Anfrage zurzeit nicht möglich!");
             }
+        } catch (HttpClientErrorException _){
+            // no handling needed
         } catch (NullPointerException _){
             throw new UnexpectedSeriousError("Stück nicht gefunden!");
         }
