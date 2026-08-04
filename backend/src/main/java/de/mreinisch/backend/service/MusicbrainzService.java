@@ -40,6 +40,10 @@ public class MusicbrainzService {
                             "&limit=1&fmt=json")
                     .retrieve()
                     .body(ReleaseAnswerDTO.class);
+            if (answer.count() == 0){
+                throw  new BarcodeNotFound("Barcode: " + barcode +
+                                           " nicht gefunden!");
+            }
             mbid= answer.releases().getFirst().id();
             tracks= findTracksByBMID(mbid);
             cd= FoundCdDTO.builder()
@@ -55,6 +59,8 @@ public class MusicbrainzService {
         } catch (HttpClientErrorException _) {
             throw new BarcodeNotFound("Barcode: " + barcode +
                                       " nicht gefunden!");
+        } catch (NullPointerException _){
+            throw new RuntimeException();
         }
     }
 

@@ -48,6 +48,7 @@ class MusicbrainzServiceTest {
             .andExpect(method(HttpMethod.GET))
             .andRespond(withSuccess("""
                 {
+                    "count": 7,
                     "releases": [{
                         "id": "67be9a0f-d852-36f3-8245-64e89a6759bd",
                         "title": "The Dream of the Blue Turtles",
@@ -86,7 +87,7 @@ class MusicbrainzServiceTest {
                 .bindTo(restClientBuilder).build();
         MusicbrainzService service=
                 new MusicbrainzService(restClientBuilder);
-        String barcode= "82839375023";
+        String barcode= "982839375023";
 
         mockRestServiceServer.expect(
                     requestTo("https://musicbrainz.org/ws/2/release/?query=barcode:" +
@@ -119,6 +120,7 @@ class MusicbrainzServiceTest {
             .andExpect(method(HttpMethod.GET))
             .andRespond(withSuccess("""
                 {
+                    "count": 7,
                     "releases": [{
                         "id": "07be9a0f-d852-36f3-8245-64e89a6759bd",
                         "title": "The Dream of the Blue Turtles",
