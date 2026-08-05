@@ -1,5 +1,5 @@
 import "./AddCdPage.css";
-import type {CD, CdCollection, CdDTO, Track} from "../types/types.tsx";
+import type {CD, CdCollection, CdDTO, Track} from "../types/UserTypes.tsx";
 import {useFieldArray, useForm} from "react-hook-form";
 import {useEffect} from "react";
 

@@ -1,6 +1,9 @@
 import './App.css'
 import Header from "./layouts/Header.tsx";
 import Footer from "./layouts/Footer.tsx";
+import type {AppUser} from "./types/UserTypes.tsx";
+import type {Collection, CollectionDTO} from "./types/CollectionTypes.tsx";
+import type {CD, CdDTO} from "./types/CdTypes.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 import {login, logout} from "./features/auth/LoginLogout.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
@@ -11,7 +14,6 @@ import CdPage from "./pages/CdPage.tsx";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from 'axios';
-import type {AppUser, CD, CdDTO, Collection, CollectionDTO} from "./types/types.tsx";
 import EditCd from "./pages/EditCdPage.tsx";
 
 const initialCollections: Collection[] = [
@@ -228,6 +230,9 @@ function App() {
     const handleError = (errorMessage: string) => {
             setErrorLog(errorMessage)
     }
+    const handlePriorityError = (errorMessage: string) => {
+        setPriorityError(errorMessage)
+    }
     const handleBack = () => {
         if (backPage === "overview"){
             setTitle("Übersicht Sammlungen")
@@ -288,6 +293,7 @@ function App() {
                            element={<AddCdPage onChangePage={changePage}
                                                onAddCd={addCd}
                                                onError={handleError}
+                                               onPriorError={handlePriorityError}
                                                key="new-cd" />}
                            key={"add-cd"} />
                     <Route path={"/cd/show/:cdId"}

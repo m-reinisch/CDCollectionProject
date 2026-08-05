@@ -1,5 +1,5 @@
 import "./CdPage.css"
-import type {CD} from "../types/types.tsx";
+import type {CD} from "../types/UserTypes.tsx";
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 

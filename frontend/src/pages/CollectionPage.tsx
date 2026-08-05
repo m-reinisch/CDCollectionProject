@@ -1,5 +1,5 @@
 import "./CollectionPage.css"
-import type {CD, Collection} from "../types/types.tsx";
+import type {CD, Collection} from "../types/UserTypes.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 

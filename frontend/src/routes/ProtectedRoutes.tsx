@@ -1,5 +1,5 @@
 import {Navigate, Outlet} from "react-router-dom";
-import type {AppUser} from "../types/types.tsx";
+import type {AppUser} from "../types/UserTypes.tsx";
 
 type ProtectedRoutesProps = {
     user: AppUser | null | undefined
