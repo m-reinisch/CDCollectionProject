@@ -5,7 +5,7 @@ import type {AppUser} from "./types/UserTypes.tsx";
 import type {Collection, CollectionDTO} from "./types/CollectionTypes.tsx";
 import type {CD, CdDTO} from "./types/CdTypes.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
-import {login, logout} from "./features/auth/LoginLogout.tsx";
+import {gitHubLogin, logout} from "./features/auth/LoginLogout.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
 import OverviewPage from "./pages/OverviewPage.tsx";
 import CollectionPage from "./pages/CollectionPage.tsx";
@@ -267,7 +267,7 @@ function App() {
             <Routes>
                 <Route path="/"
                        element={<LandingPage onChangePage={changePage}
-                                             onGitHubLogin={login} />}
+                                             onGitHubLogin={gitHubLogin} />}
                        key={"land"} />
                 <Route element={<ProtectedRoutes user={user}
                                                  key={"secure"} />}
