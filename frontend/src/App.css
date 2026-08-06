@@ -72,32 +72,3 @@ footer {
   flex-direction: column;
   align-items: center;
 }
-
-#gitbutton {
-  display: flex;
-  background: white;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 16px;
-  padding: 0 1rem;
-  font-size: 1rem;
-  font-family: inherit;
-  height: 3.35rem;
-  width: fit-content;
-  border: 2px solid blue;
-  border-radius: 4px;
-  vertical-align: baseline;
-  text-align: center;
-  margin: 15px;
-}
-
-.github {
-  display:inline-block;
-  float:left;
-  width: 3rem;
-  height: 2rem;
-  margin-right: 0.3em;
-  background-image: url("assets/gh.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-}

@@ -1,8 +1,10 @@
+import './LandingPage.css'
 import {useEffect} from "react";
 
 type LandingPageProps = {
     onChangePage: (page: string) => void,
-    onGitHubLogin: () => void
+    onGitHubLogin: () => void,
+    onGoogleLogin: () => void
 }
 
 export default function LandingPage(props: Readonly<LandingPageProps>) {
@@ -12,14 +14,26 @@ export default function LandingPage(props: Readonly<LandingPageProps>) {
 
     return(
         <div className="page">
-            <h2>Dies ist eine einfache Anwendung zum Verwalten Ihrer CD-Sammlung</h2>
-            <p>Eingeloggte Benutzer können eine (oder mehrere) Sammlung(en) anlegen,
-                CDs hinzufügen und in der Sammlung suchen.
-            </p>
-            <button id="gitbutton" onClick={props.onGitHubLogin}>
-                <span className="github" >G</span>
-                <span>Mit GitHub einloggen</span>
-            </button>
+            <div className="landing-page">
+                <h2>Dies ist eine einfache Anwendung zum Verwalten Ihrer CD-Sammlung</h2>
+                <p>Eingeloggte Benutzer können eine (oder mehrere)
+                    Sammlung(en) anlegen, CDs hinzufügen und in der
+                    Sammlung CDs suchen.<br />
+                    Die  Eingabe der CDs kann manuell erfolgen, oder
+                    anhand des Barcodes auf der CD lassen sich die
+                    Daten ermitteln.
+                </p>
+                <div className="logins">
+                    <button id="gitbutton" onClick={props.onGitHubLogin}>
+                        <span className="github" >G</span>
+                        <span>Mit GitHub einloggen</span>
+                    </button>
+                    <button id="googlebutton" onClick={props.onGoogleLogin}>
+                        <span className="google" > </span>
+                        <span>Mit Google einloggen</span>
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }
