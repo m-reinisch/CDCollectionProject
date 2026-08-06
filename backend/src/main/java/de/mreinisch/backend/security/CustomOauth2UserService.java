@@ -20,12 +20,23 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        userRepo.findById(oAuth2User.getName())
-                .orElseGet(() -> createUser(oAuth2User));
 
-        return oAuth2User;
+        if (isGoogle(oAuth2User)) {
+            userRepo.findById(oAuth2User.getAttributes().get("sub").toString())
+                    .orElseGet(() -> createUser(oAuth2User));
+            return oAuth2User;
+        } else {
+            userRepo.findById(oAuth2User.getName())
+                    .orElseGet(() -> createUser(oAuth2User));
+            return oAuth2User;
+        }
     }
 
+    /** Creates a user and saves it.
+     *
+     * @param newUser to create
+     * @return saved user
+     */
     private AppUser createUser(OAuth2User newUser){
         AppUser temp;
 
@@ -46,6 +57,11 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         return temp;
     }
 
+    /** Checks whether the user logged in using Google or GitHub.
+     *
+     * @param oAuth2User to check
+     * @return true if google, false if github
+     */
     public static boolean isGoogle(OAuth2User oAuth2User) {
         if (oAuth2User instanceof OidcUser) {
             return true; // Google nutzt OIDC standardmäßig

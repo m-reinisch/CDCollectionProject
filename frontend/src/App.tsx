@@ -73,6 +73,7 @@ function App() {
         if (accessedPage === "landing"){
             setTitle("Willkommen zur CD-Sammlung App")
             setPageType("NO")
+            setIsLoggedIn(false)
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
             setPageType("NO")
