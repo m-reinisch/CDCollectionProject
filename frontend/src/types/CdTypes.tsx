@@ -1,19 +1,4 @@
-export type AppUser = {
-    id: string,
-    name: string,
-    collection: Collection[]
-}
-
-export type Collection = {
-    id: string,
-    name: string,
-    cds: CD[]
-}
-
-export type CollectionDTO = {
-    name: string,
-    appUser: AppUser
-}
+import type {CdCollection} from "./CollectionTypes.tsx";
 
 export type CD = {
     id: string,
@@ -41,6 +26,15 @@ export type Track = {
     time: string
 }
 
-export type CdCollection = {
-    id: string
+export type FoundCdDTO= {
+    cdTitle: string,
+    performer: string,
+    publicationYear: number,
+    tracks: ResponseTrack[]
+}
+
+export type ResponseTrack= {
+    position: number,
+    trackTitle: string,
+    time: string
 }

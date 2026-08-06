@@ -1,8 +1,10 @@
 import "./AddCdPage.css";
-import type {CdDTO, Track} from "../types/types.tsx";
-import {useEffect} from "react";
+import MusicBrainzModal from "../components/MusicBrainzModal.tsx";
+import type {CdDTO, FoundCdDTO, Track} from "../types/CdTypes.tsx";
+import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {useForm, useFieldArray} from "react-hook-form";
+import axios from 'axios';
 
 type FormValues = {
     title: string,
@@ -14,10 +16,13 @@ type FormValues = {
 type AddCdPageProps = {
     onChangePage: (page: string) => void,
     onAddCd: (newCd: CdDTO) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    onPriorError: (message: string) => void
 }
 
 export default function AddCdPage(props: Readonly<AddCdPageProps>) {
+    const [isOpen, setIsOpen] = useState(false)
+    const [foundCD, setFoundCD] = useState<FoundCdDTO | null>(null)
     const param= useParams();
     const { control, register, handleSubmit, reset,
             formState: { errors, isValid }
@@ -75,8 +80,29 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
         }
 
         props.onAddCd(cd)
-        reset({title: '', performer: '', publicationYear: '',
-               })
+        reset({title: '', performer: '', publicationYear: ''})
+    }
+    function searchCd(bc: string) {
+        axios.get("/api/musicbrainz/" + bc)
+             .then( (response) => {
+                 setFoundCD(response.data)
+                 props.onPriorError("")
+             })
+             .catch( (error_) => {
+                 props.onPriorError(error_.response.data)
+             })
+    }
+    function initValues() {
+        if (foundCD) {
+            reset({
+                title: foundCD.cdTitle,
+                performer: foundCD.performer,
+                publicationYear: foundCD.publicationYear.toString(),
+                trackTT: foundCD.tracks.map( track => (
+                    {title: track.trackTitle, time: track.time}
+                ))
+            })
+        }
     }
 
     useEffect(() => {
@@ -91,9 +117,22 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
             props.onError("")
         }
     }, [errors, props]);
+    useEffect(() => {
+        initValues()
+    }, [foundCD]);
 
     return (
         <div className="page">
+            <div style={{ padding: '7px' }}>
+                <button onClick={() => setIsOpen(true)}>
+                    CD in MusicBrainz suchen
+                </button>
+                <MusicBrainzModal
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    onSubmit={searchCd}
+                />
+            </div>
             <form className="new-cd"
                   onSubmit={handleSubmit(submit)}>
                 <label id="lbl-cd-titel">
