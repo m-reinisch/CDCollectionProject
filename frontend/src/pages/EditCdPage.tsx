@@ -1,7 +1,8 @@
 import "./AddCdPage.css";
-import type {CD, CdCollection, CdDTO, Track} from "../types/UserTypes.tsx";
+import type {CD, CdDTO, Track} from "../types/CdTypes.tsx";
 import {useFieldArray, useForm} from "react-hook-form";
 import {useEffect} from "react";
+import type {CdCollection} from "../types/CollectionTypes.tsx";
 
 type FormValues = {
     title: string,

@@ -1,7 +1,8 @@
 import "./CollectionPage.css"
-import type {CD, Collection} from "../types/UserTypes.tsx";
+import type {Collection} from "../types/CollectionTypes.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import type {CD} from "../types/CdTypes.tsx";
 
 type CollectionPageProps = {
     cdCollection: Collection,
