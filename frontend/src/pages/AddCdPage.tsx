@@ -124,7 +124,8 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
     return (
         <div className="page">
             <div style={{ padding: '7px' }}>
-                <button onClick={() => setIsOpen(true)}>
+                <button type="button"
+                        onClick={() => setIsOpen(true)}>
                     CD in MusicBrainz suchen
                 </button>
                 <MusicBrainzModal
