@@ -122,7 +122,7 @@ function App() {
                  if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                      setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                  } else {
-                     console.log(error_)
+                     console.log(error_.response?.data)
                  }
              })
 
@@ -139,7 +139,7 @@ function App() {
                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                 } else {
-                    console.log(error_)
+                    console.log(error_.response?.data)
                 }
              })
     }
@@ -152,7 +152,7 @@ function App() {
                  if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                      setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                  } else {
-                     console.log(error_)
+                     console.log(error_.response?.data)
                  }
              })
     }
@@ -179,7 +179,7 @@ function App() {
                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                 } else {
-                    console.log(error_)
+                    console.log(error_.response?.data)
                 }
             })
     }

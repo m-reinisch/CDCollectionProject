@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -84,15 +83,15 @@ public class MusicbrainzService {
      */
     private List<ResponseTrack> findTracksByBMID(UUID bmid) throws UnexpectedSeriousError, InquiryNotPossible {
         List<ResponseTrack> tracks= new java.util.ArrayList<>(Collections.emptyList());
-        BMIDAnswerDTO bmid_answer;
+        BMIDAnswerDTO bmidAnswer;
 
         try {
-            bmid_answer= restClient.get()
+            bmidAnswer= restClient.get()
                     .uri(bmid.toString() +
                             "?inc=aliases+recordings&fmt=json")
                     .retrieve()
                     .body(BMIDAnswerDTO.class);
-            for(TrackDTO trackDTO: bmid_answer.media().getFirst().tracks()) {
+            for(TrackDTO trackDTO: bmidAnswer.media().getFirst().tracks()) {
                 ResponseTrack track= ResponseTrack.builder()
                         .position(trackDTO.position())
                         .trackTitle(trackDTO.title())

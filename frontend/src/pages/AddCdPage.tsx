@@ -10,7 +10,7 @@ type FormValues = {
     title: string,
     performer: string,
     publicationYear: string,
-    coverUrl: string | null,
+    coverUrl: string,
     trackTT: {title: string, time: string}[]
 }
 type AddCdPageProps = {
@@ -73,14 +73,15 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
             performer: data.performer,
             publicationYear: year,
             tracks: trackList,
-            coverUrl: null,
+            coverUrl: data.coverUrl,
             cdCollection: {
                 id: param.collId!
             }
         }
 
         props.onAddCd(cd)
-        reset({title: '', performer: '', publicationYear: ''})
+        reset({title: '', performer: '', publicationYear: '',
+               coverUrl: ''})
     }
     function searchCd(bc: string) {
         axios.get("/api/musicbrainz/" + bc)
@@ -156,6 +157,12 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                     Jahr der Veröffentlichung:
                     <input id="txt-cd-year" type="text"
                            {...register("publicationYear")}
+                    />
+                </label>
+                <label id="lbl-cd-cover">
+                    URL für Cover Bild:
+                    <input id="txt-cd-cover" type="text"
+                           {...register("coverUrl")}
                     />
                 </label>
                 <label id="lbl-cd-style"></label>

@@ -16,7 +16,7 @@ export type CdDTO = {
     performer: string,
     publicationYear: number,
     tracks: Track[],
-    coverUrl: string | null,
+    coverUrl: string,
     cdCollection: CdCollection
 }
 
