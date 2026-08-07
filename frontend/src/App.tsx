@@ -88,6 +88,7 @@ function App() {
             setPageType("ABORT")
             setBackPage("show-cd")
         }
+        handleError("")
     }
     function addCollection(collName: string){
         const newCollection: CollectionDTO = {
