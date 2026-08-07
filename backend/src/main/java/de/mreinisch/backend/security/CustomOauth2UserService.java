@@ -2,6 +2,7 @@ package de.mreinisch.backend.security;
 
 import de.mreinisch.backend.model.AppUser;
 import de.mreinisch.backend.repository.AppUserRepo;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -18,18 +19,19 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     }
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(@NonNull OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         if (isGoogle(oAuth2User)) {
-            userRepo.findById(oAuth2User.getAttributes().get("sub").toString())
-                    .orElseGet(() -> createUser(oAuth2User));
-            return oAuth2User;
+            if (!userRepo.existsById(oAuth2User.getAttributes().get("sub").toString())) {
+                createUser(oAuth2User);
+            }
         } else {
-            userRepo.findById(oAuth2User.getName())
-                    .orElseGet(() -> createUser(oAuth2User));
-            return oAuth2User;
+            if (!userRepo.existsById(oAuth2User.getName())) {
+                createUser(oAuth2User);
+            }
         }
+        return oAuth2User;
     }
 
     /** Creates a user and saves it.
