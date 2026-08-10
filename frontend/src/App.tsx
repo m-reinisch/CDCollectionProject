@@ -5,7 +5,7 @@ import type {AppUser} from "./types/UserTypes.tsx";
 import type {Collection, CollectionDTO} from "./types/CollectionTypes.tsx";
 import type {CD, CdDTO} from "./types/CdTypes.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
-import {login, logout} from "./features/auth/LoginLogout.tsx";
+import {gitHubLogin, googleLogin, logout} from "./features/auth/LoginLogout.tsx";
 import LandingPage from "./pages/LandingPage.tsx";
 import OverviewPage from "./pages/OverviewPage.tsx";
 import CollectionPage from "./pages/CollectionPage.tsx";
@@ -16,13 +16,7 @@ import {useEffect, useState} from "react";
 import axios from 'axios';
 import EditCd from "./pages/EditCdPage.tsx";
 
-const initialCollections: Collection[] = [
-    {
-        id: "0",
-        name: "Meine CDs",
-        cds: []
-    }
-]
+const initialCollections: Collection[] = [ ]
 const testCollection: Collection = {
     id: "0",
     name: "Meine CDs mit langen Namen zum Testen",
@@ -73,6 +67,7 @@ function App() {
         if (accessedPage === "landing"){
             setTitle("Willkommen zur CD-Sammlung App")
             setPageType("NO")
+            setIsLoggedIn(false)
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
             setPageType("NO")
@@ -211,7 +206,9 @@ function App() {
                  nav("/collections")
              })
              .catch( () => {
-                setUser(null)
+                 setUser(null)
+                 setUserId("")
+                 setUserName("")
              })
     }
     const loadCollections = (usrId: string) => {
@@ -222,8 +219,13 @@ function App() {
              .catch( (error_) => {
                  if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                      setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
+                 } else if (axios.isAxiosError(error_) && error_.response?.status === 404) {
+                     setCdCollections(initialCollections)
+                     if (error_.response?.data.includes("Benutzer mit id:")) {
+                         setPriorityError("Benutzer nicht gefunden! Versuche Sie sich aus und wieder einzuloggen.")
+                     }
                  } else {
-                     console.log(error_)
+                     console.log(error_.response?.data)
                  }
              })
     }
@@ -267,7 +269,8 @@ function App() {
             <Routes>
                 <Route path="/"
                        element={<LandingPage onChangePage={changePage}
-                                             onGitHubLogin={login} />}
+                                             onGitHubLogin={gitHubLogin}
+                                             onGoogleLogin={googleLogin} />}
                        key={"land"} />
                 <Route element={<ProtectedRoutes user={user}
                                                  key={"secure"} />}
