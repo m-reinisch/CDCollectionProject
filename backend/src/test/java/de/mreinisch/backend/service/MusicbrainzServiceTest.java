@@ -41,6 +41,7 @@ class MusicbrainzServiceTest {
         FoundCdDTO expected=
                 new FoundCdDTO("The Dream of the Blue Turtles",
                              "Sting", 1985,
+                                "http://coverartarchive.org/release/67be9a0f-d852-36f3-8245-64e89a6759bd/3877346050.jpg",
                                 tracks);
         FoundCdDTO actual;
 
@@ -78,6 +79,19 @@ class MusicbrainzServiceTest {
                     }]
                 }
             """, MediaType.APPLICATION_JSON));
+        mockRestServiceServer.expect(
+                    requestTo("https://coverartarchive.org/release/" +
+                            bmid))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess("""
+            {
+                "images": [{
+                    "front": true,
+                    "back": false,
+                    "image": "http://coverartarchive.org/release/67be9a0f-d852-36f3-8245-64e89a6759bd/3877346050.jpg"
+                }]
+            }
+            """, MediaType.APPLICATION_JSON));
         actual=service.findCdByBarcode(barcode);
         assertEquals(expected, actual);
     }
@@ -113,6 +127,7 @@ class MusicbrainzServiceTest {
         FoundCdDTO expected=
                 new FoundCdDTO("The Dream of the Blue Turtles",
                              "Sting", 1985,
+                                "http://coverartarchive.org/release/67be9a0f-d852-36f3-8245-64e89a6759bd/3877346050.jpg",
                                 Collections.emptyList());
         FoundCdDTO actual;
 
@@ -138,7 +153,39 @@ class MusicbrainzServiceTest {
                             bmid + "?inc=aliases+recordings&fmt=json"))
             .andExpect(method(HttpMethod.GET))
             .andRespond(withStatus(HttpStatus.BAD_REQUEST));
+        mockRestServiceServer.expect(
+                    requestTo("https://coverartarchive.org/release/" +
+                            bmid))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess("""
+            {
+                "images": [{
+                    "front": true,
+                    "back": false,
+                    "image": "http://coverartarchive.org/release/67be9a0f-d852-36f3-8245-64e89a6759bd/3877346050.jpg"
+                }]
+            }
+            """, MediaType.APPLICATION_JSON));
         actual=service.findCdByBarcode(barcode);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void findCdByBarcode_shouldThrowException_whenServerNotAvailable() {
+        RestClient.Builder restClientBuilder= RestClient.builder();
+        MockRestServiceServer mockRestServiceServer= MockRestServiceServer
+                .bindTo(restClientBuilder).build();
+        MusicbrainzService service=
+                new MusicbrainzService(restClientBuilder);
+        String barcode= "982839375023";
+
+        mockRestServiceServer.expect(
+                        requestTo("https://musicbrainz.org/ws/2/release/?query=barcode:" +
+                                barcode + "&limit=1&fmt=json"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.SERVICE_UNAVAILABLE));
+        assertThatExceptionOfType(InquiryNotPossible.class)
+                .isThrownBy( () -> service.findCdByBarcode(barcode) )
+                .withMessage("Anfrage zurzeit nicht möglich!");
     }
 }

@@ -28,7 +28,7 @@ public class CdController {
         return service.getCdById(id);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public CD updateCDById(@PathVariable String id, @RequestBody CdDTO cd) throws CdNotFound {
         return service.updateCd(id, cd);
     }

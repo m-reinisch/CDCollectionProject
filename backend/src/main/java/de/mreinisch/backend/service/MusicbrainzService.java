@@ -20,9 +20,7 @@ public class MusicbrainzService {
     private final RestClient restClient;
 
     public MusicbrainzService(RestClient.Builder builder) {
-        this.restClient= builder
-                .baseUrl("https://musicbrainz.org/ws/2/release/")
-                .build();
+        this.restClient= builder.build();
     }
 
     /** Searches the MusicBrainz database for information about the CD using the barcode.
@@ -37,11 +35,13 @@ public class MusicbrainzService {
         FoundCdDTO cd;
         UUID mbid;
         List<ResponseTrack> tracks;
+        String date;
+        String year;
 
         try {
             answer= restClient.get()
-                    .uri("?query=barcode:"  + barcode +
-                            "&limit=1&fmt=json")
+                    .uri("https://musicbrainz.org/ws/2/release/?query=barcode:" +
+                            barcode + "&limit=1&fmt=json")
                     .retrieve()
                     .body(ReleaseAnswerDTO.class);
             if (answer.count() == 0){
@@ -50,13 +50,15 @@ public class MusicbrainzService {
             }
             mbid= answer.releases().getFirst().id();
             tracks= findTracksByBMID(mbid);
+            date= answer.releases().getFirst().date();
+            year= date.substring(0,4);
             cd= FoundCdDTO.builder()
                     .cdTitle(answer.releases().getFirst().title())
                     .performer(
                             answer.releases().getFirst()
                                     .artistCredit().getFirst().name())
-                    .publicationYear(Integer.parseInt(
-                            answer.releases().getFirst().date()))
+                    .publicationYear(Integer.parseInt(year))
+                    .coverUrl(findCoverByBMID(mbid))
                     .tracks(tracks)
                     .build();
             return  cd;
@@ -80,6 +82,8 @@ public class MusicbrainzService {
      * Helper function is used only internally.
      * @param bmid determined in the first inquiry
      * @return list of found tracks or empty list
+     * @throws InquiryNotPossible if MusicBrainz doesn't respond
+     * @throws UnexpectedSeriousError if answer is null
      */
     private List<ResponseTrack> findTracksByBMID(UUID bmid) throws UnexpectedSeriousError, InquiryNotPossible {
         List<ResponseTrack> tracks= new java.util.ArrayList<>(Collections.emptyList());
@@ -87,7 +91,8 @@ public class MusicbrainzService {
 
         try {
             bmidAnswer= restClient.get()
-                    .uri(bmid.toString() +
+                    .uri("https://musicbrainz.org/ws/2/release/" +
+                            bmid.toString() +
                             "?inc=aliases+recordings&fmt=json")
                     .retrieve()
                     .body(BMIDAnswerDTO.class);
@@ -109,6 +114,38 @@ public class MusicbrainzService {
             throw new UnexpectedSeriousError("Stück nicht gefunden!");
         }
         return tracks;
+    }
+
+    /** Look for the cover image.
+     * <br />
+     * Helper function is used only internally.
+     * @param bmid determined in the first inquiry
+     * @return url or empty string
+     * @throws InquiryNotPossible if MusicBrainz doesn't respond
+     */
+    private String findCoverByBMID(UUID bmid) throws InquiryNotPossible, UnexpectedSeriousError {
+        String coverUrl= "";
+        CoverArtAnswerDTO coverArtAnswer;
+
+        try {
+            coverArtAnswer= restClient.get()
+                    .uri("https://coverartarchive.org/release/" + bmid)
+                    .retrieve()
+                    .body(CoverArtAnswerDTO.class);
+            for (ImageDTO image: coverArtAnswer.images()) {
+                if ( (image.front()) && (!image.back())) {
+                    coverUrl= image.image();
+                    break;
+                }
+            }
+        } catch (HttpServerErrorException exception) {
+            if (exception.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE) {
+                throw new InquiryNotPossible("Anfrage zurzeit nicht möglich!");
+            }
+        }  catch (NullPointerException _){
+            throw new UnexpectedSeriousError("Cover nicht gefunden!");
+        }
+        return coverUrl;
     }
 
     /** Converts a duration in milliseconds into a formatted time string.

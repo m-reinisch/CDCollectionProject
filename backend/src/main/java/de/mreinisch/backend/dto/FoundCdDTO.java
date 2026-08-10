@@ -16,6 +16,7 @@ public record FoundCdDTO(
         String cdTitle,
         String performer,
         int publicationYear,
+        String coverUrl,
         List<ResponseTrack> tracks
 ) {
 }
