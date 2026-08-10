@@ -1,23 +1,25 @@
 .cd-details {
-    width: 100%;
+    width: fit-content;
     display: grid;
-    grid-template-rows: 1fr auto 40px;
+    grid-template-rows: 30px auto 50px;
     align-items: flex-start;
     margin: 10px;
 }
 
 .cd-header {
-    width: 100%;
+    width: 600px;
     justify-self: center;
+    align-self: baseline;
     display: grid;
-    grid-template-columns: 650px 350px;
+    grid-template-columns: 350px 200px;
     align-items: baseline;
     justify-content: center;
     height: 30px;
+    background-color: rgb(255 255 255 / 0.7);
 }
 
 .cd-performer {
-    width: 600px;
+    width: 300px;
     color: blue;
     justify-self: center;
     align-self: baseline;
@@ -34,7 +36,7 @@
     justify-content: center;
     align-items: baseline;
     height: 30px;
-    width: 400px;
+    width: 200px;
 }
 
 .track-list {
@@ -45,6 +47,7 @@
     align-items: flex-start;
     margin: 10px;
     color: darkred;
+    background-color: rgb(255 255 255 / 0.7);
 }
 
 #track {
@@ -59,13 +62,14 @@
 }
 
 .cd-footer {
-    width: 100%;
+    width: 600px;
     justify-self: center;
     display: grid;
-    grid-template-columns: 550px 300px;
+    grid-template-columns: 130px 300px;
     align-items: baseline;
     justify-content: flex-end;
     height: 50px;
+    background-color: rgb(255 255 255 / 0.7);
 }
 
 .cd-total-time {

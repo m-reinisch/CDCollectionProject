@@ -10,6 +10,12 @@ type CdPageProps = {
 
 export default function CdPage(props: Readonly<CdPageProps>) {
     const nav= useNavigate()
+    const coverStyle: React.CSSProperties= {
+        backgroundImage: `url(${props.cd.coverUrl})`,
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+    }
 
     useEffect(() => {
         props.onChangePage("show-cd")
@@ -17,7 +23,7 @@ export default function CdPage(props: Readonly<CdPageProps>) {
 
     return (
         <div className="page">
-            <div className="cd-details">
+            <div className="cd-details" style={coverStyle}>
                 <div className="cd-header">
                     <div className="cd-performer">{props.cd.performer}</div>
                     <div className="cd-year">© {props.cd.publicationYear}</div>
