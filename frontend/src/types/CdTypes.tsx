@@ -30,6 +30,7 @@ export type FoundCdDTO= {
     cdTitle: string,
     performer: string,
     publicationYear: number,
+    coverUrl: string,
     tracks: ResponseTrack[]
 }
 

@@ -99,6 +99,7 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                 title: foundCD.cdTitle,
                 performer: foundCD.performer,
                 publicationYear: foundCD.publicationYear.toString(),
+                coverUrl: foundCD.coverUrl,
                 trackTT: foundCD.tracks.map( track => (
                     {title: track.trackTitle, time: track.time}
                 ))
@@ -126,7 +127,10 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
         <div className="page">
             <div style={{ padding: '7px' }}>
                 <button type="button"
-                        onClick={() => setIsOpen(true)}>
+                        onClick={ () => {
+                            setIsOpen(true);
+                            props.onPriorError("")
+                        }}>
                     CD in MusicBrainz suchen
                 </button>
                 <MusicBrainzModal
