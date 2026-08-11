@@ -76,7 +76,7 @@ function App() {
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
             setBackPage("overview")
-            if(priorityError !== "Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen."){
+            if(priorityError !== "Unerwarteter Fehler! Versuchen Sie sich aus und wieder einzuloggen."){
                 setPriorityError("")
             }
         } else if (accessedPage === "add-cd"){
