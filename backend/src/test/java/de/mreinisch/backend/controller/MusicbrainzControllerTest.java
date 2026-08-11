@@ -187,7 +187,7 @@ class MusicbrainzControllerTest {
     @Test
     @WithMockUser
     void getCdByBarcode_shouldThrowException_whenBarcodeNotFound() throws Exception {
-        String barcode= "92839375023";
+        String barcode= "192839375023";
         String errorMessage= "Suche erfolglos: ";
 
         errorMessage+= "Barcode: " + barcode + " nicht gefunden!";
@@ -198,6 +198,22 @@ class MusicbrainzControllerTest {
                 .andRespond(withStatus(HttpStatus.NOT_FOUND));
         mvc.perform(get("/api/musicbrainz/" + barcode))
                 .andExpect(status().isNotFound())
+                .andExpect(content().string(errorMessage));
+    }
+
+    @Test
+    @WithMockUser
+    void getCdByBarcode_shouldThrowException_whenBarcodeIsIncorrect() throws Exception {
+        String barcode= "1-928393-75023";
+        String errorMessage= "Der Barcode darf nur Zahlen enthalten und muss zwischen 12 und 14 Zeichen lang sein!";
+
+        restServiceServer.expect(
+                        requestTo("https://musicbrainz.org/ws/2/release/?query=barcode:" +
+                                barcode + "&limit=1&fmt=json"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND));
+        mvc.perform(get("/api/musicbrainz/" + barcode))
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string(errorMessage));
     }
 }

@@ -1,7 +1,7 @@
 package de.mreinisch.backend.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -22,12 +22,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String UN_ERR= "Unerwarteter Fehler: ";
 
     @Override
-    protected @NullMarked ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                              HttpHeaders headers,
-                                                                              HttpStatusCode status,
-                                                                              WebRequest request) {
+    protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+                                                                            HttpHeaders headers,
+                                                                            HttpStatusCode status,
+                                                                            WebRequest request) {
         Map<String, String> validationErrors = new HashMap<>();
-        List<FieldError> allErrors = ex.getBindingResult().getFieldErrors();
+        List<FieldError> allErrors = exception.getBindingResult().getFieldErrors();
 
         allErrors.forEach(error -> {
             String fieldName = error.getField();
@@ -35,6 +35,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             validationErrors.put(fieldName, errorMsg);
         });
         return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleConstraintViolationException(ConstraintViolationException exception) {
+        String shortenedMessage= "Unbekannter Fehler!";
+
+        if (exception.getMessage().startsWith("getCdByBarcode.barcode: ")){
+            shortenedMessage= exception.getMessage().substring(24);
+        }
+        return shortenedMessage;
     }
 
     @ExceptionHandler(AppUserNotFound.class)
