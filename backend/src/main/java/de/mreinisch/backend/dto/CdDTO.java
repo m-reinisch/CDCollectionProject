@@ -2,6 +2,10 @@ package de.mreinisch.backend.dto;
 
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.model.Track;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 /** Data transfer object for CD
@@ -14,11 +18,15 @@ import java.util.List;
  * @param cdCollection who owns the CD
  */
 public record CdDTO(
+        @NotBlank(message = "Der Titel ist erforderlich!")
         String cdTitle,
+        @NotBlank(message = "Der Interpret ist erforderlich!")
         String performer,
         int publicationYear,
+        @Valid
         List<Track> tracks,
         String coverUrl,
+        @NotNull(message = "Zugehörige CdCollection ist erforderlich!")
         CdCollection cdCollection
 ) {
 }
