@@ -23,6 +23,7 @@ type AddCdPageProps = {
 export default function AddCdPage(props: Readonly<AddCdPageProps>) {
     const [isOpen, setIsOpen] = useState(false)
     const [foundCD, setFoundCD] = useState<FoundCdDTO | null>(null)
+    const [barcodeError, setBarcodeError] = useState<string>("")
     const param= useParams();
     const { control, register, handleSubmit, reset,
             formState: { errors, isValid }
@@ -109,16 +110,23 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
 
     useEffect(() => {
         props.onChangePage("add-cd")
-    }, []);
+    }, [props]);
     useEffect(() => {
         if (errors.title) {
             props.onError(errors.title.message!)
         } else if (errors.performer) {
             props.onError(errors.performer.message!)
+        } else if (errors.trackTT) {
+            const timeError = fields
+                .map((_, index) => errors.trackTT?.[index]?.time)
+                .find(Boolean)
+            props.onError(timeError ? timeError.message! : "")
+        } else if (barcodeError){
+            props.onError(barcodeError)
         } else {
             props.onError("")
         }
-    }, [errors, props]);
+    }, [barcodeError, errors, fields, props]);
     useEffect(() => {
         initValues()
     }, [foundCD]);
@@ -137,6 +145,8 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                     isOpen={isOpen}
                     onClose={() => setIsOpen(false)}
                     onSubmit={searchCd}
+                    onError={ (message) =>
+                        setBarcodeError(message) }
                 />
             </div>
             <form className="new-cd"
@@ -145,7 +155,11 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                     CD-Titel:
                     <input id="txt-cd-titel" type="text"
                            {...register("title", {
-                               required: "Der Titel der CD ist erforderlich!"
+                               required: "Der Titel der CD ist erforderlich!",
+                               pattern: {
+                                   value: /\S/,
+                                   message: "Der Titel darf nicht nur Leerzeichen haben!"
+                               }
                            })}
                     />
                 </label>
@@ -153,7 +167,11 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                     Interpret:
                     <input id="txt-cd-perform" type="text"
                            {...register("performer", {
-                               required: "Der Interpret der CD ist erforderlich!"
+                               required: "Der Interpret der CD ist erforderlich!",
+                               pattern: {
+                                   value: /\S/,
+                                   message: "Der Interpret darf nicht nur Leerzeichen haben!"
+                               }
                            })}
                     />
                 </label>
@@ -187,7 +205,12 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                             Zeit:
                             <input className="txt-track-time"
                                    type="text"
-                                   {...register(`trackTT.${index}.time`)}
+                                   {...register(`trackTT.${index}.time`, {
+                                       pattern: {
+                                           value: /[0-5]?\d:[0-5]\d/,
+                                           message: "Die Zeit muss das Format mm:ss oder m:ss haben!"
+                                       }
+                                   })}
                             />
                         </label>
                     </label>

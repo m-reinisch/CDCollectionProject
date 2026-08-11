@@ -19,7 +19,7 @@ export default function CdPage(props: Readonly<CdPageProps>) {
 
     useEffect(() => {
         props.onChangePage("show-cd")
-    }, []);
+    }, [props]);
 
     return (
         <div className="page">

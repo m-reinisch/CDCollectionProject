@@ -73,12 +73,17 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
 
     useEffect(() => {
         props.onChangePage("edit-cd")
-    }, []);
+    }, [props]);
     useEffect(() => {
         if (errors.title) {
             props.onError(errors.title.message!)
         } else if (errors.performer) {
             props.onError(errors.performer.message!)
+        } else if (errors.trackTT){
+            const timeError = fields
+                .map((_, index) => errors.trackTT?.[index]?.time)
+                .find(Boolean)
+            props.onError(timeError ? timeError.message! : "")
         } else {
             props.onError("")
         }
@@ -92,7 +97,11 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
                     CD-Titel:
                     <input id="txt-cd-titel" type="text"
                            {...register("title", {
-                               required: "Der Titel der CD ist erforderlich!"
+                               required: "Der Titel der CD ist erforderlich!",
+                               pattern: {
+                                   value: /\S/,
+                                   message: "Der Titel darf nicht nur Leerzeichen haben!"
+                               }
                            })}
                     />
                 </label>
@@ -100,7 +109,11 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
                     Interpret:
                     <input id="txt-cd-perform" type="text"
                            {...register("performer", {
-                               required: "Der Interpret der CD ist erforderlich!"
+                               required: "Der Interpret der CD ist erforderlich!",
+                               pattern: {
+                                   value: /\S/,
+                                   message: "Der Interpret darf nicht nur Leerzeichen haben!"
+                               }
                            })}
                     />
                 </label>
@@ -134,7 +147,12 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
                                 Zeit:
                                 <input className="txt-track-time"
                                        type="text"
-                                       {...register(`trackTT.${index}.time`)}
+                                       {...register(`trackTT.${index}.time`, {
+                                           pattern: {
+                                               value: /[0-5]?\d:[0-5]\d/,
+                                               message: "Die Zeit muss das Format mm:ss oder m:ss haben!"
+                                           }
+                                       })}
                                 />
                             </label>
                         </label>
