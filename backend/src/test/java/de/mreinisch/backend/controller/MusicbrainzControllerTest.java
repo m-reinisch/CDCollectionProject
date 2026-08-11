@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestClient;
@@ -55,6 +56,7 @@ class MusicbrainzControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getCdByBarcode_shouldReturnFoundCdDTO_whenFoundInApi() throws Exception {
         String barcode= "082839375023";
         String bmid= "67be9a0f-d852-36f3-8245-64e89a6759bd";
@@ -92,6 +94,19 @@ class MusicbrainzControllerTest {
                     }]
                 }
             """, MediaType.APPLICATION_JSON));
+        restServiceServer.expect(
+                        requestTo("https://coverartarchive.org/release/" +
+                                bmid))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess("""
+                    {
+                        "images": [{
+                            "front": true,
+                            "back": false,
+                            "image": "http://coverartarchive.org/release/67be9a0f-d852-36f3-8245-64e89a6759bd/3877346050.jpg"
+                        }]
+                    }
+                """, MediaType.APPLICATION_JSON));
         mvc.perform(get("/api/musicbrainz/" + barcode))
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
@@ -99,6 +114,7 @@ class MusicbrainzControllerTest {
                     "cdTitle": "The Dream of the Blue Turtles",
                     "performer": "Sting",
                     "publicationYear": 1985,
+                    "coverUrl": "http://coverartarchive.org/release/67be9a0f-d852-36f3-8245-64e89a6759bd/3877346050.jpg",
                     "tracks": [
                       {
                         "position": 1,
@@ -111,6 +127,7 @@ class MusicbrainzControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getCdByBarcode_shouldReturnCdDtoWithEmptyTracklist_whenTracksNotFoundInApi() throws Exception {
         String barcode= "082839375023";
         String bmid= "07be9a0f-d852-36f3-8245-64e89a6759bd";
@@ -142,6 +159,19 @@ class MusicbrainzControllerTest {
                     }]
                 }
             """, MediaType.APPLICATION_JSON));
+        restServiceServer.expect(
+                    requestTo("https://coverartarchive.org/release/" +
+                            bmid))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess("""
+                {
+                    "images": [{
+                        "front": true,
+                        "back": false,
+                        "image": "http://coverartarchive.org/release/67be9a0f-d852-36f3-8245-64e89a6759bd/3877346050.jpg"
+                    }]
+                }
+            """, MediaType.APPLICATION_JSON));
         mvc.perform(get("/api/musicbrainz/" + barcode))
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
@@ -155,6 +185,7 @@ class MusicbrainzControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getCdByBarcode_shouldThrowException_whenBarcodeNotFound() throws Exception {
         String barcode= "92839375023";
         String errorMessage= "Suche erfolglos: ";

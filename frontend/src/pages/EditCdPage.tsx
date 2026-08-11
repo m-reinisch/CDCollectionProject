@@ -8,7 +8,7 @@ type FormValues = {
     title: string,
     performer: string,
     publicationYear: string,
-    coverUrl: string | null,
+    coverUrl: string,
     trackTT: {title: string, time: string}[]
 }
 type EditCdPageProps = {
@@ -62,7 +62,7 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
             performer: data.performer,
             publicationYear: year,
             tracks: trackList,
-            coverUrl: null,
+            coverUrl: data.coverUrl,
             cdCollection: {
                 id: props.coll.id
             }
@@ -108,6 +108,12 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
                     Jahr der Veröffentlichung:
                     <input id="txt-cd-year" type="text"
                            {...register("publicationYear")}
+                    />
+                </label>
+                <label id="lbl-cd-cover">
+                    URL für Cover Bild:
+                    <input id="txt-cd-cover" type="text"
+                           {...register("coverUrl")}
                     />
                 </label>
                 <label id="lbl-cd-style"></label>

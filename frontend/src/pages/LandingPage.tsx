@@ -24,11 +24,13 @@ export default function LandingPage(props: Readonly<LandingPageProps>) {
                     Daten ermitteln.
                 </p>
                 <div className="logins">
-                    <button id="gitbutton" onClick={props.onGitHubLogin}>
+                    <button id="gitbutton" type="button"
+                            onClick={props.onGitHubLogin}>
                         <span className="github" >G</span>
                         <span>Mit GitHub einloggen</span>
                     </button>
-                    <button id="googlebutton" onClick={props.onGoogleLogin}>
+                    <button id="googlebutton" type="button"
+                            onClick={props.onGoogleLogin}>
                         <span className="google" > </span>
                         <span>Mit Google einloggen</span>
                     </button>

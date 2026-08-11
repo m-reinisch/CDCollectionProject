@@ -68,6 +68,7 @@ function App() {
             setTitle("Willkommen zur CD-Sammlung App")
             setPageType("NO")
             setIsLoggedIn(false)
+            setPriorityError("")
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
             setPageType("NO")
@@ -75,6 +76,9 @@ function App() {
             setTitle(selectedCdCollection.name)
             setPageType("BACK")
             setBackPage("overview")
+            if(priorityError !== "Unerwarteter Fehler! Versuchen Sie sich aus und wieder einzuloggen."){
+                setPriorityError("")
+            }
         } else if (accessedPage === "add-cd"){
             setTitle("Neue CD")
             setPageType("ABORT")
@@ -88,6 +92,7 @@ function App() {
             setPageType("ABORT")
             setBackPage("show-cd")
         }
+        handleError("")
     }
     function addCollection(collName: string){
         const newCollection: CollectionDTO = {
@@ -107,7 +112,7 @@ function App() {
                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                 } else {
-                    console.log(error_)
+                    console.log(error_.response?.data)
                 }
              })
     }
@@ -121,7 +126,7 @@ function App() {
                  if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                      setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                  } else {
-                     console.log(error_)
+                     console.log(error_.response?.data)
                  }
              })
 
@@ -138,7 +143,7 @@ function App() {
                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                 } else {
-                    console.log(error_)
+                    console.log(error_.response?.data)
                 }
              })
     }
@@ -151,7 +156,7 @@ function App() {
                  if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                      setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                  } else {
-                     console.log(error_)
+                     console.log(error_.response?.data)
                  }
              })
     }
@@ -165,7 +170,7 @@ function App() {
                  if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                      setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                  } else {
-                     console.log(error_)
+                     console.log(error_.response?.data)
                  }
              })
     }
@@ -178,7 +183,7 @@ function App() {
                 if (axios.isAxiosError(error_) && error_.response?.status === 401) {
                     setPriorityError("Unerwarteter Fehler! Versuche Sie sich aus und wieder einzuloggen.")
                 } else {
-                    console.log(error_)
+                    console.log(error_.response?.data)
                 }
             })
     }

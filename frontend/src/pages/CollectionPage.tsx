@@ -78,10 +78,12 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                     cds.map( (cd: CD) => {
                         return (
                             <div className="cd" key={cd.id}>
-                                <button className="cd-open-button"
+                                <button className="cd-open"
                                         type="button"
                                         onClick={ () => {
                                             props.onOpenCd(cd.id)}}>
+                                    <img id="cover" alt="no cover"
+                                         src={cd.coverUrl} />
                                     <strong>{cd.cdTitle}</strong>
                                     <small>{cd.performer}</small>
                                 </button>

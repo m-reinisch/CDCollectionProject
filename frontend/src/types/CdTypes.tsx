@@ -16,7 +16,7 @@ export type CdDTO = {
     performer: string,
     publicationYear: number,
     tracks: Track[],
-    coverUrl: string | null,
+    coverUrl: string,
     cdCollection: CdCollection
 }
 
@@ -30,6 +30,7 @@ export type FoundCdDTO= {
     cdTitle: string,
     performer: string,
     publicationYear: number,
+    coverUrl: string,
     tracks: ResponseTrack[]
 }
 

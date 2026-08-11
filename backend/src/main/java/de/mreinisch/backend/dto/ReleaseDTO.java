@@ -1,8 +1,6 @@
 package de.mreinisch.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-
 import java.util.List;
 import java.util.UUID;
 
