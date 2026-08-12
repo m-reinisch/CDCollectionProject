@@ -11,6 +11,7 @@ type FormValues = {
     performer: string,
     publicationYear: string,
     coverUrl: string,
+    storageLocation: string,
     trackTT: {title: string, time: string}[]
 }
 type AddCdPageProps = {
@@ -34,8 +35,8 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                       performer: "",
                       publicationYear: "",
                       coverUrl: "",
+                      storageLocation: "",
                       trackTT: [{title: "", time: ""},
-                                {title: "", time: ""},
                                 {title: "", time: ""},
                                 {title: "", time: ""},
                                 {title: "", time: ""},
@@ -101,6 +102,7 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                 performer: foundCD.performer,
                 publicationYear: foundCD.publicationYear.toString(),
                 coverUrl: foundCD.coverUrl,
+                storageLocation: "",
                 trackTT: foundCD.tracks.map( track => (
                     {title: track.trackTitle, time: track.time}
                 ))
@@ -187,8 +189,15 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                            {...register("coverUrl")}
                     />
                 </label>
-                <label id="lbl-cd-style"></label>
-                <label id="lbl-cd-storage"></label>
+                <label id="lbl-cd-style">
+                    Stil-Richtung:
+                </label>
+                <label id="lbl-cd-storage">
+                    Ablageort:
+                    <input id="txt-cd-storage" type="text"
+                           {...register("storageLocation")}
+                    />
+                </label>
                 <label className="tracks">
                     Stücke:
                     {fields.map( (field, index) => (

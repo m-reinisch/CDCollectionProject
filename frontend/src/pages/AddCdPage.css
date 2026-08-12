@@ -1,9 +1,9 @@
 .new-cd {
     width: 100%;
     display: grid;
-    grid-template-rows: repeat(6, 1fr) auto 40px;
+    grid-template-rows: repeat(6, 1fr) auto 35px;
     align-items: flex-start;
-    margin: 10px;
+    margin: 5px;
 }
 
 #lbl-cd-titel {
@@ -78,10 +78,10 @@
 
 #lbl-cd-style {
     font-size: small;
-    color: blue;
+    color: purple;
     justify-self: center;
     display: grid;
-    grid-template-columns: 65px 270px;
+    grid-template-columns: 100px 270px;
     align-items: baseline;
     justify-content: center;
     height: 30px;
@@ -89,22 +89,29 @@
 
 #lbl-cd-storage {
     font-size: small;
-    color: blue;
+    color: saddlebrown;
     justify-self: center;
     display: grid;
-    grid-template-columns: 65px 270px;
+    grid-template-columns: 100px 340px;
     align-items: baseline;
-    justify-content: center;
+    justify-content: flex-end;
     height: 30px;
+    width: 500px;
+}
+
+#txt-cd-storage {
+    min-width: 335px;
+    justify-self: flex-end;
+    height: 15px;
 }
 
 .tracks {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-rows: 30px repeat(10, 1fr) auto;
+    grid-template-rows: 30px repeat(9, 1fr) auto;
     align-items: flex-start;
-    margin: 10px;
+    margin: 5px;
     color: darkred;
 }
 
@@ -161,8 +168,8 @@
     grid-template-columns: 150px 800px;
     align-items: baseline;
     gap: 50px;
-    margin: 5px 10px;
-    padding: 5px 20px;
+    margin: 5px;
+    padding: 5px;
 }
 
 #add-cd-btn {
