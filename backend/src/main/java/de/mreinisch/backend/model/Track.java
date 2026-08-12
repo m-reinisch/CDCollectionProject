@@ -20,7 +20,7 @@ public class Track {
     private Integer id;
     private int position;
     private String trackTitle;
-    @Pattern(regexp = "[0-5]?[0-9]:[0-5][0-9]",
+    @Pattern(regexp = "[0-5]?\\d:[0-5]\\d",
              message = "Die Zeit muss das Format mm:ss oder m:ss haben!")
     private String time;
     @ManyToOne(cascade = CascadeType.ALL)
