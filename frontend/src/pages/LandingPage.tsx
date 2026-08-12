@@ -10,7 +10,7 @@ type LandingPageProps = {
 export default function LandingPage(props: Readonly<LandingPageProps>) {
     useEffect(() => {
         props.onChangePage("landing")
-    }, []);
+    }, [props]);
 
     return(
         <div className="page">
@@ -21,7 +21,9 @@ export default function LandingPage(props: Readonly<LandingPageProps>) {
                     Sammlung CDs suchen.<br />
                     Die  Eingabe der CDs kann manuell erfolgen, oder
                     anhand des Barcodes auf der CD lassen sich die
-                    Daten ermitteln.
+                    Daten ermitteln.<br />
+                    Durch klicken auf den Titel lässt sich eine
+                    Sammlung oder CD öffnen.
                 </p>
                 <div className="logins">
                     <button id="gitbutton" type="button"

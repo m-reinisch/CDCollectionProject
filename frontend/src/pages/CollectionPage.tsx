@@ -29,7 +29,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
 
     useEffect(() => {
         props.onChangePage("details")
-    }, []);
+    }, [props]);
 
     return (
         <section className="page">

@@ -5,6 +5,7 @@ import de.mreinisch.backend.exception.AppUserNotFound;
 import de.mreinisch.backend.exception.CdCollectionNotFound;
 import de.mreinisch.backend.model.CdCollection;
 import de.mreinisch.backend.service.CollectionService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,9 @@ public class CollectionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CdCollection createCollection(@RequestBody CdCollectionDTO cdCollection) throws AppUserNotFound {
+    public CdCollection createCollection(@Valid
+                                         @RequestBody  CdCollectionDTO cdCollection)
+                                         throws AppUserNotFound {
         return service.generateCollection(cdCollection);
     }
 

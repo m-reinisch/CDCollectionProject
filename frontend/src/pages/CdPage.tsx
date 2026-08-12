@@ -19,7 +19,7 @@ export default function CdPage(props: Readonly<CdPageProps>) {
 
     useEffect(() => {
         props.onChangePage("show-cd")
-    }, []);
+    }, [props]);
 
     return (
         <div className="page">
@@ -29,18 +29,20 @@ export default function CdPage(props: Readonly<CdPageProps>) {
                     <div className="cd-year">© {props.cd.publicationYear}</div>
                 </div>
                 <ol className="track-list">
-                    {props.cd.tracks.map(track => (
-                        <li id="track" key={track.position}>
-                            <div className="cd-track-pos">
-                                {track.position}
-                            </div>
-                            <div className="cd-track-titel">
-                                {track.trackTitle}
-                            </div>
-                            <div className="cd-track-time">
-                                {track.time}
-                            </div>
-                        </li>
+                    {props.cd.tracks.toSorted( (a, b) =>
+                            a.position - b.position)
+                        .map(track => (
+                            <li id="track" key={track.position}>
+                                <div className="cd-track-pos">
+                                    {track.position}
+                                </div>
+                                <div className="cd-track-titel">
+                                    {track.trackTitle}
+                                </div>
+                                <div className="cd-track-time">
+                                    {track.time}
+                                </div>
+                            </li>
                     ))}
                 </ol>
                 <div className="cd-footer">

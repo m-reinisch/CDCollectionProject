@@ -5,6 +5,7 @@ import de.mreinisch.backend.exception.CdCollectionNotFound;
 import de.mreinisch.backend.exception.CdNotFound;
 import de.mreinisch.backend.model.CD;
 import de.mreinisch.backend.service.CdService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class CdController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CD createCd(@RequestBody CdDTO cd) throws CdCollectionNotFound {
+    public CD createCd(@Valid @RequestBody CdDTO cd) throws CdCollectionNotFound {
         return service.generateCD(cd);
     }
 
@@ -29,7 +30,9 @@ public class CdController {
     }
 
     @PutMapping("/{id}")
-    public CD updateCDById(@PathVariable String id, @RequestBody CdDTO cd) throws CdNotFound {
+    public CD updateCDById(@PathVariable String id,
+                           @Valid @RequestBody CdDTO cd)
+                            throws CdNotFound {
         return service.updateCd(id, cd);
     }
 

@@ -49,13 +49,15 @@ class CdControllerTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
+                1971, "06:54",
+                "https://test.de/img.jpg",
                         cdCollection, Collections.emptyList());
         Track track= new Track( 1, "TestSong",
                             "6:54", cd);
         List<Track> trackList= List.of(track);
         CdDTO cdDTO= new CdDTO("TestCD", "Tester",
-                        1971, trackList, null,
+                        1971, trackList,
+                        "https://test.de/img.jpg",
                                 cdCollection);
         ObjectMapper mapper= new ObjectMapper();
         String jsonCd = mapper.writeValueAsString(cdDTO);
@@ -74,21 +76,12 @@ class CdControllerTest {
                                 "cdTitle": "TestCD",
                                 "performer": "Tester",
                                 "publicationYear": 1971,
-                                "totalTime": "06:54"
-                              },
-                                "tracks": [
-                                    {
-                                        "position": "1",
-                                        "titel": "TestSong",
-                                        "time": "6:54"
-                                    }
-                                ],
-                                "cdCollection": {
-                                    "id": "0",
-                                    "name": "Testsammlung"
-                                }
+                                "totalTime": "06:54",
+                                "coverUrl": "https://test.de/img.jpg"
+                              }
                             """))
-                .andExpect(jsonPath("$.id").isNotEmpty());
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.tracks").isNotEmpty());
     }
 
     @Test
@@ -118,6 +111,46 @@ class CdControllerTest {
                     .content(jsonCd))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(errorMessage));
+    }
+
+    @Test
+    @WithMockUser
+    void createCd_shouldThrowException_whenCalledNotCorrectly() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CD cd= new CD(id,"TestCD","Tester",
+                1971, "06:54",
+                "https://test.de/img.jpg",
+                    cdCollection, Collections.emptyList());
+        Track track= new Track( 1, "TestSong",
+                                "6:54", cd);
+        List<Track> trackList= List.of(track);
+        CdDTO cdDTO= new CdDTO(" ", "Tester",
+                        1971, trackList,
+                        "https://test.de/img.jpg",
+                                cdCollection);
+        ObjectMapper mapper= new ObjectMapper();
+        String jsonCd = mapper.writeValueAsString(cdDTO);
+        String errorJson= """
+                            {
+                                "cdTitle": "Der Titel ist erforderlich!"
+                            }
+                          """;
+
+        userRepo.save(appUser);
+        collectionRepo.save(cdCollection);
+        trackRepo.save(track);
+        cd.setTracks(trackList);
+        repo.save(cd);
+        mvc.perform(post("/api/cd")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCd))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(errorJson));
     }
 
     @Test

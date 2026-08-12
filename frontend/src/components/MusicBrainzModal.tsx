@@ -1,5 +1,6 @@
 import Modal from 'react-modal';
 import {useForm} from "react-hook-form";
+import {useEffect} from "react";
 
 type FormValues = {
     barcode: string
@@ -7,7 +8,8 @@ type FormValues = {
 type MusicBrainzModalProps = {
     isOpen: boolean,
     onClose: () => void,
-    onSubmit: (barcode: string) => void
+    onSubmit: (barcode: string) => void,
+    onError: (message: string) => void
 }
 
 Modal.setAppElement('#root');
@@ -27,7 +29,7 @@ const buttonContainerStyle: React.CSSProperties = {
 };
 
 export default function MusicBrainzModal(props: Readonly<MusicBrainzModalProps>){
-    const { register, handleSubmit, reset, formState: { isValid }
+    const { register, handleSubmit, reset, formState: { errors, isValid }
     } = useForm<FormValues>({ mode: 'onChange' })
 
     function closeModal(){
@@ -40,6 +42,13 @@ export default function MusicBrainzModal(props: Readonly<MusicBrainzModalProps>)
         props.onClose()
     }
 
+    useEffect(() => {
+        if (errors.barcode){
+            props.onError(errors.barcode.message!)
+        } else {
+            props.onError("")
+        }
+    })
     if (!props.isOpen) return null; // Rendert nichts, wenn es geschlossen ist
     return (
         <Modal overlayClassName="modal-overlay"
@@ -55,7 +64,11 @@ export default function MusicBrainzModal(props: Readonly<MusicBrainzModalProps>)
                         Barcode von der CD eingeben:
                         <input type="text"
                                {...register("barcode", {
-                                   required: "Der Barcode ist erforderlich!"
+                                   required: "Der Barcode ist erforderlich!",
+                                   pattern: {
+                                       value: /\d{12,14}/,
+                                       message: "Der Barcode darf nur aus 12 bis 14 zahelen bestehen!"
+                                   }
                                })}
                         />
                     </label>

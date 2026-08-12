@@ -2,6 +2,7 @@ package de.mreinisch.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class Track {
     private Integer id;
     private int position;
     private String trackTitle;
+    @Pattern(regexp = "[0-5]?[0-9]:[0-5][0-9]",
+             message = "Die Zeit muss das Format mm:ss oder m:ss haben!")
     private String time;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cd_id")

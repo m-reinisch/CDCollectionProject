@@ -82,6 +82,34 @@ class CollectionControllerTest {
 
     @Test
     @WithMockUser
+    void createCollection_shouldThrowException_whenDTOIsNotCorrect() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                                              "Testsammlung",
+                                                    appUser,
+                                                    Collections.emptyList());
+        CdCollectionDTO cdCollectionDTO=
+                new CdCollectionDTO("T", appUser);
+        ObjectMapper mapper= new ObjectMapper();
+        String cdCollDTO= mapper.writeValueAsString(cdCollectionDTO);
+        String errorMessage= """
+                                {
+                                    "name": "Name muss mind. 3 Zeichen lang sein!"
+                                }
+                             """;
+
+        userRepo.save(appUser);
+        repo.save(cdCollection);
+        mvc.perform(post("/api/collections")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cdCollDTO))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(errorMessage));
+    }
+
+    @Test
+    @WithMockUser
     void readCollections_shouldReturnListOfCdCollection_whenCalledWithCorrectAppUserId() throws Exception {
         String id= "0";
         AppUser appUser= new AppUser(id, "TestUser");

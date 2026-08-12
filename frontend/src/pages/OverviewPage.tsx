@@ -27,7 +27,7 @@ export default function OverviewPage(props: Readonly<OverviewPageProps>) {
 
     useEffect(() => {
         props.onChangePage("overview")
-    }, []);
+    }, [props]);
     useEffect(() => {
         if (errors.collName){
             props.onError(errors.collName.message!)
