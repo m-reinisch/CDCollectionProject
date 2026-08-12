@@ -50,6 +50,8 @@ public class CdService {
                       .publicationYear(cd.publicationYear())
                       .totalTime(calcTotalTime(trackList))
                       .coverUrl(cd.coverUrl())
+                      .genres(cd.genres())
+                      .storageLocation(cd.storageLocation())
                       .cdCollection(cdOwner)
                       .build();
             for (Track track : trackList) {

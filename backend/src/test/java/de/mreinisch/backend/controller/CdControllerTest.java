@@ -1,10 +1,7 @@
 package de.mreinisch.backend.controller;
 
 import de.mreinisch.backend.dto.CdDTO;
-import de.mreinisch.backend.model.AppUser;
-import de.mreinisch.backend.model.CD;
-import de.mreinisch.backend.model.CdCollection;
-import de.mreinisch.backend.model.Track;
+import de.mreinisch.backend.model.*;
 import de.mreinisch.backend.repository.AppUserRepo;
 import de.mreinisch.backend.repository.CdCollectionRepo;
 import de.mreinisch.backend.repository.CdRepo;
@@ -50,15 +47,17 @@ class CdControllerTest {
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
                 1971, "06:54",
-                "https://test.de/img.jpg",
-                        cdCollection, Collections.emptyList());
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                    Collections.emptyList());
         Track track= new Track( 1, "TestSong",
                             "6:54", cd);
         List<Track> trackList= List.of(track);
-        CdDTO cdDTO= new CdDTO("TestCD", "Tester",
-                        1971, trackList,
-                        "https://test.de/img.jpg",
-                                cdCollection);
+        CdDTO cdDTO = new CdDTO("TestCD","Tester",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
+                                    cdCollection);
         ObjectMapper mapper= new ObjectMapper();
         String jsonCd = mapper.writeValueAsString(cdDTO);
 
@@ -96,9 +95,11 @@ class CdControllerTest {
         Track track= new Track( 1, "TestSong",
                                 "6:54", null);
         List<Track> trackList= List.of(track);
-        CdDTO cdDTO= new CdDTO("TestCD", "Tester",
-                        1971, trackList, null,
-                                cdCollection);
+        CdDTO cdDTO = new CdDTO("TestCD","Tester",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
+                                    cdCollection);
         ObjectMapper mapper= new ObjectMapper();
         String jsonCd = mapper.writeValueAsString(cdDTO);
         String errorMessage= "Unerwarteter Fehler: ";
@@ -124,15 +125,17 @@ class CdControllerTest {
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
                 1971, "06:54",
-                "https://test.de/img.jpg",
-                    cdCollection, Collections.emptyList());
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track( 1, "TestSong",
                                 "6:54", cd);
         List<Track> trackList= List.of(track);
-        CdDTO cdDTO= new CdDTO(" ", "Tester",
-                        1971, trackList,
-                        "https://test.de/img.jpg",
-                                cdCollection);
+        CdDTO cdDTO = new CdDTO(" ","Tester",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
+                                    cdCollection);
         ObjectMapper mapper= new ObjectMapper();
         String jsonCd = mapper.writeValueAsString(cdDTO);
         String errorJson= """
@@ -163,8 +166,10 @@ class CdControllerTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track( 1, "TestSong",
                                 "6:54", cd);
         List<Track> trackList= List.of(track);
@@ -203,8 +208,10 @@ class CdControllerTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track( 1, "TestSong",
                                 "6:54", cd);
         List<Track> trackList= List.of(track);
@@ -213,9 +220,11 @@ class CdControllerTest {
         userRepo.save(appUser);
         collectionRepo.save(cdCollection);
         trackRepo.save(track);
-        CdDTO cdDTO= new CdDTO("TestCD","Max",
-                        1971, trackList, null,
-                                cdCollection);
+        CdDTO cdDTO = new CdDTO("TestCD","Max",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
+                                    cdCollection);
         String jsonCdDTO = mapper.writeValueAsString(cdDTO);
         cd.setTracks(trackList);
         cd.setPerformer("Max");
@@ -238,14 +247,18 @@ class CdControllerTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track( 1, "TestSong",
                 "6:54", cd);
         List<Track> trackList= List.of(track);
-        CdDTO cdDTO= new CdDTO("TestCD","Max",
-                        1971, trackList, null,
-                                cdCollection);
+        CdDTO cdDTO = new CdDTO("TestCD","Max",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
+                                    cdCollection);
         ObjectMapper mapper= new ObjectMapper();
         String jsonCdDTO = mapper.writeValueAsString(cdDTO);
         String fid= "6";
@@ -269,8 +282,10 @@ class CdControllerTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track( 1, "TestSong",
                                 "6:54", cd);
         List<Track> trackList= List.of(track);
