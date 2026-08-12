@@ -1,5 +1,12 @@
 import type {CdCollection} from "./CollectionTypes.tsx";
 
+const Genres = {
+    Jazz: 'JAZZ',
+    LatinJazz: 'LATIN_JAZZ'
+} as const;
+
+type Genres = typeof Genres[keyof typeof Genres];
+
 export type CD = {
     id: string,
     cdTitle: string,
@@ -8,6 +15,8 @@ export type CD = {
     tracks: Track[],
     totalTime: string,
     coverUrl:string,
+    genres: Genres,
+    storageLocation: string,
     cdCollection: CdCollection
 }
 
@@ -15,6 +24,8 @@ export type CdDTO = {
     cdTitle: string,
     performer: string,
     publicationYear: number,
+    genres: Genres,
+    storageLocation: string,
     tracks: Track[],
     coverUrl: string,
     cdCollection: CdCollection

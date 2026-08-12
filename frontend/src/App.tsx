@@ -20,26 +20,15 @@ const initialCollections: Collection[] = [ ]
 const testCollection: Collection = {
     id: "0",
     name: "Meine CDs mit langen Namen zum Testen",
-    cds: [
-        {
-            id: "6",
-            cdTitle: "Saxuality",
-            performer: "Candy Dulfer",
-            publicationYear: 1990,
-            tracks: [],
-            totalTime: "0",
-            coverUrl: "",
-            cdCollection: {
-                id: "0"
-            }
-        }
-    ]
+    cds: [ ]
 }
 const initCd: CD ={
-    id: "6",
-    cdTitle: "Saxuality",
-    performer: "Candy Dulfer",
-    publicationYear: 1990,
+    id: "0",
+    cdTitle: "Test",
+    performer: "Tester",
+    publicationYear: 1971,
+    genres: "LATIN_JAZZ",
+    storageLocation: "",
     tracks: [],
     totalTime: "0",
     coverUrl: "",

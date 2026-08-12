@@ -55,7 +55,14 @@ export default function CdPage(props: Readonly<CdPageProps>) {
                         Bearbeiten
                     </button>
                 </div>
-
+                <div className="additional-info">
+                    <div className="cd-genres">
+                        Stilrichtung: {props.cd.genres}
+                    </div>
+                    <div className="storage-location">
+                        Ablageort: {props.cd.storageLocation}
+                    </div>
+                </div>
             </div>
         </div>
     )
