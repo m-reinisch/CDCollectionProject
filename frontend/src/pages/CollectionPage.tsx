@@ -2,7 +2,7 @@ import "./CollectionPage.css"
 import type {Collection} from "../types/CollectionTypes.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {type CD, Genres} from "../types/CdTypes.tsx";
+import {type CD, Genres, type GenresDetails} from "../types/CdTypes.tsx";
 
 type CollectionPageProps = {
     cdCollection: Collection,
@@ -73,7 +73,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
             <div className="cd-list">
                 {
                     cds.map( (cd: CD) => {
-                        const musicStyle= Genres[cd.genres];
+                        const musicStyle: GenresDetails= Genres[cd.genres] ?? {style: "Unbekannt"};
                         return (
                             <div className="cd" key={cd.id}>
                                 <button className="cd-open"
