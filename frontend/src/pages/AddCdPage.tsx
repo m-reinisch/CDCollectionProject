@@ -1,7 +1,8 @@
 import "./AddCdPage.css";
 import MusicBrainzModal from "../components/MusicBrainzModal.tsx";
-import type {CdDTO, FoundCdDTO, Track} from "../types/CdTypes.tsx";
-import {type ChangeEvent, useEffect, useState} from "react";
+import {Genres} from "../types/CdTypes.tsx";
+import type {CdDTO, FoundCdDTO, GenresKey, Track} from "../types/CdTypes.tsx";
+import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {useForm, useFieldArray} from "react-hook-form";
 import axios from 'axios';
@@ -11,6 +12,7 @@ type FormValues = {
     performer: string,
     publicationYear: string,
     coverUrl: string,
+    genre: GenresKey | "",
     storageLocation: string,
     trackTT: {title: string, time: string}[]
 }
@@ -21,13 +23,10 @@ type AddCdPageProps = {
     onPriorError: (message: string) => void
 }
 
-const PREDEFINED_VALUES = ['Option 1', 'Option 2', 'Option 3'];
-
 export default function AddCdPage(props: Readonly<AddCdPageProps>) {
     const [isOpen, setIsOpen] = useState(false)
     const [foundCD, setFoundCD] = useState<FoundCdDTO | null>(null)
     const [barcodeError, setBarcodeError] = useState<string>("")
-    const [selectedValue, setSelectedValue] = useState<string>("");
     const param= useParams();
     const { control, register, handleSubmit, reset,
             formState: { errors, isValid }
@@ -38,6 +37,7 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                       performer: "",
                       publicationYear: "",
                       coverUrl: "",
+                      genre: "",
                       storageLocation: "",
                       trackTT: [{title: "", time: ""},
                                 {title: "", time: ""},
@@ -56,10 +56,6 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
         control,
         name: "trackTT"
     });
-
-    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedValue(e.target.value);
-    };
 
     function submit(data: FormValues) {
         const year: number = Number.parseInt(data.publicationYear, 10)
@@ -81,7 +77,7 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
             cdTitle: data.title,
             performer: data.performer,
             publicationYear: year,
-            genres: 'LATIN_JAZZ',
+            genres: data.genre as GenresKey,
             storageLocation: data.storageLocation,
             tracks: trackList,
             coverUrl: data.coverUrl,
@@ -92,7 +88,7 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
 
         props.onAddCd(cd)
         reset({title: '', performer: '', publicationYear: '',
-               coverUrl: ''})
+               coverUrl: '', genre: ''})
     }
     function searchCd(bc: string) {
         axios.get("/api/musicbrainz/" + bc)
@@ -111,6 +107,7 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                 performer: foundCD.performer,
                 publicationYear: foundCD.publicationYear.toString(),
                 coverUrl: foundCD.coverUrl,
+                genre: "",
                 storageLocation: "",
                 trackTT: foundCD.tracks.map( track => (
                     {title: track.trackTitle, time: track.time}
@@ -127,6 +124,8 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
             props.onError(errors.title.message!)
         } else if (errors.performer) {
             props.onError(errors.performer.message!)
+        } else if (errors.genre) {
+            props.onError(errors.genre.message!)
         } else if (errors.trackTT) {
             const timeError = fields
                 .map((_, index) => errors.trackTT?.[index]?.time)
@@ -200,12 +199,14 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                 </label>
                 <label id="lbl-cd-style">
                     Stil-Richtung:
-                    <select id="sel-cd-style" value={selectedValue}
-                            onChange={handleSelectChange}>
+                    <select id="sel-cd-style"
+                            {...register("genre", {
+                                required: "Die Stil-Richtung ist erforderlich!"
+                            })}>
                         <option value="">nichts ausgewählt</option>
-                        {PREDEFINED_VALUES.map((val) => (
-                            <option key={val} value={val}>
-                                {val}
+                        {Object.entries(Genres).map(([key, details]) => (
+                            <option key={key} value={key}>
+                                {details.style}
                             </option>
                         ))}
                     </select>
