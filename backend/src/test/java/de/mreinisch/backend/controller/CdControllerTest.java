@@ -158,6 +158,59 @@ class CdControllerTest {
 
     @Test
     @WithMockUser
+    void createCd_shouldThrowException_whenCalledWithIncorrectGenres() throws Exception {
+        String id= "0";
+        AppUser appUser= new AppUser(id, "TestUser");
+        CdCollection cdCollection= new CdCollection(id,
+                "Testsammlung",
+                appUser,
+                Collections.emptyList());
+        CD cd= new CD(id,"Test CD","Tester",
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                Collections.emptyList());
+        Track track= new Track( 1, "Test Song",
+                "6:54", cd);
+        List<Track> trackList= List.of(track);
+        String jsonCd=
+                """
+                        {
+                      "cdTitle": "Test CD",
+                            "performer": "Tester",
+                            "publicationYear": "1971",
+                            "coverUrl": "https://test.de/img.jpg",
+                            "genres": "MODERN",
+                            "storageLocation": "Shelf 1",
+                            "tracks": [
+                                {
+                                    "position": "1",
+                                    "trackTitle": "Test Song",
+                                    "time": "6:54"
+                                }
+                            ],
+                            "cdCollection": {
+                                "id": "0",
+                                "name": "Testsammlung"
+                            }
+                        }
+                      """;
+        String errorMessage= "Fehler: unbekanntes Genres";
+
+        userRepo.save(appUser);
+        collectionRepo.save(cdCollection);
+        trackRepo.save(track);
+        cd.setTracks(trackList);
+        repo.save(cd);
+        mvc.perform(post("/api/cd")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCd))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(errorMessage));
+    }
+
+    @Test
+    @WithMockUser
     void readCdById_shouldReturnCD_whenCdFoundInDatabase() throws Exception {
         String id= "0";
         AppUser appUser= new AppUser(id, "TestUser");
