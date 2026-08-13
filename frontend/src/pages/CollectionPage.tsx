@@ -14,18 +14,15 @@ type CollectionPageProps = {
 
 export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     const nav= useNavigate()
-    const [cds, setCds] = useState<CD[]>(props.cdCollection.cds)
     const [criterion, setCriterion] = useState<string>("title")
+    const [searchString, setSearchString] = useState<string>("")
 
-    function onSearch(searchString: string) {
-        if (criterion === "title"){
-            setCds(props.cdCollection.cds.filter( cd =>
-                cd.cdTitle.toLowerCase().includes(searchString.toLowerCase())))
-        } else if (criterion === "performer"){
-            setCds(props.cdCollection.cds.filter( cd =>
-                cd.performer.toLowerCase().includes(searchString.toLowerCase())))
+    const cds: CD[] = props.cdCollection.cds.filter( cd => {
+        if (criterion === "performer"){
+            return cd.performer.toLowerCase().includes(searchString.toLowerCase())
         }
-    }
+        return cd.cdTitle.toLowerCase().includes(searchString.toLowerCase())
+    })
 
     useEffect(() => {
         props.onChangePage("details")
@@ -46,7 +43,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                                name="searchString"
                                onChange={
                                     event =>
-                                    onSearch(event.target.value)
+                                    setSearchString(event.target.value)
                         }/>
                     </label>
                     <fieldset className="search-field">
