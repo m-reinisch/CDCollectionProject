@@ -61,6 +61,14 @@
     margin: 10px;
 }
 
+.blue {
+    color: blue;
+}
+
+.purple {
+    color: purple;
+}
+
 .cd-open {
     min-height: 55px;
     display: flex;

@@ -74,7 +74,7 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
             cdTitle: data.title,
             performer: data.performer,
             publicationYear: year,
-            genres: "JAZZ",
+            genres: 'LATIN_JAZZ',
             storageLocation: data.storageLocation,
             tracks: trackList,
             coverUrl: data.coverUrl,

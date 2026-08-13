@@ -1,5 +1,5 @@
 import "./CdPage.css"
-import type {CD} from "../types/CdTypes.tsx";
+import {type CD, Genres} from "../types/CdTypes.tsx";
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -10,6 +10,7 @@ type CdPageProps = {
 
 export default function CdPage(props: Readonly<CdPageProps>) {
     const nav= useNavigate()
+    const musicStyle= Genres[props.cd.genres]
     const coverStyle: React.CSSProperties= {
         backgroundImage: `url(${props.cd.coverUrl})`,
         backgroundSize: 'contain',
@@ -57,7 +58,7 @@ export default function CdPage(props: Readonly<CdPageProps>) {
                 </div>
                 <div className="additional-info">
                     <div className="cd-genres">
-                        Stilrichtung: {props.cd.genres}
+                        Stilrichtung: {musicStyle.style}
                     </div>
                     <div className="storage-location">
                         Ablageort: {props.cd.storageLocation}
