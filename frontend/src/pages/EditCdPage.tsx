@@ -1,5 +1,5 @@
 import "./AddCdPage.css";
-import type {CD, CdDTO, Track} from "../types/CdTypes.tsx";
+import {type CD, type CdDTO, Genres, type GenresKey, type Track} from "../types/CdTypes.tsx";
 import {useFieldArray, useForm} from "react-hook-form";
 import {useEffect} from "react";
 import type {CdCollection} from "../types/CollectionTypes.tsx";
@@ -9,6 +9,8 @@ type FormValues = {
     performer: string,
     publicationYear: string,
     coverUrl: string,
+    genre: GenresKey | "",
+    storageLocation: string,
     trackTT: {title: string, time: string}[]
 }
 type EditCdPageProps = {
@@ -29,6 +31,8 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
                 performer: props.cd.performer,
                 publicationYear: props.cd.publicationYear.toString(),
                 coverUrl: props.cd.coverUrl,
+                genre: props.cd.genres,
+                storageLocation: props.cd.storageLocation,
                 trackTT: props.cd.tracks.map( track => (
                     {title: track.trackTitle, time: track.time}
                 ))
@@ -61,6 +65,8 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
             cdTitle: data.title,
             performer: data.performer,
             publicationYear: year,
+            genres: data.genre as GenresKey,
+            storageLocation: data.storageLocation,
             tracks: trackList,
             coverUrl: data.coverUrl,
             cdCollection: {
@@ -79,6 +85,8 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
             props.onError(errors.title.message!)
         } else if (errors.performer) {
             props.onError(errors.performer.message!)
+        } else if (errors.genre) {
+            props.onError(errors.genre.message!)
         } else if (errors.trackTT){
             const timeError = fields
                 .map((_, index) => errors.trackTT?.[index]?.time)
@@ -129,8 +137,26 @@ export default function EditCd(props: Readonly<EditCdPageProps>){
                            {...register("coverUrl")}
                     />
                 </label>
-                <label id="lbl-cd-style"></label>
-                <label id="lbl-cd-storage"></label>
+                <label id="lbl-cd-style">
+                    Stil-Richtung:
+                    <select id="sel-cd-style"
+                            {...register("genre", {
+                                required: "Die Stil-Richtung ist erforderlich!"
+                            })}>
+                        <option value="">nichts ausgewählt</option>
+                        {Object.entries(Genres).map(([key, details]) => (
+                            <option key={key} value={key}>
+                                {details.style}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <label id="lbl-cd-storage">
+                    Ablageort:
+                    <input id="txt-cd-storage" type="text"
+                           {...register("storageLocation")}
+                    />
+                </label>
                 <label className="tracks">
                     Stücke:
                     {fields.map( (field, index) => (

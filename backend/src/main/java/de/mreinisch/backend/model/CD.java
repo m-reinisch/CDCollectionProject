@@ -24,6 +24,8 @@ public class CD {
     private int publicationYear;
     private String totalTime;
     private String coverUrl;
+    private Genres genres;
+    private String storageLocation;
     @ManyToOne
     @JoinColumn(name = "collection_id")
     @JsonBackReference
@@ -39,6 +41,8 @@ public class CD {
         publicationYear = cd.getPublicationYear();
         totalTime = cd.getTotalTime();
         coverUrl = cd.getCoverUrl();
+        genres = cd.getGenres();
+        storageLocation = cd.getStorageLocation();
         cdCollection = cd.getCdCollection();
         tracks = cd.getTracks();
     }

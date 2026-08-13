@@ -3,10 +3,7 @@ package de.mreinisch.backend.service;
 import de.mreinisch.backend.dto.CdDTO;
 import de.mreinisch.backend.exception.CdCollectionNotFound;
 import de.mreinisch.backend.exception.CdNotFound;
-import de.mreinisch.backend.model.AppUser;
-import de.mreinisch.backend.model.CD;
-import de.mreinisch.backend.model.CdCollection;
-import de.mreinisch.backend.model.Track;
+import de.mreinisch.backend.model.*;
 import de.mreinisch.backend.repository.CdCollectionRepo;
 import de.mreinisch.backend.repository.CdRepo;
 import de.mreinisch.backend.repository.TrackRepo;
@@ -36,14 +33,18 @@ class CdServiceTest {
                                                 appUser,
                                                 Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                      cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track(1, 1, "TestSong",
                          "6:54", cd);
         List<Track> trackList= List.of(track);
         CdDTO cdDTO = new CdDTO("TestCD","Tester",
-                       1971, trackList,
-                            null, cdCollection);
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
+                                cdCollection);
         CD expected= new CD(cd);
         CD actual;
 
@@ -74,14 +75,18 @@ class CdServiceTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                      cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track(1, 1, "TestSong",
                           "6:54", cd);
         List<Track> trackList= List.of(track);
         CdDTO cdDTO = new CdDTO("TestCD","Tester",
-                    1971, trackList,
-                         null, cdCollection);
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
+                                cdCollection);
         String errorMessage= "CD Sammlung mit id " + id +
                              " wurde nicht gefunden!";
 
@@ -109,8 +114,10 @@ class CdServiceTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/i mg.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track(1, 1, "TestSong",
                             "6:54", cd);
         List<Track> trackList= List.of(track);
@@ -163,8 +170,10 @@ class CdServiceTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                      cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/i mg.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track(1, 1, "TestSong",
                             "6:54", cd);
         List<Track> trackList= List.of(track);
@@ -215,13 +224,17 @@ class CdServiceTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track(1, 1, "TestSong",
                             "6:54", cd);
         List<Track> trackList= List.of(track);
-        CdDTO cdDTO= new CdDTO("TestCD","Max",
-                        1971, trackList, null,
+        CdDTO cdDTO = new CdDTO("TestCD","Max",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
                                 cdCollection);
         CD existingCD= new CD(cd);
         CD expected= new CD(cd);
@@ -254,13 +267,17 @@ class CdServiceTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track(1, 1, "TestSong",
                             "6:54", cd);
         List<Track> trackList= List.of(track);
-        CdDTO cdDTO= new CdDTO("TestCD","Max",
-                        1971, trackList, null,
+        CdDTO cdDTO = new CdDTO("TestCD","Tester",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", trackList,
+                            "https://test.de/img.jpg",
                                 cdCollection);
         String fid= "6";
         String errorMessage= "CD mit id " + fid +
@@ -290,8 +307,10 @@ class CdServiceTest {
                                                     appUser,
                                                     Collections.emptyList());
         CD cd= new CD(id,"TestCD","Tester",
-                1971, "06:54", null,
-                        cdCollection, Collections.emptyList());
+                1971, "06:54",
+                "https://test.de/img.jpg", Genres.JAZZ,
+                "Shelf 1", cdCollection,
+                        Collections.emptyList());
         Track track= new Track(1, 1, "TestSong",
                             "6:54", cd);
         Track extraTrack= new Track(2, 2,
@@ -304,9 +323,11 @@ class CdServiceTest {
 
         existingCD.setTracks(trackList);
         when(mockRepo.findById(id)).thenReturn(Optional.of(existingCD));
-        CdDTO cdDTO= new CdDTO("TestCD","Tester",
-                        1971, extraTrackList,
-                            null, cdCollection);
+        CdDTO cdDTO = new CdDTO("TestCD","Tester",
+                        1971, Genres.JAZZ,
+                        "Shelf 1", extraTrackList,
+                            "https://test.de/img.jpg",
+                                cdCollection);
         expected.setTracks(extraTrackList);
         expected.setTotalTime("13:05");
         actual= service.updateCd(id, cdDTO);

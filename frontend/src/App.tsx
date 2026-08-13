@@ -20,26 +20,15 @@ const initialCollections: Collection[] = [ ]
 const testCollection: Collection = {
     id: "0",
     name: "Meine CDs mit langen Namen zum Testen",
-    cds: [
-        {
-            id: "6",
-            cdTitle: "Saxuality",
-            performer: "Candy Dulfer",
-            publicationYear: 1990,
-            tracks: [],
-            totalTime: "0",
-            coverUrl: "",
-            cdCollection: {
-                id: "0"
-            }
-        }
-    ]
+    cds: [ ]
 }
 const initCd: CD ={
-    id: "6",
-    cdTitle: "Saxuality",
-    performer: "Candy Dulfer",
-    publicationYear: 1990,
+    id: "0",
+    cdTitle: "Test",
+    performer: "Tester",
+    publicationYear: 1971,
+    genres: "LATIN_JAZZ",
+    storageLocation: "",
     tracks: [],
     totalTime: "0",
     coverUrl: "",
@@ -52,9 +41,8 @@ function App() {
     const [user, setUser] = useState<AppUser | null | undefined>(undefined)
     const [userName, setUserName] = useState<string>("")
     const [userId, setUserId] = useState<string>("")
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [title, setTitle] = useState<string>("")
-    const [pageType, setPageType] = useState<"NO" | "BACK" | "ABORT">("NO")
+    const [pageType, setPageType] = useState<"NOLOG" | "NO" | "BACK" | "ABORT">("NOLOG")
     const [backPage, setBackPage] = useState<string>("")
     const [cdCollections, setCdCollections] = useState<Collection[]>(initialCollections)
     const [selectedCdCollection, setSelectedCdCollection] = useState<Collection>(testCollection)
@@ -66,8 +54,7 @@ function App() {
     function changePage(accessedPage: string){
         if (accessedPage === "landing"){
             setTitle("Willkommen zur CD-Sammlung App")
-            setPageType("NO")
-            setIsLoggedIn(false)
+            setPageType("NOLOG")
             setPriorityError("")
         } else if (accessedPage === "overview"){
             setTitle("Übersicht Sammlungen")
@@ -207,7 +194,6 @@ function App() {
                  setUser(response.data)
                  setUserName(response.data.username)
                  setUserId(response.data.id)
-                 setIsLoggedIn(true)
                  nav("/collections")
              })
              .catch( () => {
@@ -268,9 +254,8 @@ function App() {
 
     return (
         <>
-            <Header pageTitle={title} isLoggedIn={isLoggedIn}
-                    pType={pageType} onLogout={logout}
-                    onBack={handleBack} key={"head"} />
+            <Header pageTitle={title} pType={pageType}
+                    onLogout={logout} onBack={handleBack} key={"head"} />
             <Routes>
                 <Route path="/"
                        element={<LandingPage onChangePage={changePage}

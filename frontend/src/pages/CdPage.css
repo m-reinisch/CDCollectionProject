@@ -1,7 +1,7 @@
 .cd-details {
     width: fit-content;
     display: grid;
-    grid-template-rows: 30px auto 50px;
+    grid-template-rows: 30px auto 50px 30px;
     align-items: flex-start;
     margin: 10px;
 }
@@ -89,4 +89,35 @@
     align-self: baseline;
     height: 30px;
     margin: 10px;
+}
+
+.additional-info {
+    width: 600px;
+    justify-self: center;
+    display: grid;
+    grid-template-columns: 300px 300px;
+    align-items: center;
+    justify-content: flex-start;
+    height: 30px;
+    background-color: rgb(255 255 255 / 0.7);
+}
+
+.cd-genres {
+    justify-self: center;
+    align-self: baseline;
+    font-size: small;
+    align-items: baseline;
+    justify-content: flex-start;
+    height: 25px;
+    width: 250px;
+    color: purple;
+}
+
+.storage-location {
+    justify-self: flex-end;
+    align-self: baseline;
+    font-size: small;
+    height: 25px;
+    width: 300px;
+    color: saddlebrown;
 }

@@ -2,7 +2,7 @@ import "./CollectionPage.css"
 import type {Collection} from "../types/CollectionTypes.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import type {CD} from "../types/CdTypes.tsx";
+import {type CD, Genres, type GenresDetails} from "../types/CdTypes.tsx";
 
 type CollectionPageProps = {
     cdCollection: Collection,
@@ -14,18 +14,15 @@ type CollectionPageProps = {
 
 export default function CollectionPage (props: Readonly<CollectionPageProps>) {
     const nav= useNavigate()
-    const [cds, setCds] = useState<CD[]>(props.cdCollection.cds)
     const [criterion, setCriterion] = useState<string>("title")
+    const [searchString, setSearchString] = useState<string>("")
 
-    function onSearch(searchString: string) {
-        if (criterion === "title"){
-            setCds(props.cdCollection.cds.filter( cd =>
-                cd.cdTitle.toLowerCase().includes(searchString.toLowerCase())))
-        } else if (criterion === "performer"){
-            setCds(props.cdCollection.cds.filter( cd =>
-                cd.performer.toLowerCase().includes(searchString.toLowerCase())))
+    const cds: CD[] = props.cdCollection.cds.filter( cd => {
+        if (criterion === "performer"){
+            return cd.performer.toLowerCase().includes(searchString.toLowerCase())
         }
-    }
+        return cd.cdTitle.toLowerCase().includes(searchString.toLowerCase())
+    })
 
     useEffect(() => {
         props.onChangePage("details")
@@ -46,7 +43,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                                name="searchString"
                                onChange={
                                     event =>
-                                    onSearch(event.target.value)
+                                    setSearchString(event.target.value)
                         }/>
                     </label>
                     <fieldset className="search-field">
@@ -76,6 +73,7 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
             <div className="cd-list">
                 {
                     cds.map( (cd: CD) => {
+                        const musicStyle: GenresDetails= Genres[cd.genres] ?? {style: "Unbekannt"};
                         return (
                             <div className="cd" key={cd.id}>
                                 <button className="cd-open"
@@ -85,7 +83,8 @@ export default function CollectionPage (props: Readonly<CollectionPageProps>) {
                                     <img id="cover" alt="no cover"
                                          src={cd.coverUrl} />
                                     <strong>{cd.cdTitle}</strong>
-                                    <small>{cd.performer}</small>
+                                    <em className="blue">{cd.performer}</em>
+                                    <small className="purple">{musicStyle.style}</small>
                                 </button>
                                 <button type="button"
                                         onClick={ () =>

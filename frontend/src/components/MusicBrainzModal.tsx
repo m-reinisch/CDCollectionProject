@@ -67,7 +67,7 @@ export default function MusicBrainzModal(props: Readonly<MusicBrainzModalProps>)
                                    required: "Der Barcode ist erforderlich!",
                                    pattern: {
                                        value: /\d{12,14}/,
-                                       message: "Der Barcode darf nur aus 12 bis 14 zahelen bestehen!"
+                                       message: "Der Barcode darf nur Zahlen enthalten und muss zwischen 12 und 14 Zeichen lang sein!"
                                    }
                                })}
                         />

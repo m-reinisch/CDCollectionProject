@@ -50,6 +50,8 @@ public class CdService {
                       .publicationYear(cd.publicationYear())
                       .totalTime(calcTotalTime(trackList))
                       .coverUrl(cd.coverUrl())
+                      .genres(cd.genres())
+                      .storageLocation(cd.storageLocation())
                       .cdCollection(cdOwner)
                       .build();
             for (Track track : trackList) {
@@ -111,8 +113,10 @@ public class CdService {
         updatedCd.setCdTitle(cd.cdTitle());
         updatedCd.setPerformer(cd.performer());
         updatedCd.setPublicationYear(cd.publicationYear());
-        updatedCd.setCoverUrl(cd.coverUrl());
         updatedCd.setTotalTime(totalTime);
+        updatedCd.setCoverUrl(cd.coverUrl());
+        updatedCd.setGenres(cd.genres());
+        updatedCd.setStorageLocation(cd.storageLocation());
         for( Track track : trackList ) {
             Track updatedTrack=
                     findTrackByPosition(track.getPosition(),

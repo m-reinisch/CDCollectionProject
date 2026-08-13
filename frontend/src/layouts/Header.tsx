@@ -1,7 +1,6 @@
 type HeaderProps = {
     pageTitle: string,
-    isLoggedIn: boolean,
-    pType: "NO" | "BACK" | "ABORT",
+    pType: "NOLOG" | "NO" | "BACK" | "ABORT",
     onLogout: () => void,
     onBack: () => void
 }
@@ -21,12 +20,12 @@ export default function Header(props: Readonly<HeaderProps>) {
                     Abbrechen
                 </button> : null}
             <div className="title">{props.pageTitle}</div>
-            {props.isLoggedIn ?
+            {props.pType === "NOLOG" ? null :
                 <button id="logout-btn"
                         type="button"
                         onClick={props.onLogout}>
                     Logout
-                </button> : null}
+                </button>}
         </header>
     )
 }
