@@ -23,7 +23,7 @@
     height: 15px;
 }
 
-#lbl-cd-perform {
+#lbl-cd-performer {
     font-size: small;
     color: blue;
     justify-self: center;
@@ -34,7 +34,7 @@
     height: 30px;
 }
 
-#txt-cd-perform {
+#txt-cd-performer {
     min-width: 250px;
     justify-self: flex-end;
     height: 15px;
@@ -81,10 +81,17 @@
     color: purple;
     justify-self: center;
     display: grid;
-    grid-template-columns: 100px 270px;
+    grid-template-columns: 88px 265px;
     align-items: baseline;
-    justify-content: center;
+    justify-content: flex-start;
     height: 30px;
+    width: 390px;
+}
+
+#sel-cd-style {
+    min-width: 250px;
+    justify-self: flex-end;
+    height: 25px;
 }
 
 #lbl-cd-storage {

@@ -1,7 +1,7 @@
 import "./AddCdPage.css";
 import MusicBrainzModal from "../components/MusicBrainzModal.tsx";
 import type {CdDTO, FoundCdDTO, Track} from "../types/CdTypes.tsx";
-import {useEffect, useState} from "react";
+import {type ChangeEvent, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {useForm, useFieldArray} from "react-hook-form";
 import axios from 'axios';
@@ -21,10 +21,13 @@ type AddCdPageProps = {
     onPriorError: (message: string) => void
 }
 
+const PREDEFINED_VALUES = ['Option 1', 'Option 2', 'Option 3'];
+
 export default function AddCdPage(props: Readonly<AddCdPageProps>) {
     const [isOpen, setIsOpen] = useState(false)
     const [foundCD, setFoundCD] = useState<FoundCdDTO | null>(null)
     const [barcodeError, setBarcodeError] = useState<string>("")
+    const [selectedValue, setSelectedValue] = useState<string>("");
     const param= useParams();
     const { control, register, handleSubmit, reset,
             formState: { errors, isValid }
@@ -53,6 +56,10 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
         control,
         name: "trackTT"
     });
+
+    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedValue(e.target.value);
+    };
 
     function submit(data: FormValues) {
         const year: number = Number.parseInt(data.publicationYear, 10)
@@ -167,9 +174,9 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                            })}
                     />
                 </label>
-                <label id="lbl-cd-perform">
+                <label id="lbl-cd-performer">
                     Interpret:
-                    <input id="txt-cd-perform" type="text"
+                    <input id="txt-cd-performer" type="text"
                            {...register("performer", {
                                required: "Der Interpret der CD ist erforderlich!",
                                pattern: {
@@ -193,6 +200,15 @@ export default function AddCdPage(props: Readonly<AddCdPageProps>) {
                 </label>
                 <label id="lbl-cd-style">
                     Stil-Richtung:
+                    <select id="sel-cd-style" value={selectedValue}
+                            onChange={handleSelectChange}>
+                        <option value="">nichts ausgewählt</option>
+                        {PREDEFINED_VALUES.map((val) => (
+                            <option key={val} value={val}>
+                                {val}
+                            </option>
+                        ))}
+                    </select>
                 </label>
                 <label id="lbl-cd-storage">
                     Ablageort:
