@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import tools.jackson.databind.exc.InvalidFormatException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             validationErrors.put(fieldName, errorMsg);
         });
         return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected @Nullable ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception,
+                                                                             HttpHeaders headers,
+                                                                             HttpStatusCode status,
+                                                                             WebRequest request) {
+        Throwable cause= exception.getMostSpecificCause();
+        String body= (cause instanceof InvalidFormatException invalidFormat && invalidFormat.getTargetType().isEnum())
+                ? "Fehler: unbekanntes Genres"
+                : UN_ERR + exception.getMessage();
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
