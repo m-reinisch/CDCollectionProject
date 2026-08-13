@@ -52,6 +52,7 @@ export const Genres = {
     PUNK: {style: "Punk"},
     R_AND_B: {style: "R&B"},
     REGGAE: {style: "Reggae"},
+    ROCK: {style: "Rock"},
     ROCK_AND_ROLL: {style: "Rock & Roll"},
     SALSA: {style: "Salsa"},
     SCHLAGER: {style: "Schlager"},

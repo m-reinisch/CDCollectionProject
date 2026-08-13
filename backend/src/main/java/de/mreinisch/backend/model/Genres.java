@@ -52,6 +52,7 @@ public enum Genres {
     PUNK("Punk"),
     R_AND_B("R&B"),
     REGGAE("Reggae"),
+    ROCK("Rock"),
     ROCK_AND_ROLL("Rock & Roll"),
     SALSA("Salsa"),
     SCHLAGER("Schlager"),
