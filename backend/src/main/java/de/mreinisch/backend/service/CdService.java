@@ -113,8 +113,10 @@ public class CdService {
         updatedCd.setCdTitle(cd.cdTitle());
         updatedCd.setPerformer(cd.performer());
         updatedCd.setPublicationYear(cd.publicationYear());
-        updatedCd.setCoverUrl(cd.coverUrl());
         updatedCd.setTotalTime(totalTime);
+        updatedCd.setCoverUrl(cd.coverUrl());
+        updatedCd.setGenres(cd.genres());
+        updatedCd.setStorageLocation(cd.storageLocation());
         for( Track track : trackList ) {
             Track updatedTrack=
                     findTrackByPosition(track.getPosition(),
