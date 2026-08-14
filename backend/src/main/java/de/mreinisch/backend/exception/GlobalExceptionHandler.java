@@ -94,6 +94,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UnexpectedSeriousError.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
     public String handleUnexpectedSeriousError(UnexpectedSeriousError exception) {
         return "Unerwarteter Ausnahmefehler: " + exception.getMessage();
     }
